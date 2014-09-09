@@ -14,8 +14,6 @@ public class VideoPanel extends JPanel {
 
 	public VideoPanel(){
 		this.setPreferredSize(new Dimension(800, 400));
-		this.setLayout(new MigLayout());
-
 		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
 		Canvas c = new Canvas();
 		c.setBackground(Color.black);
@@ -23,6 +21,7 @@ public class VideoPanel extends JPanel {
 		EmbeddedMediaPlayer mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
 		mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(c));
 		this.add(c);
+		mediaPlayer.playMedia("Video", "/home/patrick/206Assignments/big_buck_bunny_720p_stereo.avi");
 	}
 	//	
 	//	public void play(){
