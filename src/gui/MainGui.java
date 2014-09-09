@@ -4,12 +4,9 @@ import java.awt.EventQueue;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.FlowLayout;
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.JPanel;
 
 public class MainGui {
 	
