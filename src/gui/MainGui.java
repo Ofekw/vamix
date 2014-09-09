@@ -1,36 +1,21 @@
 package gui;
 
+import java.awt.Component;
 import java.awt.EventQueue;
-<<<<<<< HEAD
+import java.awt.FlowLayout;
 
+import javax.swing.Box;
 import javax.swing.ImageIcon;
-=======
->>>>>>> d343aed92e9cc26461fa2acd5923994142fae8d9
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.FlowLayout;
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.JPanel;
 
-<<<<<<< HEAD
 public class MainGui {
 	
 	private JFrame frame;
-=======
-import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
-import com.sun.jna.Native;
->>>>>>> d343aed92e9cc26461fa2acd5923994142fae8d9
 
-public class MainGui extends JFrame {
-	
 	public static void main(String[] args){
-		
-		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-		
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 			if ("GTK+".equals(info.getName())) {
 				try {
@@ -56,7 +41,6 @@ public class MainGui extends JFrame {
 	}
 	
 	public MainGui(){
-<<<<<<< HEAD
 		initialize();
 	}
 
@@ -76,11 +60,5 @@ public class MainGui extends JFrame {
 		
 		Component horizontalStrut = Box.createHorizontalStrut(20);
 		frame.getContentPane().add(horizontalStrut);
-=======
-		this.setSize(1000, 600);
-		JPanel videoPanel = new VideoPanel();
-		this.setVisible(true);
-		
->>>>>>> d343aed92e9cc26461fa2acd5923994142fae8d9
 	}
 }
