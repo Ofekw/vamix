@@ -1,7 +1,10 @@
 package gui;
 
+import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
