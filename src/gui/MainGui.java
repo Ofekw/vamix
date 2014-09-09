@@ -42,8 +42,9 @@ public class MainGui extends JFrame {
 	
 	public MainGui(){
 		this.setSize(1000, 600);
-		JPanel videoPanel = new VideoPanel();
+		VideoPanel videoPanel = new VideoPanel();
+		this.add(videoPanel);
 		this.setVisible(true);
-		
+//		videoPanel.play();
 	}
 }
