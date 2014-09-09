@@ -6,7 +6,6 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
-import net.miginfocom.swing.MigLayout;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
@@ -23,8 +22,4 @@ public class VideoPanel extends JPanel {
 		this.add(c);
 		mediaPlayer.playMedia("Video", "/home/patrick/206Assignments/big_buck_bunny_720p_stereo.avi");
 	}
-	//	
-	//	public void play(){
-	//		 mediaPlayerComponent.getMediaPlayer().playMedia("Video", "");
-	//	}
 }
