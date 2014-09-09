@@ -66,7 +66,7 @@ public class MainGui {
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 		
-		VideoPanelPlaceHolder videoPanel = new VideoPanelPlaceHolder();
+		VideoPanel videoPanel = new VideoPanel();
 		horizontalBox.add(videoPanel);
 		videoPanel.setBackground(Color.BLACK);
 		
