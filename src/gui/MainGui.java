@@ -52,13 +52,7 @@ public class MainGui {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel);
-		
-		Component verticalStrut = Box.createVerticalStrut(20);
-		panel.add(verticalStrut);
-		
-		Component horizontalStrut = Box.createHorizontalStrut(20);
-		frame.getContentPane().add(horizontalStrut);
+		VideoPanel videoPanel = new VideoPanel();
+		frame.add(videoPanel);
 	}
 }
