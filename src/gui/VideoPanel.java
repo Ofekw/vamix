@@ -5,10 +5,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -22,34 +24,56 @@ public class VideoPanel extends JPanel {
 
 	private final EmbeddedMediaPlayer mediaPlayer;
 	private JProgressBar progressBar;
-	private Timer timer;
+
+
+	private SwingWorker<Void, Integer> videoWorker = new SwingWorker<Void, Integer>(){
+
+		Timer timer = new Timer(5, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				//System.out.println(mediaPlayer.getTime());
+				publish((int)mediaPlayer.getTime());
+			}
+		});
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			if (isCancelled()){
+				timer.stop();
+			}else{
+				timer.start();
+			}
+			return null;
+		}
+
+		@Override
+		protected void process(List<Integer> chunks) {
+			for(Integer i: chunks){
+				progressBar.setValue(i);
+			}
+		}
+	};
 
 	public VideoPanel(){
 
-		this.setMinimumSize(new Dimension(1000, 600));
+		this.setMinimumSize(new Dimension(700, 500));
 		this.setBackground(Color.black);
 		this.setLayout(new MigLayout());
 
 		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
 
 		// Setup canvas for player to go on
-		timer = new Timer(200, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				//System.out.println(mediaPlayer.getTime());
-				progressBar.setValue((int)mediaPlayer.getTime());
-			}
-		});
+
 
 		Canvas mediaCanvas = new Canvas();
 		mediaCanvas.setBackground(Color.black);
-		mediaCanvas.setPreferredSize(new Dimension(900,350));
+		mediaCanvas.setPreferredSize(new Dimension(600,350));
 
 		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
 		mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(mediaCanvas));
 
 
-		mediaPlayer.prepareMedia("/home/patrick/Downloads/How.to.Train.Your.Dragon.2.2014.HDRip.XViD-juggs[ETRG].avi");
+		mediaPlayer.prepareMedia("/home/patrick/Downloads/sample.avi");
 
 		//Play/Resume/Restart button
 		JButton playButton = new JButton("Play");
@@ -60,7 +84,7 @@ public class VideoPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (mediaPlayer.getTime() == -1){
 					mediaPlayer.play();
-					timer.start();
+					videoWorker.execute();
 					try {
 						Thread.sleep(400);
 					} catch (InterruptedException e1) {
