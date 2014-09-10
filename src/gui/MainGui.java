@@ -1,6 +1,6 @@
 package gui;
 
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -9,13 +9,10 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-
-import java.awt.Color;
-
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
+import com.sun.jna.Native;
 
 public class MainGui {
 	
@@ -23,6 +20,7 @@ public class MainGui {
 	private JFrame editFrame;
 
 	public static void main(String[] args){
+		
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 			if ("GTK+".equals(info.getName())) {
 				try {
@@ -66,7 +64,7 @@ public class MainGui {
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 		
-		VideoPanelPlaceHolder videoPanel = new VideoPanelPlaceHolder();
+		VideoPanel videoPanel = new VideoPanel();
 		horizontalBox.add(videoPanel);
 		videoPanel.setBackground(Color.BLACK);
 		
