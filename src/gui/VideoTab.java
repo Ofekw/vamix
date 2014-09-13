@@ -25,63 +25,65 @@ public class VideoTab extends JPanel {
 	private Box horizontalBox;
 	private Component verticalStrut_1;
 	private Component horizontalStrut;
-	
-	public VideoTab(){
+	private VideoPanel _videoPanel;
+
+	public VideoTab(VideoPanel panel){
+		_videoPanel = panel;
 		initialise();
 	}
 
 	private void initialise() {
 		this.setPreferredSize(new Dimension(1000, 130));
-		
+
 		verticalBox = Box.createVerticalBox();
 		add(verticalBox);
-				
-				verticalStrut_1 = Box.createVerticalStrut(20);
-				verticalBox.add(verticalStrut_1);
-				
-				horizontalBox = Box.createHorizontalBox();
-				verticalBox.add(horizontalBox);
-				
-				JLabel lblVideoFile = new JLabel("Video File");
-				horizontalBox.add(lblVideoFile);
-				
-				horizontalStrut = Box.createHorizontalStrut(20);
-				horizontalBox.add(horizontalStrut);
-				
-				_txtVideoLoc = new JTextField();
-				_txtVideoLoc.setEditable(false);
-				horizontalBox.add(_txtVideoLoc);
-				_txtVideoLoc.setColumns(30);
-				
-						_btnBrowse = new JButton("Browse");
-						horizontalBox.add(_btnBrowse);
+
+		verticalStrut_1 = Box.createVerticalStrut(20);
+		verticalBox.add(verticalStrut_1);
+
+		horizontalBox = Box.createHorizontalBox();
+		verticalBox.add(horizontalBox);
+
+		JLabel lblVideoFile = new JLabel("Video File");
+		horizontalBox.add(lblVideoFile);
+
+		horizontalStrut = Box.createHorizontalStrut(20);
+		horizontalBox.add(horizontalStrut);
+
+		_txtVideoLoc = new JTextField();
+		_txtVideoLoc.setEditable(false);
+		horizontalBox.add(_txtVideoLoc);
+		_txtVideoLoc.setColumns(30);
+
+		_btnBrowse = new JButton("Browse");
+		horizontalBox.add(_btnBrowse);
 		_btnBrowse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (_btnBrowse.isEnabled()) {
 					fileBrowser();
-					}
 				}
+			}
 
 			private void fileBrowser() {
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser
-						.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				int returnValue = fileChooser.showOpenDialog(null);
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fileChooser.getSelectedFile();
 					_txtVideoLoc.setText(selectedFile.getAbsolutePath());
 					if ((_txtVideoLoc != null && !_txtVideoLoc.getText().isEmpty()) && !fileExists() ) {
-							filePathInvalid();
-						}
+						filePathInvalid();
+					}else{
+						_videoPanel.setMedia(_txtVideoLoc.getText());
 					}
+				}
 			}
 		});
-		
-		
-		
+
 	}
-	
+
 	private boolean fileExists() {
 		File f = new File(_txtVideoLoc.getText());
 		if (f.exists()) {
@@ -95,8 +97,8 @@ public class VideoTab extends JPanel {
 		JOptionPane.showMessageDialog(this, "File path is invalid",
 				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
-	
-	public String getVideoLoc() {
-		return _txtVideoLoc.getText();
-	}
+
+	//	public JTextField getVideoLoc() {
+	//		return _txtVideoLoc;
+	//	}
 }

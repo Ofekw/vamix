@@ -79,7 +79,7 @@ public class MainGui {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		EditPanel.add(tabbedPane);
 		
-		_Video = new VideoTab();
+		_Video = new VideoTab(videoPanel);
 		tabbedPane.addTab("Video", null, _Video, null);
 		
 		JPanel Audio = new JPanel();
