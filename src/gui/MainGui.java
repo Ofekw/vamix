@@ -18,6 +18,7 @@ public class MainGui {
 	
 	private JFrame frame;
 	private JFrame editFrame;
+	private VideoTab _Video;
 
 	public static void main(String[] args){
 		
@@ -64,7 +65,7 @@ public class MainGui {
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 		
-		VideoPanel videoPanel = new VideoPanel();
+		VideoPanel videoPanel = new VideoPanel(this);
 		horizontalBox.add(videoPanel);
 		videoPanel.setBackground(Color.BLACK);
 		
@@ -73,15 +74,13 @@ public class MainGui {
 		
 		JPanel EditPanel = new JPanel();
 		EditPanel.setPreferredSize(new Dimension(1000, 150));
-		EditPanel.setBackground(Color.LIGHT_GRAY);
 		horizontalBox_1.add(EditPanel);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		EditPanel.add(tabbedPane);
 		
-		JPanel Video = new JPanel();
-		Video.setPreferredSize(new Dimension(1000, 130));
-		tabbedPane.addTab("Video", null, Video, null);
+		_Video = new VideoTab();
+		tabbedPane.addTab("Video", null, _Video, null);
 		
 		JPanel Audio = new JPanel();
 		Audio.setPreferredSize(new Dimension(1000, 130));
@@ -90,5 +89,9 @@ public class MainGui {
 		JPanel Text = new JPanel();
 		Text.setPreferredSize(new Dimension(1000, 130));
 		tabbedPane.addTab("Text", null, Text, null);
+	}
+
+	public VideoTab getVideo() {
+		return _Video;
 	}
 }
