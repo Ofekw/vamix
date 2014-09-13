@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -42,43 +43,28 @@ import java.awt.event.MouseEvent;
 @SuppressWarnings("serial")
 public class VideoPanel extends JPanel {
 
-	private final EmbeddedMediaPlayer mediaPlayer;
+	private EmbeddedMediaPlayer mediaPlayer = null;
 	private JProgressBar progressBar;
 	private JSlider _progressSlider;
 	private MainGui _parent;
 	private static final int SKIP_TIME_MS = 10 * 1000;
 
-	private JLabel timeLabel;
-	private JSlider positionSlider;
-	private JLabel chapterLabel;
+	private JLabel _timeLabel;
+	private JSlider _positionSlider;
 
-	private JButton previousChapterButton;
-	private JButton rewindButton;
-	private JButton stopButton;
-	private JButton pauseButton;
-	private JButton playButton;
-	private JButton fastForwardButton;
-	private JButton nextChapterButton;
-
-	private JButton toggleMuteButton;
-
-	private JButton captureButton;
-
-	private JButton ejectButton;
-	private JButton connectButton;
-
-	private JButton fullScreenButton;
-
-	private JButton subTitlesButton;
-
-	private JFileChooser fileChooser;
+	private JButton _rewindButton;
+	private JButton _stopButton;
+	private JButton _pauseButton;
+	private JButton _playButton;
+	private JButton _fastForwardButton;
 
 	private boolean mousePressedPlaying = false;
 
 
 	private SwingWorker<Void, Integer> videoWorker = new SwingWorker<Void, Integer>(){
+		//int position = (int)(mediaPlayer.getPosition() * 1000.0f);
 
-		Timer timer = new Timer(5, new ActionListener() {
+		Timer timer = new Timer(1, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//System.out.println(mediaPlayer.getTime());
@@ -99,8 +85,13 @@ public class VideoPanel extends JPanel {
 		@Override
 		protected void process(List<Integer> chunks) {
 			for(Integer i: chunks){
-				progressBar.setValue(i);
-				_progressSlider.setValue(i);
+				//progressBar.setValue(i);
+				//_positionSlider.setValue(i);
+				if(mediaPlayer.isPlaying()) {
+					//updateTime(chunks.get(i));
+					
+					//updatePosition(_progressSlider.getValue()+1);
+				}
 			}
 		}
 	};
@@ -163,7 +154,7 @@ public class VideoPanel extends JPanel {
 		progressBar.setVisible(true);
 
 		this.add(mediaCanvas, "cell 0 0,growx");
-		this.add(progressBar, "cell 0 1,growx");
+		//this.add(progressBar, "cell 0 1,growx");
 		
 		_progressSlider = new JSlider();
 		_progressSlider.addMouseMotionListener(new MouseMotionAdapter() {
@@ -176,44 +167,42 @@ public class VideoPanel extends JPanel {
 	}
 
 	private void createControls() {
-		timeLabel = new JLabel("hh:mm:ss");
-		positionSlider = new JSlider();
-		positionSlider.setMinimum(0);
-		positionSlider.setMaximum(1000);
-		positionSlider.setValue(0);
-		positionSlider.setToolTipText("Position");
-
-		chapterLabel = new JLabel("00/00");
+		_timeLabel = new JLabel("hh:mm:ss");
+		_positionSlider = new JSlider();
+		_positionSlider.setMinimum(0);
+		_positionSlider.setMaximum(1000);
+		_positionSlider.setValue(0);
+		_positionSlider.setToolTipText("Position");
 
 
-		rewindButton = new JButton();
-		rewindButton.setIcon(new ImageIcon(("icons/fastforward.png")));
-		rewindButton.setToolTipText("Skip back");
+		_rewindButton = new JButton();
+		_rewindButton.setIcon(new ImageIcon(("icons/fastforward.png")));
+		_rewindButton.setToolTipText("Skip back");
 
-		stopButton = new JButton();
+		_stopButton = new JButton();
 //		stopButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/stop.png")));
-		stopButton.setIcon(new ImageIcon(("icons/stop.png")));
-		stopButton.setToolTipText("Stop");
+		_stopButton.setIcon(new ImageIcon(("icons/stop.png")));
+		_stopButton.setToolTipText("Stop");
 
-		pauseButton = new JButton();
-		pauseButton.setIcon(new ImageIcon(("icons/pause.png")));
-		pauseButton.setToolTipText("Play/pause");
+		_pauseButton = new JButton();
+		_pauseButton.setIcon(new ImageIcon(("icons/pause.png")));
+		_pauseButton.setToolTipText("Play/pause");
 
-		playButton = new JButton();
-		playButton.setIcon(new ImageIcon(("icons/play.png")));
-		playButton.setToolTipText("Play");
+		_playButton = new JButton();
+		_playButton.setIcon(new ImageIcon(("icons/play.png")));
+		_playButton.setToolTipText("Play");
 
-		fastForwardButton = new JButton();
-		fastForwardButton.setIcon(new ImageIcon(("icons/fastforward.png")));
-		fastForwardButton.setToolTipText("Skip forward");
+		_fastForwardButton = new JButton();
+		_fastForwardButton.setIcon(new ImageIcon(("icons/fastforward.png")));
+		_fastForwardButton.setToolTipText("Skip forward");
 
 
-
-		this.add(rewindButton, "cell 0 3");
-		this.add(stopButton, "cell 0 3");
+		this.add(_positionSlider, "cell 0 2, growx");
+		this.add(_rewindButton, "cell 0 3");
+		this.add(_stopButton, "cell 0 3");
 		//this.add(pauseButton, "cell 0 3");
-		this.add(playButton, "cell 0 3");
-		this.add(fastForwardButton, "cell 0 3");
+		this.add(_playButton, "cell 0 3");
+		this.add(_fastForwardButton, "cell 0 3");
 		
 	}
 
@@ -232,7 +221,7 @@ public class VideoPanel extends JPanel {
 	
 	private void registerListeners() {
 
-		positionSlider.addMouseListener(new MouseAdapter() {
+		_positionSlider.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if(mediaPlayer.isPlaying()) {
@@ -253,28 +242,28 @@ public class VideoPanel extends JPanel {
 		});
 
 
-		rewindButton.addActionListener(new ActionListener() {
+		_rewindButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				skip(-SKIP_TIME_MS);
 			}
 		});
 
-		stopButton.addActionListener(new ActionListener() {
+		_stopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.stop();
 			}
 		});
 
-		pauseButton.addActionListener(new ActionListener() {
+		_pauseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.pause();
 			}
 		});
 
-		playButton.addActionListener(new ActionListener() {
+		_playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String mediaLoc = _parent.getVideo().getVideoLoc();
@@ -287,7 +276,7 @@ public class VideoPanel extends JPanel {
 				if (mediaPlayer.getTime() == -1){
 					System.out.println("getting here INITIAL play press");
 					mediaPlayer.play();
-					playButton.setIcon(new ImageIcon(("icons/pause.png")));
+					_playButton.setIcon(new ImageIcon(("icons/pause.png")));
 					videoWorker.execute();
 					try {
 						Thread.sleep(400);
@@ -303,14 +292,14 @@ public class VideoPanel extends JPanel {
 				}else{
 					mediaPlayer.pause();
 					System.out.println("getting here to pause");
-					playButton.setIcon(new ImageIcon(("icons/play.png")));
+					_playButton.setIcon(new ImageIcon(("icons/play.png")));
 				}
 			}
 
 		});
 
 
-		fastForwardButton.addActionListener(new ActionListener() {
+		_fastForwardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				skip(SKIP_TIME_MS);
@@ -359,19 +348,19 @@ public class VideoPanel extends JPanel {
 	}
 	private void updateTime(long millis) {
 		String s = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-		timeLabel.setText(s);
+		_timeLabel.setText(s);
 	}
 
 	private void updatePosition(int value) {
 		// positionProgressBar.setValue(value);
-		positionSlider.setValue(value);
+		_positionSlider.setValue(value);
 	}
 	
 	private void setSliderBasedPosition() {
 		if(!mediaPlayer.isSeekable()) {
 			return;
 		}
-		float positionValue = positionSlider.getValue() / 1000.0f;
+		float positionValue = _positionSlider.getValue() / 1000.0f;
 		// Avoid end of file freeze-up
 		if(positionValue > 0.99f) {
 			positionValue = 0.99f;
