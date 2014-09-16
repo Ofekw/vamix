@@ -17,11 +17,11 @@ public abstract class AbsProcess extends SwingWorker<Integer, String> {
 	protected String _cmd;
 	protected int _status;
 
-	abstract protected void command(String cmd);
+	abstract public void command(String cmd);
 
 	public void destroy() {
 		/**
-		 * The abstract framework on which Extract and Download are built off.
+		 * The abstract framework on which processes are built off.
 		 */
 
 		try {
