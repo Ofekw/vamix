@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JToggleButton;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -40,10 +41,10 @@ public class VideoPanel extends JPanel {
 
 	private JLabel _timeLabel;
 
-	private JButton _rewindButton;
+	private JToggleButton _rewindButton;
 	private JButton _stopButton;
 	private JButton _playButton;
-	private JButton _fastForwardButton;
+	private JToggleButton _fastForwardButton;
 	private JButton _toggleMuteButton;
 	private JSlider _volumeSlider;
 	private Timer timer;
@@ -57,7 +58,7 @@ public class VideoPanel extends JPanel {
 	private final int maxTime = 100000;
 	private JButton _muteToggle;
 
-
+	private SkipWorker skipper;
 
 
 
@@ -120,7 +121,7 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setToolTipText("Position");
 		_progressSlider.setBackground(Color.BLACK);
 
-		_rewindButton = new JButton();
+		_rewindButton = new JToggleButton();
 		_rewindButton.setIcon(new ImageIcon(("icons/fastforward.png")));
 		_rewindButton.setToolTipText("Skip back");
 
@@ -132,7 +133,7 @@ public class VideoPanel extends JPanel {
 		_playButton.setIcon(new ImageIcon(("icons/play.png")));
 		_playButton.setToolTipText("Play");
 
-		_fastForwardButton = new JButton();
+		_fastForwardButton = new JToggleButton();
 		_fastForwardButton.setIcon(new ImageIcon(("icons/fastforward.png")));
 		_fastForwardButton.setToolTipText("Skip forward");
 
@@ -155,6 +156,8 @@ public class VideoPanel extends JPanel {
 		_muteToggle = new JButton("mute");
 		add(_muteToggle, "cell 0 3");
 		this.add(_volumeSlider, "cell 0 3");
+		
+		skipper = new SkipWorker(mediaPlayer, true);
 
 	}
 
@@ -186,19 +189,18 @@ public class VideoPanel extends JPanel {
 		//			}
 		//		});
 
-
-		_rewindButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				skip(-SKIP_TIME_MS);
-			}
-		});
-
 		_stopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.stop();
 				_playButton.setIcon(new ImageIcon(("icons/play.png")));
+				if(_fastForwardButton.isSelected()){
+					skipper.cancel(true);
+					_fastForwardButton.setSelected(false);
+				}else if (_rewindButton.isSelected()){
+					skipper.cancel(true);
+					_rewindButton.setSelected(false);
+				}
 			}
 		});
 
@@ -242,17 +244,51 @@ public class VideoPanel extends JPanel {
 					mediaPlayer.pause();
 					timer.stop();
 					_playButton.setIcon(new ImageIcon(("icons/play.png")));
+					if(_fastForwardButton.isSelected()){
+						skipper.cancel(true);
+						_fastForwardButton.setSelected(false);
+					}else if (_rewindButton.isSelected()){
+						skipper.cancel(true);
+						_rewindButton.setSelected(false);
+					}
 				}
 			}
 		});
 
-
 		_fastForwardButton.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				skip(SKIP_TIME_MS);
+				
+				if(_fastForwardButton.isSelected()){
+					skipper.cancel(true);
+					skipper = new SkipWorker(mediaPlayer, true);
+					skipper.execute();
+				}else{
+					skipper.cancel(true);
+				}
 			}
 		});
+		
+		_rewindButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(_rewindButton.isSelected()){
+					skipper.cancel(true);
+					skipper = new SkipWorker(mediaPlayer, false);
+					skipper.execute();
+				}else{
+					skipper.cancel(true);
+				}
+			}
+		});
+
+		//		_fastForwardButton.addActionListener(new ActionListener() {
+		////			@Override
+		////			public void actionPerformed(ActionEvent e) {
+		////				skip(SKIP_TIME_MS);
+		////			}
+		//		});
 		//Volume slider listener
 		_volumeSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -276,14 +312,6 @@ public class VideoPanel extends JPanel {
 	private void errorPlaybackFile() {
 		JOptionPane.showMessageDialog(this, "No valid media file selected",
 				"Location Error", JOptionPane.ERROR_MESSAGE);
-	}
-
-	private void skip(int skipTime) {
-		// Only skip time if can handle time setting
-		if(mediaPlayer.getLength() > 0) {
-			mediaPlayer.skip(skipTime);
-			//updateUIState();
-		}
 	}
 
 	//	private void updateUIState() {
