@@ -1,6 +1,6 @@
 package gui;
 
-import javax.swing.JPanel;
+import java.awt.Dimension;
 
 public class AudioTab extends Tab {
 	
@@ -10,7 +10,7 @@ public class AudioTab extends Tab {
 
 	@Override
 	protected void initialise() {
-		// TODO Auto-generated method stub
+		this.setPreferredSize(new Dimension(1000, 130));
 		
 	}
 

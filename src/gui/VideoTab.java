@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import java.awt.Component;
 import javax.swing.Box;
 
-public class VideoTab extends JPanel {
+public class VideoTab extends Tab {
 	/**
 	 * 
 	 */
@@ -25,15 +25,12 @@ public class VideoTab extends JPanel {
 	private Box horizontalBox;
 	private Component verticalStrut_1;
 	private Component horizontalStrut;
-	private VideoPanel _videoPanel;
 
-	public VideoTab(VideoPanel panel){
-		_videoPanel = panel;
-		initialise();
-	}
+		public VideoTab(VideoPanel panel) {
+			super(panel);
+		}
 
-	private void initialise() {
-		this.setPreferredSize(new Dimension(1000, 130));
+	protected void initialise() {
 
 		verticalBox = Box.createVerticalBox();
 		add(verticalBox);
@@ -73,9 +70,10 @@ public class VideoTab extends JPanel {
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fileChooser.getSelectedFile();
 					_txtVideoLoc.setText(selectedFile.getAbsolutePath());
-					if ((_txtVideoLoc != null && !_txtVideoLoc.getText().isEmpty()) && !fileExists() ) {
+					if ((_txtVideoLoc == null || _txtVideoLoc.getText().isEmpty()) || !fileExists() ) {
 						filePathInvalid();
 					}else{
+						System.out.print("getting here");
 						_videoPanel.setMedia(_txtVideoLoc.getText());
 					}
 				}

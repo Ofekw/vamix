@@ -17,14 +17,18 @@ import javax.swing.JProgressBar;
 
 import net.miginfocom.swing.MigLayout;
 
+import uk.co.caprica.vlcj.binding.LibVlcConst;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 import javax.swing.Timer;
 import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class VideoPanel extends JPanel {
@@ -40,18 +44,18 @@ public class VideoPanel extends JPanel {
 	private JButton _stopButton;
 	private JButton _playButton;
 	private JButton _fastForwardButton;
-
-	private boolean mousePressedPlaying = false;
-
+	private JButton _toggleMuteButton;
+	private JSlider _volumeSlider;
 	private Timer timer;
 
 	private String videoLocation;
-	
+
 	//Constant value for progress bar
 	//it is now scaled so it updates alot
 	//smoother than before, check the updatePosition
 	//method for the details
 	private final int maxTime = 100000;
+	private JButton _muteToggle;
 
 
 
@@ -132,12 +136,25 @@ public class VideoPanel extends JPanel {
 		_fastForwardButton.setIcon(new ImageIcon(("icons/fastforward.png")));
 		_fastForwardButton.setToolTipText("Skip forward");
 
+		//Creating audio manipulation controls
+
+		_volumeSlider = new JSlider();
+		_volumeSlider.setOrientation(JSlider.HORIZONTAL);
+		_volumeSlider.setMinimum(LibVlcConst.MIN_VOLUME);
+		_volumeSlider.setMaximum(LibVlcConst.MAX_VOLUME);
+		_volumeSlider.setPreferredSize(new Dimension(100, 40));
+		_volumeSlider.setToolTipText("Change volume");
+
 		this.add(_timeLabel, "cell 0 2");
 		this.add(_progressSlider, "cell 0 2, growx");
-		this.add(_rewindButton, "cell 0 3");
+		this.add(_rewindButton, "flowx,cell 0 3");
 		this.add(_stopButton, "cell 0 3");
 		this.add(_playButton, "cell 0 3");
 		this.add(_fastForwardButton, "cell 0 3");
+
+		_muteToggle = new JButton("mute");
+		add(_muteToggle, "cell 0 3");
+		this.add(_volumeSlider, "cell 0 3");
 
 	}
 
@@ -146,7 +163,7 @@ public class VideoPanel extends JPanel {
 				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-	
+
 
 	private void registerListeners() {
 
@@ -236,7 +253,24 @@ public class VideoPanel extends JPanel {
 				skip(SKIP_TIME_MS);
 			}
 		});
+		//Volume slider listener
+		_volumeSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider)e.getSource();
+				// if(!source.getValueIsAdjusting()) {
+				mediaPlayer.setVolume(source.getValue());
+				// }
+			}
+		});
 
+
+		_muteToggle.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mediaPlayer.mute();
+			}
+		});
 	}
 
 	private void errorPlaybackFile() {
@@ -274,7 +308,7 @@ public class VideoPanel extends JPanel {
 	//		updateTime(time);
 	//		updatePosition(position);
 	//	}
-	
+
 	/**
 	 * Updates the time label
 	 * @param millis: time in milliseconds
@@ -292,11 +326,11 @@ public class VideoPanel extends JPanel {
 	private void updatePosition(long value) {
 		_progressSlider.setValue((int)(((float)value)/mediaPlayer.getLength()*maxTime));
 	}
-	
+
 	/**
 	 * Resets the media player to it's default starting point
 	 */
-	
+
 	private void resetPlayer(){
 		timer.restart();
 		timer.stop();
@@ -305,7 +339,7 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setValue(0);
 		_timeLabel.setText("00:00:00");
 	}
-	
+
 	/**
 	 * Set file to be played on media player
 	 * @param mediaLocation: Absolute path to media file location

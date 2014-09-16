@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 
 
@@ -12,6 +14,7 @@ public abstract class Tab extends JPanel{
 	protected VideoPanel _videoPanel;
 	
 	public Tab (VideoPanel panel){
+		this.setPreferredSize(new Dimension(1000, 130));
 		_videoPanel = panel;
 		initialise();
 	}
