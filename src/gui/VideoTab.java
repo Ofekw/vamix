@@ -25,9 +25,11 @@ public class VideoTab extends Tab {
 	private Box horizontalBox;
 	private Component verticalStrut_1;
 	private Component horizontalStrut;
+	private AudioTab _audio ;
 
-		public VideoTab(VideoPanel panel) {
+		public VideoTab(VideoPanel panel, AudioTab audio) {
 			super(panel);
+			this._audio = audio;
 		}
 
 	protected void initialise() {
@@ -73,8 +75,12 @@ public class VideoTab extends Tab {
 					if ((_txtVideoLoc == null || _txtVideoLoc.getText().isEmpty()) || !fileExists() ) {
 						filePathInvalid();
 					}else{
-						System.out.print("getting here");
+						/*
+						 * need to add valid files checks here
+						 */
 						_videoPanel.setMedia(_txtVideoLoc.getText());
+						_audio.enableButtons();
+						_audio.setMediaLoc(_txtVideoLoc.getText());
 					}
 				}
 			}

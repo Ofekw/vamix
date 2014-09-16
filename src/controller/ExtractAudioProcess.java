@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 public class ExtractAudioProcess extends AbsProcess {
 
-	protected void command(String cmd) {
+	public void command(String cmd) {
 		_pb = new ProcessBuilder("/bin/bash", "-c", cmd);
 		_process = null;
 		_pb.redirectErrorStream(true);
