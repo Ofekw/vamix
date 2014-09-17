@@ -64,7 +64,7 @@ public class VideoPanel extends JPanel {
 
 	public VideoPanel(MainGui parent){
 		this._parent = parent;
-		this.setMinimumSize(new Dimension(700, 500));
+		this.setMinimumSize(new Dimension(900, 500));
 		this.setLayout(new MigLayout("", "[]", "[][][][][]"));
 		createControls();
 		registerListeners();
@@ -76,7 +76,7 @@ public class VideoPanel extends JPanel {
 
 		Canvas mediaCanvas = new Canvas();
 		//	mediaCanvas.setBackground(Color.black);
-		mediaCanvas.setPreferredSize(new Dimension(600,300));
+		mediaCanvas.setPreferredSize(new Dimension(800,300));
 
 		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
 		mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(mediaCanvas));
@@ -156,7 +156,7 @@ public class VideoPanel extends JPanel {
 		_muteToggle = new JButton("mute");
 		add(_muteToggle, "cell 0 3");
 		this.add(_volumeSlider, "cell 0 3");
-		
+
 		skipper = new SkipWorker(mediaPlayer, true);
 
 	}
@@ -194,12 +194,15 @@ public class VideoPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.stop();
 				_playButton.setIcon(new ImageIcon(("icons/play.png")));
+
 				if(_fastForwardButton.isSelected()){
 					skipper.cancel(true);
 					_fastForwardButton.setSelected(false);
+					_rewindButton.setSelected(false);
 				}else if (_rewindButton.isSelected()){
 					skipper.cancel(true);
 					_rewindButton.setSelected(false);
+					_fastForwardButton.setSelected(false);
 				}
 			}
 		});
@@ -247,9 +250,11 @@ public class VideoPanel extends JPanel {
 					if(_fastForwardButton.isSelected()){
 						skipper.cancel(true);
 						_fastForwardButton.setSelected(false);
+						_rewindButton.setSelected(false);
 					}else if (_rewindButton.isSelected()){
 						skipper.cancel(true);
 						_rewindButton.setSelected(false);
+						_fastForwardButton.setSelected(false);
 					}
 				}
 			}
@@ -259,7 +264,10 @@ public class VideoPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
+				if (_rewindButton.isSelected()){
+					_rewindButton.setSelected(false);
+				}
 				if(_fastForwardButton.isSelected()){
 					skipper.cancel(true);
 					skipper = new SkipWorker(mediaPlayer, true);
@@ -269,10 +277,13 @@ public class VideoPanel extends JPanel {
 				}
 			}
 		});
-		
+
 		_rewindButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (_fastForwardButton.isSelected()){
+					_fastForwardButton.setSelected(false);
+				}
 				if(_rewindButton.isSelected()){
 					skipper.cancel(true);
 					skipper = new SkipWorker(mediaPlayer, false);

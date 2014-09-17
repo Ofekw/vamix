@@ -32,7 +32,7 @@ public class ExtractAudioProcess extends AbsProcess {
 		String line = null;
 		try {
 			while ((line = stdoutBuffered.readLine()) != null) {
-				 System.out.println(line);
+//				 System.out.println(line);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
