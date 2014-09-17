@@ -19,8 +19,7 @@ public class ShellProcess {
 
 	public ShellProcess() {
 		/**
-		 * Initializes a static process for quick, non time consuming actions /
-		 * debugging.
+		 * Initializes a static process for quick, non time consuming actions
 		 */
 	}
 
