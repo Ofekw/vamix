@@ -25,6 +25,8 @@ public class AudioTab extends Tab {
 	protected String _newFileLoc;
 	private String _mediaLoc;
 	private JProgressBar _progressBar;
+	private JButton _cancel;
+	private testExtractAudio process;
 	
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
@@ -49,6 +51,16 @@ public class AudioTab extends Tab {
 		 _extractAudio = new JButton("Extract Audio");
 		_extractAudio.setEnabled(false);
 		
+		_cancel = new JButton("Cancel");
+		_cancel.setEnabled(false);
+		_cancel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				process.cancel();
+			}
+		});
+		
 		_extractAudio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				/*
@@ -70,12 +82,15 @@ public class AudioTab extends Tab {
 		horizontalBox.add(_progressBar);
 		_progressBar.setValue(0);
 		
+		this.add(_cancel);
+		
 	}
 	private void extractAudio() {
 		// TODO Auto-generated method stub
 		_progressBar.setValue(0);
-		testExtractAudio process = new testExtractAudio("avconv -i "+_mediaLoc+" "+_newFileLoc, this);
+		process = new testExtractAudio("avconv -i "+_mediaLoc+" "+_newFileLoc, this);
 		process.execute();
+		_cancel.setEnabled(true);
 		
 //		ExtractAudioProcess process = new ExtractAudioProcess();
 //		process.setCommand("avconv -i "+_mediaLoc+" "+_newFileLoc);
@@ -88,7 +103,6 @@ public class AudioTab extends Tab {
 	public void enableButtons() {
 		_extractAudio.setEnabled(true);
 		_progressBar.setIndeterminate(false);
-		
 	}
 
 	public void progressBarFinished() {

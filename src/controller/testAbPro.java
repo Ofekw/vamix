@@ -22,13 +22,14 @@ public abstract class testAbPro{
 	protected InputStream _stdout;
 	protected BufferedReader _stdoutBuffered;
 	protected int _status;
+	private boolean cancelled = false;
 
 	private ProcessWorker processWorker;
 
 	private class ProcessWorker extends  SwingWorker<Integer, String>{
 
 		private String _cmd;
-		
+
 		private ProcessWorker(String cmd){
 			_cmd = cmd;
 		}
@@ -54,7 +55,7 @@ public abstract class testAbPro{
 		}
 	}
 
-	public void destroy() {
+	private void destroy() {
 		/**
 		 * The abstract framework on which processes are built off.
 		 */
@@ -74,7 +75,7 @@ public abstract class testAbPro{
 	 */
 	protected void doDone(){}
 
-	
+
 	/**
 	 * Override to process command output in subclass if wanted
 	 * @param line
@@ -124,21 +125,27 @@ public abstract class testAbPro{
 	public void execute(){
 		processWorker.execute();
 	}
-	
+
 	/**
 	 * Call to cancel process
 	 */
 	public void cancel(){
+		destroy();
 		processWorker.cancel(true);
+		cancelled = true;
 	}
-	
+
 	public int get(){
-		try {
-			return processWorker.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+		if (cancelled){
+			return -1;
+		}else{
+			try {
+				return processWorker.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+			return -1;
 		}
-		return -1;
 	}
 
 	protected void setCommand(String cmd){
