@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 /**
@@ -20,14 +21,11 @@ public abstract class testAbPro{
 	protected Process _process = null;
 	protected InputStream _stdout;
 	protected BufferedReader _stdoutBuffered;
-	protected int _progress = 0;
-	protected String _output = "";
-	protected String _cmd;
 	protected int _status;
 
 	private ProcessWorker processWorker;
 
-	class ProcessWorker extends  SwingWorker<Integer, String>{
+	private class ProcessWorker extends  SwingWorker<Integer, String>{
 
 		private String _cmd;
 		
@@ -110,11 +108,14 @@ public abstract class testAbPro{
 			e.printStackTrace();
 		}
 		try {
-			return _process.waitFor();
+			_status = _process.waitFor();
+			destroy();
+			return _status;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			return -1;
 		}
+		destroy();
+		return -1;
 	}
 
 	/**
@@ -131,4 +132,16 @@ public abstract class testAbPro{
 		processWorker.cancel(true);
 	}
 	
+	public int get(){
+		try {
+			return processWorker.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	protected void setCommand(String cmd){
+		processWorker = new ProcessWorker(cmd);
+	}
 }

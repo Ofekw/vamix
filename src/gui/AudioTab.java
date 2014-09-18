@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import controller.ExtractAudioProcess;
 import controller.ShellProcess;
+import controller.testExtractAudio;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -73,10 +74,13 @@ public class AudioTab extends Tab {
 	private void extractAudio() {
 		// TODO Auto-generated method stub
 		_progressBar.setValue(0);
-		ExtractAudioProcess process = new ExtractAudioProcess();
-		process.setCommand("avconv -i "+_mediaLoc+" "+_newFileLoc);
-		process.setTab(this);
+		testExtractAudio process = new testExtractAudio("avconv -i "+_mediaLoc+" "+_newFileLoc, this);
 		process.execute();
+		
+//		ExtractAudioProcess process = new ExtractAudioProcess();
+//		process.setCommand("avconv -i "+_mediaLoc+" "+_newFileLoc);
+//		process.setTab(this);
+//		process.execute();
 		_progressBar.setIndeterminate(true);
 		
 	}
