@@ -56,7 +56,7 @@ public class MainGui {
 		editFrame = new JFrame();
 		ImageIcon img = new ImageIcon("V.png");
 		frame.setIconImage(img.getImage());
-		frame.setBounds(100, 100, 1000, 600);
+		frame.setBounds(100, 100, 1000, 650);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
@@ -68,13 +68,13 @@ public class MainGui {
 		
 		VideoPanel videoPanel = new VideoPanel(this);
 		horizontalBox.add(videoPanel);
-		videoPanel.setBackground(Color.BLACK);
+		//videoPanel.setBackground(Color.BLACK);
 		
 		Box horizontalBox_1 = Box.createHorizontalBox();
 		frame.getContentPane().add(horizontalBox_1);
 		
 		JPanel EditPanel = new JPanel();
-		EditPanel.setPreferredSize(new Dimension(1000, 150));
+		//EditPanel.setPreferredSize(new Dimension(1000, 150));
 		horizontalBox_1.add(EditPanel);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -83,11 +83,11 @@ public class MainGui {
 		_audio = new AudioTab(videoPanel);
 		JPanel Text = new JPanel();
 		_Video = new VideoTab(videoPanel,_audio);
-		tabbedPane.addTab("Video", null, _Video, null);
+		tabbedPane.addTab("Media", null, _Video, null);
 	
 		tabbedPane.addTab("Audio", null, _audio, null);
 		
-		Text.setPreferredSize(new Dimension(1000, 130));
+		//Text.setPreferredSize(new Dimension(1000, 150));
 		tabbedPane.addTab("Text", null, Text, null);
 	}
 

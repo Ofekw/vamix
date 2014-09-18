@@ -23,7 +23,6 @@ public class VideoTab extends Tab {
 	private JButton _btnBrowse;
 	private Box verticalBox;
 	private Box horizontalBox;
-	private Component verticalStrut_1;
 	private Component horizontalStrut;
 	private AudioTab _audio ;
 
@@ -33,17 +32,17 @@ public class VideoTab extends Tab {
 		}
 
 	protected void initialise() {
+		
+		Download download = new Download(this);
+		this.setPreferredSize(new Dimension(1000, 180));
 
 		verticalBox = Box.createVerticalBox();
 		add(verticalBox);
 
-		verticalStrut_1 = Box.createVerticalStrut(20);
-		verticalBox.add(verticalStrut_1);
-
 		horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 
-		JLabel lblVideoFile = new JLabel("Video File");
+		JLabel lblVideoFile = new JLabel("Playback Media File");
 		horizontalBox.add(lblVideoFile);
 
 		horizontalStrut = Box.createHorizontalStrut(20);
@@ -56,6 +55,7 @@ public class VideoTab extends Tab {
 
 		_btnBrowse = new JButton("Browse");
 		horizontalBox.add(_btnBrowse);
+		verticalBox.add(download);
 		_btnBrowse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

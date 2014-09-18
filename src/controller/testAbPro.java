@@ -55,7 +55,7 @@ public abstract class testAbPro{
 		}
 	}
 
-	private void destroy() {
+	public void destroy() {
 		/**
 		 * The abstract framework on which processes are built off.
 		 */
