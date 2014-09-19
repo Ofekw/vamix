@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import controller.ExtractAudioProcess;
 import controller.ShellProcess;
+import controller.testAbPro;
 import controller.testExtractAudio;
 
 import java.awt.Component;
@@ -17,6 +18,7 @@ import java.io.File;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
+@SuppressWarnings("serial")
 public class AudioTab extends Tab {
 	/*
 	 * This tab is used to extract the audio from the movie file, future implementation can include extracting specific time frame audio
@@ -26,7 +28,7 @@ public class AudioTab extends Tab {
 	private String _mediaLoc;
 	private JProgressBar _progressBar;
 	private JButton _cancel;
-	private testExtractAudio process;
+	private testAbPro process;
 	
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
