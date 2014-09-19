@@ -13,8 +13,8 @@ public class ReplaceAudioProcess extends testAbPro {
 	
 	private AudioTab _tab;
 	
-	public ReplaceAudioProcess(String cmd, AudioTab tab){
-		super.setCommand(cmd);
+	public ReplaceAudioProcess(String inputVideo, String inputAudio, String outputVideo, AudioTab tab){
+		super.setCommand(makeCommand(inputVideo, inputAudio, outputVideo));
 		_tab = tab;
 	}
 	
@@ -27,6 +27,10 @@ public class ReplaceAudioProcess extends testAbPro {
 									.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",
 											"Extract Error", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	private String makeCommand(String inputVideo, String inputAudio, String outputVideo){
+		return "avconv -i "+ inputVideo+" -i "+inputAudio+" -c:v copy -c:a copy -map 0:1 -map 1:0 "+outputVideo+".avi";
 	}
 	
 	
