@@ -65,7 +65,7 @@ public abstract class testAbPro{
 			_process.getOutputStream().close();
 			_process.getErrorStream().close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			//			e.printStackTrace();
 		}
 		_process.destroy();
 	}
@@ -106,12 +106,17 @@ public abstract class testAbPro{
 				processWorker.getPublish(line);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//			e.printStackTrace();
 		}
 		try {
-			_status = _process.waitFor();
-			destroy();
-			return _status;
+			if(!processWorker.isCancelled()){
+				_status = _process.waitFor();
+				destroy();
+				return _status;
+			}else{
+				destroy();
+				return -1;
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -122,21 +127,21 @@ public abstract class testAbPro{
 	/**
 	 * Call to start process
 	 */
-	public void execute(){
+	public final void execute(){
 		processWorker.execute();
 	}
 
 	/**
 	 * Call to cancel process
 	 */
-	public void cancel(){
+	public final void cancel(){
 		destroy();
 		processWorker.cancel(true);
 		cancelled = true;
 	}
 
-	public int get(){
-		if (cancelled){
+	public final int get(){
+		if (processWorker.isCancelled()){
 			return -1;
 		}else{
 			try {
@@ -148,7 +153,7 @@ public abstract class testAbPro{
 		}
 	}
 
-	protected void setCommand(String cmd){
+	protected final void setCommand(String cmd){
 		processWorker = new ProcessWorker(cmd);
 	}
 }
