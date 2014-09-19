@@ -12,8 +12,6 @@ import javax.swing.SwingWorker;
  * 
  * @author patrick
  *
- * @param <R>Return Value
- * @param <M>Mid term Result
  */
 public abstract class testAbPro{
 
@@ -22,7 +20,6 @@ public abstract class testAbPro{
 	protected InputStream _stdout;
 	protected BufferedReader _stdoutBuffered;
 	protected int _status;
-	private boolean cancelled = false;
 
 	private ProcessWorker processWorker;
 
@@ -137,7 +134,6 @@ public abstract class testAbPro{
 	public final void cancel(){
 		destroy();
 		processWorker.cancel(true);
-		cancelled = true;
 	}
 
 	public final int get(){
