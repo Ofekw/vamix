@@ -90,7 +90,7 @@ public class AudioTab extends Tab {
 	private void extractAudio() {
 		// TODO Auto-generated method stub
 		_progressBar.setValue(0);
-		process = new testExtractAudio("avconv -i "+_mediaLoc+" "+_newFileLoc, this);
+		process = new testExtractAudio(_mediaLoc,_newFileLoc, this);
 		process.execute();
 		_cancel.setEnabled(true);
 		
