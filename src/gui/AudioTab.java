@@ -58,6 +58,8 @@ public class AudioTab extends Tab {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				process.cancel();
+				enableButtons();
+				_progressBar.setValue(_progressBar.getMaximum());
 			}
 		});
 		
@@ -96,17 +98,22 @@ public class AudioTab extends Tab {
 //		process.setCommand("avconv -i "+_mediaLoc+" "+_newFileLoc);
 //		process.setTab(this);
 //		process.execute();
-		_progressBar.setIndeterminate(true);
+		disableButtons();
 		
 	}
 
 	public void enableButtons() {
 		_extractAudio.setEnabled(true);
-		_progressBar.setIndeterminate(false);
+//		_progressBar.setIndeterminate(false);
+	}
+	
+	private void disableButtons(){
+		_extractAudio.setEnabled(false);
+//		_progressBar.setIndeterminate(true);
 	}
 
 	public void progressBarFinished() {
-		_progressBar.setValue(100);
+		_progressBar.setValue(_progressBar.getMaximum());
 	}
 
 	private void saveDialog() {
@@ -173,4 +180,11 @@ public class AudioTab extends Tab {
 }
 	}
 
+	public void setProgressBarMax(int max){
+		_progressBar.setMaximum(max);
+	}
+	
+	public void setProgressValue(int value){
+		_progressBar.setValue(value);
+	}
 }
