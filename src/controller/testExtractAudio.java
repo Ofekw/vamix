@@ -10,6 +10,10 @@ public class testExtractAudio extends testAbPro {
 	
 	private AudioTab _tab;
 	
+	private static final int maxValue = 100000;
+	
+	private float totalTime;
+	
 	public testExtractAudio(String cmd, AudioTab tab){
 		super.setCommand(cmd);
 		_tab = tab;
@@ -34,8 +38,14 @@ public class testExtractAudio extends testAbPro {
 			time = Float.parseFloat(times[0])*360;
 			time += Float.parseFloat(times[1])*60;
 			time += Float.parseFloat(times[2]);
+			totalTime = time;
+			_tab.setProgressBarMax(maxValue);
+		}else if(line.contains("time")){
+			Float time = Float.parseFloat(line.substring(line.indexOf("time")+5, line.indexOf("b")));
+			Float value = time/totalTime*maxValue;
+			_tab.setProgressValue(value.intValue());
 		}
-		System.out.println(line);
+		//System.out.println(line);
 	}
 	
 
