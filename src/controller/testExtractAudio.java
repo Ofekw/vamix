@@ -1,21 +1,17 @@
 package controller;
 
-import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
-
 import gui.AudioTab;
 
 public class testExtractAudio extends testAbPro {
 	
 	private AudioTab _tab;
-	
 	private static final int maxValue = 100000;
-	
 	private float totalTime;
 	
-	public testExtractAudio(String cmd, AudioTab tab){
-		super.setCommand(cmd);
+	public testExtractAudio(String mediaLocation, String outputLocation, AudioTab tab){
+		super.setCommand(makeCommand(mediaLocation, outputLocation));
 		_tab = tab;
 	}
 	
@@ -47,6 +43,12 @@ public class testExtractAudio extends testAbPro {
 		}
 		//System.out.println(line);
 	}
+	
+	private String makeCommand(String input, String output){
+		return "avconv -i "+input+" "+output;
+	}
+	
+
 	
 
 }
