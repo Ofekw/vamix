@@ -3,6 +3,7 @@ package gui;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -43,11 +44,13 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 	private JPanel _parent;
 
 	public Download(JPanel parent) {
-this._parent = parent;
+		super(new FlowLayout(FlowLayout.LEFT));
+		this._parent = parent;
 		/**
 		 * Initializes the download pane.
 		 */
-this.setPreferredSize(new Dimension(1000, 180));
+		this.setPreferredSize(new Dimension(1000, 180));
+
 		Box verticalBox = Box.createVerticalBox();
 		add(verticalBox);
 
@@ -56,115 +59,115 @@ this.setPreferredSize(new Dimension(1000, 180));
 		// _shell = new ShellProcess();
 		JLabel lblMpUrl = new JLabel("Media URL:");
 		horizontalBox.add(lblMpUrl);
-		
-		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
+
+		Component rigidArea = Box.createRigidArea(new Dimension(50, 20));
 		horizontalBox.add(rigidArea);
 
 		_textField = new JTextField();
 		horizontalBox.add(_textField);
-		_textField.setColumns(30);
-		
-				_btnDownload = new JButton("Download");
-				horizontalBox.add(_btnDownload);
-				_btnDownload.setHorizontalAlignment(SwingConstants.LEFT);
-				
-						_btnPause = new JButton("Pause");
-						horizontalBox.add(_btnPause);
-						_btnPause.setEnabled(false);
-						
-								_btnCancel = new JButton("Cancel");
-								horizontalBox.add(_btnCancel);
-								_btnCancel.setEnabled(false);
-								_btnCancel.addMouseListener(new MouseAdapter() {
-									@Override
-									public void mouseClicked(MouseEvent e) {
-										if (_btnCancel.isEnabled()) {
-											_progressBar.setValue(0);
-											if (_shell != null) {
-												getStatusLabel().setText("Status: Cancelled");
-												_shell.destroy();
-												_shell.cancel(true);
-												ShellProcess.command("rm " + _filePath);
-												toggleButtonsCancelled();
+		_textField.setColumns(49);
 
-												_shell = null;
-											}
-										}
-									}
-								});
-						_btnPause.addMouseListener(new MouseAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								if (_btnPause.isEnabled()) {
-									if (_shell != null) {
-										getStatusLabel().setText("Status: Paused");
-										_shell.destroy();
-										_shell.cancel(true);
-										toggleButtonsCancelled();
-										_shell = null;
-									}
-								}
-							}
-						});
-				_btnDownload.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						if (_btnDownload.isEnabled()) {
-							toggleButtonsDownload();
-							/**
-							 * Checks that file is open-source from the user.
-							 */
-							setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-							try {
-								_inputUrl = _textField.getText();
-								if (!_inputUrl.isEmpty()) {
-									Object[] options = { "Yes", "No" };
-									_openSource = JOptionPane.showOptionDialog(null,
-											"Is this song open source?", "Warning",
+		_btnDownload = new JButton("Download");
+		horizontalBox.add(_btnDownload);
+		_btnDownload.setHorizontalAlignment(SwingConstants.LEFT);
 
-											JOptionPane.YES_NO_OPTION,
-											JOptionPane.QUESTION_MESSAGE,
+		_btnPause = new JButton("Pause");
+		horizontalBox.add(_btnPause);
+		_btnPause.setEnabled(false);
 
-											null, options, options[0]);
+		_btnCancel = new JButton("Cancel");
+		horizontalBox.add(_btnCancel);
+		_btnCancel.setEnabled(false);
+		_btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (_btnCancel.isEnabled()) {
+					_progressBar.setValue(0);
+					if (_shell != null) {
+						getStatusLabel().setText("Status: Cancelled");
+						_shell.destroy();
+						_shell.cancel(true);
+						ShellProcess.command("rm " + _filePath);
+						toggleButtonsCancelled();
 
-									if (_openSource == 0) {
-										_openSource = 1;
-										_fileLoc = null;
-										/**
-										 * Obtains a save directory from the user
-										 */
-										JFileChooser dirChooser = new JFileChooser();
-										dirChooser
-												.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-										dirChooser
-												.setDialogTitle("Select File Location");
-										int returnValue = dirChooser
-												.showOpenDialog(null);
-										if (returnValue == JFileChooser.APPROVE_OPTION) {
-											File selectedFile = dirChooser
-													.getSelectedFile();
-											_fileLoc = (selectedFile.getAbsolutePath());
-										} else if (returnValue == JFileChooser.CANCEL_OPTION) {
-											toggleButtonsCancelled();
-											return;
-										}
-										fileName(_inputUrl);
-									} else {
-										_statusLabel
-												.setText("Status: Song must be open-source");
-										toggleButtonsCancelled();
-									}
-								} else {
-									toggleButtonsCancelled();
-									_statusLabel.setText("Status: Invalid URL");
-									;
-								}
-							} catch (Exception m) {
-								m.printStackTrace();
-							}
-						}
+						_shell = null;
 					}
-				});
+				}
+			}
+		});
+		_btnPause.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (_btnPause.isEnabled()) {
+					if (_shell != null) {
+						getStatusLabel().setText("Status: Paused");
+						_shell.destroy();
+						_shell.cancel(true);
+						toggleButtonsCancelled();
+						_shell = null;
+					}
+				}
+			}
+		});
+		_btnDownload.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (_btnDownload.isEnabled()) {
+					toggleButtonsDownload();
+					/**
+					 * Checks that file is open-source from the user.
+					 */
+					setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					try {
+						_inputUrl = _textField.getText();
+						if (!_inputUrl.isEmpty()) {
+							Object[] options = { "Yes", "No" };
+							_openSource = JOptionPane.showOptionDialog(null,
+									"Is this song open source?", "Warning",
+
+									JOptionPane.YES_NO_OPTION,
+									JOptionPane.QUESTION_MESSAGE,
+
+									null, options, options[0]);
+
+							if (_openSource == 0) {
+								_openSource = 1;
+								_fileLoc = null;
+								/**
+								 * Obtains a save directory from the user
+								 */
+								JFileChooser dirChooser = new JFileChooser();
+								dirChooser
+								.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+								dirChooser
+								.setDialogTitle("Select File Location");
+								int returnValue = dirChooser
+										.showOpenDialog(null);
+								if (returnValue == JFileChooser.APPROVE_OPTION) {
+									File selectedFile = dirChooser
+											.getSelectedFile();
+									_fileLoc = (selectedFile.getAbsolutePath());
+								} else if (returnValue == JFileChooser.CANCEL_OPTION) {
+									toggleButtonsCancelled();
+									return;
+								}
+								fileName(_inputUrl);
+							} else {
+								_statusLabel
+								.setText("Status: Song must be open-source");
+								toggleButtonsCancelled();
+							}
+						} else {
+							toggleButtonsCancelled();
+							_statusLabel.setText("Status: Invalid URL");
+							;
+						}
+					} catch (Exception m) {
+						m.printStackTrace();
+					}
+				}
+			}
+		});
 
 		Box horizontalBox_1 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_1);
@@ -180,9 +183,6 @@ this.setPreferredSize(new Dimension(1000, 180));
 
 		Box horizontalBox_4 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_4);
-
-		Component verticalStrut = Box.createVerticalStrut(20);
-		horizontalBox_4.add(verticalStrut);
 
 		Box horizontalBox_3 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_3);
@@ -238,12 +238,12 @@ this.setPreferredSize(new Dimension(1000, 180));
 								"The file: "
 										+ _fileName
 										+ " already exists in the directory, would you like to overwrite it ",
-								"Overwrite?",
+										"Overwrite?",
 
-								JOptionPane.YES_NO_OPTION,
-								JOptionPane.INFORMATION_MESSAGE,
+										JOptionPane.YES_NO_OPTION,
+										JOptionPane.INFORMATION_MESSAGE,
 
-								null, options, options[0]);
+										null, options, options[0]);
 
 				if (_userResponse == 0) {
 					_progressBar.setValue(0);
@@ -264,12 +264,12 @@ this.setPreferredSize(new Dimension(1000, 180));
 								"This file: "
 										+ _fileName
 										+ " has been partially downloaded. Would you like to restart or continue the download?",
-								"Restart/Continue",
+										"Restart/Continue",
 
-								JOptionPane.YES_NO_OPTION,
-								JOptionPane.INFORMATION_MESSAGE,
+										JOptionPane.YES_NO_OPTION,
+										JOptionPane.INFORMATION_MESSAGE,
 
-								null, options, options[0]);
+										null, options, options[0]);
 
 				if (_userResponse == 0) {
 					_progressBar.setValue(0);

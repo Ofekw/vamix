@@ -1,18 +1,17 @@
 package gui;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import java.awt.Component;
-import javax.swing.Box;
 
 public class VideoTab extends Tab {
 	/**
@@ -37,21 +36,21 @@ public class VideoTab extends Tab {
 		this.setPreferredSize(new Dimension(1000, 180));
 
 		verticalBox = Box.createVerticalBox();
+		verticalBox.setPreferredSize(new Dimension(980,180));
 		add(verticalBox);
 
 		horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 
-		JLabel lblVideoFile = new JLabel("Playback Media File");
+		JLabel lblVideoFile = new JLabel("Playback Media:");
 		horizontalBox.add(lblVideoFile);
 
 		horizontalStrut = Box.createHorizontalStrut(20);
 		horizontalBox.add(horizontalStrut);
 
 		_txtVideoLoc = new JTextField();
-		_txtVideoLoc.setEditable(false);
 		horizontalBox.add(_txtVideoLoc);
-		_txtVideoLoc.setColumns(30);
+		_txtVideoLoc.setPreferredSize(new Dimension(5,10));
 
 		_btnBrowse = new JButton("Browse");
 		horizontalBox.add(_btnBrowse);
