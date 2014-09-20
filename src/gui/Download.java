@@ -123,7 +123,7 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 						if (!_inputUrl.isEmpty()) {
 							Object[] options = { "Yes", "No" };
 							_openSource = JOptionPane.showOptionDialog(null,
-									"Is this song open source?", "Warning",
+									"Is this media file open source?", "Warning",
 
 									JOptionPane.YES_NO_OPTION,
 									JOptionPane.QUESTION_MESSAGE,

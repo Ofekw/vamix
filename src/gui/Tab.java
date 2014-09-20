@@ -15,7 +15,7 @@ public abstract class Tab extends JPanel{
 	protected VideoPanel _videoPanel;
 	
 	public Tab (VideoPanel panel){
-		//super(new FlowLayout(FlowLayout.LEFT));
+		super(new FlowLayout(FlowLayout.LEFT));
 		this.setPreferredSize(new Dimension(1000, 130));
 		_videoPanel = panel;
 		initialise();

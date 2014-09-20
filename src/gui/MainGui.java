@@ -18,8 +18,9 @@ public class MainGui {
 	
 	private JFrame frame;
 	private JFrame editFrame;
-	private VideoTab _Video;
+	private VideoTab _video;
 	private AudioTab _audio;
+	private TextTab _text;
 
 	public static void main(String[] args){
 		
@@ -81,17 +82,14 @@ public class MainGui {
 		EditPanel.add(tabbedPane);
 		
 		_audio = new AudioTab(videoPanel);
-		JPanel Text = new JPanel();
-		_Video = new VideoTab(videoPanel,_audio);
-		tabbedPane.addTab("Media", null, _Video, null);
-	
+		_text = new TextTab(videoPanel);
+		_video = new VideoTab(videoPanel,_audio);
+		tabbedPane.addTab("Media", null, _video, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
-		
-		//Text.setPreferredSize(new Dimension(1000, 150));
-		tabbedPane.addTab("Text", null, Text, null);
+		tabbedPane.addTab("Text", null, _text, null);
 	}
 
 	public VideoTab getVideo() {
-		return _Video;
+		return _video;
 	}
 }
