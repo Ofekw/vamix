@@ -4,10 +4,14 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import java.awt.Component;
+
+import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.JRadioButton;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class TextTab extends Tab {
 	private JTextField textField;
@@ -25,14 +29,14 @@ public class TextTab extends Tab {
 this.setPreferredSize(new Dimension(1000, 130));
 		
 		Box verticalBox = Box.createVerticalBox();
-		//verticalBox.setPreferredSize(new Dimension(980,80));
+		verticalBox.setPreferredSize(new Dimension(980,110));
 		
 		add(verticalBox);
 		
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 		
-		JLabel lblOpeningText = new JLabel("Opening Text");
+		JLabel lblOpeningText = new JLabel("Opening Text:");
 		horizontalBox.add(lblOpeningText);
 		
 		textField = new JTextField();
@@ -45,7 +49,7 @@ this.setPreferredSize(new Dimension(1000, 130));
 		Box horizontalBox_1 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_1);
 		
-		JLabel lblClosingText = new JLabel("Closing Text");
+		JLabel lblClosingText = new JLabel("Closing Text:   ");
 		horizontalBox_1.add(lblClosingText);
 		
 		textField_1 = new JTextField();
@@ -62,21 +66,40 @@ this.setPreferredSize(new Dimension(1000, 130));
 		horizontalBox_2.add(lblFontSize);
 		
 		JSpinner spinner = new JSpinner();
+		spinner.setMaximumSize(new Dimension(20, 30));
 		spinner.setModel(new SpinnerNumberModel(8, 8, 48, 1));
+		//spinner.setPreferredSize(new Dimension(2,1));
 		horizontalBox_2.add(spinner);
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("Font 1");
-		horizontalBox_2.add(rdbtnNewRadioButton);
+		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
+		horizontalBox_2.add(rigidArea);
 		
-		JRadioButton rdbtnFont = new JRadioButton("Font 2");
-		horizontalBox_2.add(rdbtnFont);
+		JLabel lblNewLabel = new JLabel("Font Colour: ");
+		horizontalBox_2.add(lblNewLabel);
 		
-		JRadioButton rdbtnFont_1 = new JRadioButton("Font 3");
-		horizontalBox_2.add(rdbtnFont_1);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setToolTipText("Font Colour");
+		comboBox.setMaximumSize(new Dimension(25, 32767));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Black", "White"}));
+		horizontalBox_2.add(comboBox);
 		
-		JRadioButton rdbtnFont_2 = new JRadioButton("Font 4");
-		horizontalBox_2.add(rdbtnFont_2);
+		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
+		horizontalBox_2.add(rigidArea_1);
+		
+		JLabel lblFontType = new JLabel("Font Type: ");
+		horizontalBox_2.add(lblFontType);
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setMaximumSize(new Dimension(40, 32767));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Font 1", "Font 2", "Font 3", "Font 4"}));
+		comboBox_1.setToolTipText("Font Type");
+		horizontalBox_2.add(comboBox_1);
+		
+		Component horizontalGlue = Box.createHorizontalGlue();
+		horizontalBox_2.add(horizontalGlue);
+		
+		JButton apply = new JButton("Apply Changes");
+		horizontalBox_2.add(apply);
 		
 	}
-
 }
