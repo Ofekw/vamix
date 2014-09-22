@@ -26,12 +26,14 @@ public class ReplaceAudioProcess extends testAbPro {
 							JOptionPane
 									.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",
 											"Extract Error", JOptionPane.ERROR_MESSAGE);
+		}else if (get() >0){
+			JOptionPane
+			.showMessageDialog(_tab,"Process cancelled",
+					"Extract Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
 	private String makeCommand(String inputVideo, String inputAudio, String outputVideo){
 		return "avconv -i "+ inputVideo+" -i "+inputAudio+" -c:v copy -c:a copy -map 0:1 -map 1:0 "+outputVideo+".avi";
 	}
-	
-	
 }

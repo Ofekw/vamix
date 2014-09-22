@@ -31,6 +31,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
 
+
 @SuppressWarnings("serial")
 public class VideoPanel extends JPanel {
 

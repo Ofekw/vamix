@@ -5,7 +5,9 @@ import javax.swing.JButton;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
+import controller.CheckAudioFile;
 import controller.ExtractAudioProcess;
 import controller.ShellProcess;
 import controller.testAbPro;
@@ -31,7 +33,13 @@ public class AudioTab extends Tab {
 	private testAbPro process;
 	private JButton _replace;
 	private JProgressBar _replaceProgressBar;
-	
+	private JTextField _inputVideo;
+	private JTextField _inputAudio;
+	private JTextField _outputVideo;
+	private JButton _inputVideoSelect;
+	private JButton _inputAudioSelect;
+	private JButton _outputSelect;
+
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
 	}
@@ -45,20 +53,20 @@ public class AudioTab extends Tab {
 		this.setPreferredSize(new Dimension(1000, 130));
 		Box verticalBox = Box.createVerticalBox();
 		add(verticalBox);
-		
+
 		Component verticalStrut = Box.createVerticalStrut(20);
 		verticalBox.add(verticalStrut);
-		
+
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
-		
-		 _extractAudio = new JButton("Extract Audio");
+
+		_extractAudio = new JButton("Extract Audio");
 		_extractAudio.setEnabled(false);
-		
+
 		_cancel = new JButton("Cancel");
 		_cancel.setEnabled(false);
 		_cancel.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				process.cancel();
@@ -66,7 +74,7 @@ public class AudioTab extends Tab {
 				_extractProgressBar.setValue(_extractProgressBar.getMaximum());
 			}
 		});
-		
+
 		_extractAudio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				/*
@@ -78,22 +86,59 @@ public class AudioTab extends Tab {
 				saveDialog();
 			}
 		});
-		
+
 		_replaceProgressBar = new JProgressBar();
 		_replace = new JButton("Replace Audio");
-		
+		_inputVideo = new JTextField();
+		_inputVideoSelect = new JButton("Select Video");
+		_inputVideoSelect.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser
+				.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				int returnValue = fileChooser.showOpenDialog(null);
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fileChooser.getSelectedFile();
+					if ((_inputVideo == null || _inputVideo.getText().isEmpty()) || !fileExists(_inputVideo) ) {
+						filePathInvalid();
+					}else{
+						CheckAudioFile check = new CheckAudioFile(selectedFile.getAbsolutePath());
+						if (!check.getResult()){
+							JOptionPane
+							.showMessageDialog(_inputVideo,"Invalid Video File",
+									"Extract Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
+					_inputVideo.setText(selectedFile.getAbsolutePath());
+				}
+			}
+		});
+		_inputAudio = new JTextField();
+		_inputAudioSelect = new JButton("Select Audio");
+		_outputVideo = new JTextField();
+		_outputSelect = new JButton();
+
 		horizontalBox.add(_extractAudio);
-		
+
 		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox.add(rigidArea);
-		
+
 		_extractProgressBar = new JProgressBar();
 		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
 		horizontalBox.add(_extractProgressBar);
 		_extractProgressBar.setValue(0);
-		
+
 		this.add(_cancel);
-		
+		this.add(_replace);
+		this.add(_replaceProgressBar);
+		this.add(_inputVideo);
+		this.add(_inputVideoSelect);
+		this.add(_inputAudio);
+		this.add(_outputVideo);
+
 	}
 	private void extractAudio() {
 		// TODO Auto-generated method stub
@@ -101,23 +146,23 @@ public class AudioTab extends Tab {
 		process = new testExtractAudio(_mediaLoc,_newFileLoc, this);
 		process.execute();
 		_cancel.setEnabled(true);
-		
-//		ExtractAudioProcess process = new ExtractAudioProcess();
-//		process.setCommand("avconv -i "+_mediaLoc+" "+_newFileLoc);
-//		process.setTab(this);
-//		process.execute();
+
+		//		ExtractAudioProcess process = new ExtractAudioProcess();
+		//		process.setCommand("avconv -i "+_mediaLoc+" "+_newFileLoc);
+		//		process.setTab(this);
+		//		process.execute();
 		disableButtons();
-		
+
 	}
 
 	public void enableButtons() {
 		_extractAudio.setEnabled(true);
-//		_progressBar.setIndeterminate(false);
+		//		_progressBar.setIndeterminate(false);
 	}
-	
+
 	private void disableButtons(){
 		_extractAudio.setEnabled(false);
-//		_progressBar.setIndeterminate(true);
+		//		_progressBar.setIndeterminate(true);
 	}
 
 	public void progressBarFinished() {
@@ -128,12 +173,12 @@ public class AudioTab extends Tab {
 		JFileChooser fileChooser = new JFileChooser() {
 			@Override
 			public void approveSelection() {
-				
+
 				File f = getSelectedFile();
 				/*
 				 * Makes sure the filename ends with extension .mp3 when checking for overwrite
 				 */
-				
+
 				if (!f.getAbsolutePath()
 						.endsWith(".mp3")) {
 					f = new File(getSelectedFile()
@@ -149,7 +194,7 @@ public class AudioTab extends Tab {
 					switch (result) {
 					case JOptionPane.YES_OPTION:
 						ShellProcess
-								.command("rm -f " + f.getAbsolutePath());
+						.command("rm -f " + f.getAbsolutePath());
 						super.approveSelection();
 						return;
 					case JOptionPane.NO_OPTION:
@@ -177,7 +222,7 @@ public class AudioTab extends Tab {
 			/*
 			 * Makes sure the filename ends with extension .mp3
 			 */
-			
+
 			if (!fileChooser.getSelectedFile().getAbsolutePath()
 					.endsWith(".mp3")) {
 				fileToSave = new File(fileChooser.getSelectedFile()
@@ -185,14 +230,28 @@ public class AudioTab extends Tab {
 			}
 			_newFileLoc=fileToSave.getAbsolutePath();
 			extractAudio();
-}
+		}
 	}
 
 	public void setProgressBarMax(int max){
 		_extractProgressBar.setMaximum(max);
 	}
-	
+
 	public void setProgressValue(int value){
 		_extractProgressBar.setValue(value);
+	}
+
+	private boolean fileExists(JTextField field) {
+		File f = new File(field.getText());
+		if (f.exists()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void filePathInvalid() {
+		JOptionPane.showMessageDialog(this, "File path is invalid",
+				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
 }
