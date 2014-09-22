@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 
 import controller.CheckFile;
 import controller.ExtractAudioProcess;
+import controller.ReplaceAudioProcess;
 import controller.ShellProcess;
 import controller.testAbPro;
 import controller.testExtractAudio;
@@ -38,7 +39,6 @@ public class AudioTab extends Tab {
 	private JTextField _outputVideo;
 	private JButton _inputVideoSelect;
 	private JButton _inputAudioSelect;
-	private JButton _outputSelect;
 	private Box horizontalBox_1;
 	private Box horizontalBox_2;
 
@@ -77,7 +77,6 @@ public class AudioTab extends Tab {
 			}
 		});
 		_inputAudioSelect = new JButton("Select Audio");
-		_outputSelect = new JButton();
 
 		horizontalBox.add(_extractAudio);
 
@@ -88,34 +87,43 @@ public class AudioTab extends Tab {
 		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
 		horizontalBox.add(_extractProgressBar);
 		_extractProgressBar.setValue(0);
-		
-				_cancel = new JButton("Cancel");
-				horizontalBox.add(_cancel);
-				_cancel.setEnabled(false);
-				_cancel.addActionListener(new ActionListener() {
 
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						process.cancel();
-						enableButtons();
-						_extractProgressBar.setValue(_extractProgressBar.getMaximum());
-					}
-				});
-		
+		_cancel = new JButton("Cancel");
+		horizontalBox.add(_cancel);
+		_cancel.setEnabled(false);
+		_cancel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				process.cancel();
+				enableExtractButtons();
+				_extractProgressBar.setValue(_extractProgressBar.getMaximum());
+			}
+		});
+
 		horizontalBox_1 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_1);
-				_replace = new JButton("Replace Audio");
-				horizontalBox_1.add(_replace);
-				
-						_replaceProgressBar = new JProgressBar();
-						horizontalBox_1.add(_replaceProgressBar);
-		
+		_replace = new JButton("Replace Audio");
+		_replace.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				replaceAudio();
+			}
+		});
+		horizontalBox_1.add(_replace);
+
+		_replaceProgressBar = new JProgressBar();
+		horizontalBox_1.add(_replaceProgressBar);
+
 		horizontalBox_2 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_2);
 		_inputVideo = new JTextField();
+		_inputVideo.setEditable(false);
 		horizontalBox_2.add(_inputVideo);
-		
+
 		_inputAudio = new JTextField();
+		_inputAudio.setEditable(false);
 		horizontalBox_2.add(_inputAudio);
 		_outputVideo = new JTextField();
 		horizontalBox_2.add(_outputVideo);
@@ -125,28 +133,18 @@ public class AudioTab extends Tab {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser
-				.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				int returnValue = fileChooser.showOpenDialog(null);
-				if (returnValue == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = fileChooser.getSelectedFile();
-					if ((selectedFile == null || selectedFile.getAbsolutePath().isEmpty()) || !fileExists(selectedFile)) {
-						filePathInvalid();
-					}else{
-						CheckFile check = new CheckFile(selectedFile.getAbsolutePath(), true);
-						if (!check.checkFileType()){
-							JOptionPane
-							.showMessageDialog(_inputVideo,"Invalid Video File",
-									"Extract Error", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-					}
-					_inputVideo.setText(selectedFile.getAbsolutePath());
-				}
+				fileChooser(_inputVideo, true);
 			}
 		});
+		_inputAudioSelect = new JButton("Select Audio");
+		horizontalBox_2.add(_inputAudioSelect);
+		_inputAudioSelect.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				fileChooser(_inputAudio, false);
+			}
+		});
 	}
 	private void extractAudio() {
 		// TODO Auto-generated method stub
@@ -154,21 +152,84 @@ public class AudioTab extends Tab {
 		process = new testExtractAudio(_mediaLoc,_newFileLoc, this);
 		process.execute();
 		_cancel.setEnabled(true);
-
-		//		ExtractAudioProcess process = new ExtractAudioProcess();
-		//		process.setCommand("avconv -i "+_mediaLoc+" "+_newFileLoc);
-		//		process.setTab(this);
-		//		process.execute();
-		disableButtons();
+		disableExtractButtons();
 
 	}
+	
+	private void replaceAudio(){
+		JFileChooser fileChooser = new JFileChooser() {
+			@Override
+			public void approveSelection() {
 
-	public void enableButtons() {
+				File f = getSelectedFile();
+				/*
+				 * Makes sure the filename ends with extension .mp3 when checking for overwrite
+				 */
+
+				if (!f.getAbsolutePath()
+						.endsWith(".mp4")) {
+					f = new File(getSelectedFile()
+							+ ".mp4");
+				}
+				if (f.exists() && getDialogType() == SAVE_DIALOG) {
+					int result = JOptionPane
+							.showConfirmDialog(
+									this,
+									"The file exists, overwrite?",
+									"Existing file",
+									JOptionPane.YES_NO_OPTION);
+					switch (result) {
+					case JOptionPane.YES_OPTION:
+						ShellProcess
+						.command("rm -f " + f.getAbsolutePath());
+						super.approveSelection();
+						return;
+					case JOptionPane.NO_OPTION:
+						cancelSelection();
+						return;
+					case JOptionPane.CLOSED_OPTION:
+						return;
+					case JOptionPane.CANCEL_OPTION:
+						cancelSelection();
+						return;
+					}
+				}
+				super.approveSelection();
+			}
+		};
+
+		fileChooser.setDialogTitle("Specify where to save audio");
+
+		int userSelection = fileChooser.showSaveDialog(this);
+		File fileToSave = null;
+		if (userSelection == JFileChooser.OPEN_DIALOG) {
+			fileToSave = fileChooser.getSelectedFile();
+			/*
+			 * Makes sure the filename ends with extension .mp3
+			 */
+
+			if (!fileChooser.getSelectedFile().getAbsolutePath()
+					.endsWith(".mp4")) {
+				fileToSave = new File(fileChooser.getSelectedFile()
+						+ ".mp4");
+			}
+			_newFileLoc=fileToSave.getAbsolutePath();
+			process = new 
+					ReplaceAudioProcess(_inputVideo.getText(), _inputAudio.getText(), 
+							_outputVideo.getText(), this);
+			process.execute();
+			_cancel.setEnabled(true);
+			_replaceProgressBar.setIndeterminate(true);
+		}
+		
+	}
+
+	public void enableExtractButtons() {
 		_extractAudio.setEnabled(true);
 		//		_progressBar.setIndeterminate(false);
 	}
 
-	private void disableButtons(){
+	private void disableExtractButtons(){
 		_extractAudio.setEnabled(false);
 		//		_progressBar.setIndeterminate(true);
 	}
@@ -223,8 +284,6 @@ public class AudioTab extends Tab {
 
 		int userSelection = fileChooser.showSaveDialog(this);
 		File fileToSave = null;
-		String startTime = null;
-		String duration = null;
 		if (userSelection == JFileChooser.OPEN_DIALOG) {
 			fileToSave = fileChooser.getSelectedFile();
 			/*
@@ -260,5 +319,28 @@ public class AudioTab extends Tab {
 	private void filePathInvalid() {
 		JOptionPane.showMessageDialog(this, "File path is invalid",
 				"Location Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void fileChooser(JTextField field, boolean checkVid){
+
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser
+		.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		int returnValue = fileChooser.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = fileChooser.getSelectedFile();
+			if ((selectedFile == null || selectedFile.getAbsolutePath().isEmpty()) || !fileExists(selectedFile)) {
+				filePathInvalid();
+			}else{
+				CheckFile check = new CheckFile(selectedFile.getAbsolutePath(), checkVid);
+				if (!check.checkFileType()){
+					JOptionPane
+					.showMessageDialog(field,"Invalid Video File",
+							"Extract Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+			field.setText(selectedFile.getAbsolutePath());
+		}
 	}
 }

@@ -49,7 +49,7 @@ public class ExtractAudioProcess extends AbsProcess {
 
 	protected void doDone() {
 	if (this.getExitStatus() == 0) {
-		_tab.enableButtons();
+		_tab.enableExtractButtons();
 		_tab.progressBarFinished();
 	} else if (this.getExitStatus() > 0) {
 						JOptionPane

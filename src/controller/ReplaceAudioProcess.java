@@ -20,7 +20,7 @@ public class ReplaceAudioProcess extends testAbPro {
 	
 	protected void doDone() {
 		if (get() == 0) {
-			_tab.enableButtons();
+			_tab.enableExtractButtons();
 			_tab.progressBarFinished();
 		} else if (get() > 0) {
 							JOptionPane
@@ -31,6 +31,10 @@ public class ReplaceAudioProcess extends testAbPro {
 			.showMessageDialog(_tab,"Process cancelled",
 					"Extract Error", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	protected void doProcess(String line){
+		System.out.println(line);
 	}
 	
 	private String makeCommand(String inputVideo, String inputAudio, String outputVideo){

@@ -17,7 +17,7 @@ public class testExtractAudio extends testAbPro {
 	
 	protected void doDone() {
 		if (get() == 0) {
-			_tab.enableButtons();
+			_tab.enableExtractButtons();
 			_tab.progressBarFinished();
 		} else if (get() > 0) {
 							JOptionPane

@@ -78,7 +78,7 @@ public class VideoTab extends Tab {
 						 * need to add valid files checks here
 						 */
 						_videoPanel.setMedia(_txtVideoLoc.getText());
-						_audio.enableButtons();
+						_audio.enableExtractButtons();
 						_audio.setMediaLoc(_txtVideoLoc.getText());
 					}
 				}
