@@ -26,9 +26,11 @@ public class AudioTab extends Tab {
 	private JButton _extractAudio;
 	protected String _newFileLoc;
 	private String _mediaLoc;
-	private JProgressBar _progressBar;
+	private JProgressBar _extractProgressBar;
 	private JButton _cancel;
 	private testAbPro process;
+	private JButton _replace;
+	private JProgressBar _replaceProgressBar;
 	
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
@@ -61,7 +63,7 @@ public class AudioTab extends Tab {
 			public void actionPerformed(ActionEvent arg0) {
 				process.cancel();
 				enableButtons();
-				_progressBar.setValue(_progressBar.getMaximum());
+				_extractProgressBar.setValue(_extractProgressBar.getMaximum());
 			}
 		});
 		
@@ -76,22 +78,26 @@ public class AudioTab extends Tab {
 				saveDialog();
 			}
 		});
+		
+		_replaceProgressBar = new JProgressBar();
+		_replace = new JButton("Replace Audio");
+		
 		horizontalBox.add(_extractAudio);
 		
 		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox.add(rigidArea);
 		
-		_progressBar = new JProgressBar();
-		_progressBar.setPreferredSize(new Dimension(300, 10));
-		horizontalBox.add(_progressBar);
-		_progressBar.setValue(0);
+		_extractProgressBar = new JProgressBar();
+		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
+		horizontalBox.add(_extractProgressBar);
+		_extractProgressBar.setValue(0);
 		
 		this.add(_cancel);
 		
 	}
 	private void extractAudio() {
 		// TODO Auto-generated method stub
-		_progressBar.setValue(0);
+		_extractProgressBar.setValue(0);
 		process = new testExtractAudio(_mediaLoc,_newFileLoc, this);
 		process.execute();
 		_cancel.setEnabled(true);
@@ -115,7 +121,7 @@ public class AudioTab extends Tab {
 	}
 
 	public void progressBarFinished() {
-		_progressBar.setValue(_progressBar.getMaximum());
+		_extractProgressBar.setValue(_extractProgressBar.getMaximum());
 	}
 
 	private void saveDialog() {
@@ -183,10 +189,10 @@ public class AudioTab extends Tab {
 	}
 
 	public void setProgressBarMax(int max){
-		_progressBar.setMaximum(max);
+		_extractProgressBar.setMaximum(max);
 	}
 	
 	public void setProgressValue(int value){
-		_progressBar.setValue(value);
+		_extractProgressBar.setValue(value);
 	}
 }
