@@ -31,21 +31,29 @@ import java.awt.event.MouseEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
+import controller.videoIntroProcess;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+
 public class TextTab extends Tab {
 	private JTextField textFieldIntro;
 	private JTextField textFieldEnd;
-	private JTextPane tPane;
 	private JTextPane txtPreview;
 	private JSpinner fontSize;
 	private JComboBox fontColour;
 	private JComboBox fontType;
 	private Color _colourSelect = Color.BLACK;
 	private JButton _btnColourSelect;
+	private TextTab _tab;
 
 	public TextTab(VideoPanel panel) {
 
 		super(panel);
-
+		this._tab=this;
 
 	}
 
@@ -60,6 +68,10 @@ public class TextTab extends Tab {
 
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
+		
+		txtPreview = new JTextPane();
+		txtPreview.setEditable(false);
+		txtPreview.setText("Text preview");
 
 		JLabel lblOpeningText = new JLabel("Opening Text:");
 		horizontalBox.add(lblOpeningText);
@@ -90,7 +102,7 @@ public class TextTab extends Tab {
 		textFieldEnd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				String text = textFieldIntro.getText();
+				String text = textFieldEnd.getText();
 				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());    
 				txtPreview.selectAll();
 			}
@@ -110,9 +122,9 @@ public class TextTab extends Tab {
 		fontSize = new JSpinner();
 		fontSize.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				String text = textFieldIntro.getText();
-                SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());    
-                txtPreview.selectAll();
+				String text = txtPreview.getText();
+				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());    
+				txtPreview.selectAll();
 			}
 		});
 		fontSize.setMaximumSize(new Dimension(20, 30));
@@ -160,12 +172,30 @@ public class TextTab extends Tab {
 		horizontalBox_2.add(lblFontType);
 
 		fontType = new JComboBox();
+		
+		
 		fontType.setMaximumSize(new Dimension(40, 32767));
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String []fontFamilies = ge.getAvailableFontFamilyNames();
 
 		fontType.setModel(new DefaultComboBoxModel(fontFamilies));
 		fontType.setToolTipText("Font Type");
+		
+//		fontType.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mousePressed(MouseEvent arg0) {
+//				String text = txtPreview.getText();
+//				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());
+//			}
+//		});
+		
+		fontType.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				String text = txtPreview.getText();
+				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());
+			}
+		});
+
 		horizontalBox_2.add(fontType);
 		EmptyBorder eb = new EmptyBorder(new Insets(10, 10, 10, 10));
 
@@ -173,16 +203,20 @@ public class TextTab extends Tab {
 		horizontalBox_2.add(horizontalGlue);
 
 		JButton apply = new JButton("Apply Changes");
+		apply.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				createProcess();	
+			}
+		});
 		horizontalBox_2.add(apply);
 
 		Box horizontalBox_3 = Box.createHorizontalBox();
 		horizontalBox_3.setPreferredSize(new Dimension(980, 600));
 		verticalBox.add(horizontalBox_3);
 
-		txtPreview = new JTextPane();
-		txtPreview.setEditable(false);
+		
 		horizontalBox_3.add(txtPreview);
-		txtPreview.setText("Text preview");
 
 		JScrollPane scrollBar = new JScrollPane(txtPreview);
 		//scrollBar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR);
@@ -196,6 +230,10 @@ public class TextTab extends Tab {
 
 		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.WHITE);
 		System.out.println("The selected color was:" + _colourSelect);
+		
+		String text = txtPreview.getText();
+		SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());
+		
 
 	}
 
@@ -222,5 +260,11 @@ public class TextTab extends Tab {
 
 	private Color getUserColour() {
 		return _colourSelect;
+	}
+	
+	private void createProcess() {
+		System.out.println(_colourSelect.toString());
+		videoIntroProcess process = new videoIntroProcess(this, (int)fontSize.getValue(), getUserFont(), textFieldIntro.getText(), _colourSelect);
+		process.execute();
 	}
 }
