@@ -1,21 +1,38 @@
 package gui;
 
-import java.awt.Dimension;
-import javax.swing.Box;
-import javax.swing.JLabel;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JSpinner;
-import javax.swing.JRadioButton;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.JComboBox;
+import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 
 public class TextTab extends Tab {
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField textFieldIntro;
+	private JTextField textFieldEnd;
+	private JTextPane tPane;
+	private JTextPane txtPreview;
+	private JSpinner fontSize;
+	private JComboBox fontColour;
+	private JComboBox fontType;
 
 	public TextTab(VideoPanel panel) {
 		
@@ -29,7 +46,7 @@ public class TextTab extends Tab {
 this.setPreferredSize(new Dimension(1000, 130));
 		
 		Box verticalBox = Box.createVerticalBox();
-		verticalBox.setPreferredSize(new Dimension(980,110));
+		verticalBox.setPreferredSize(new Dimension(980,130));
 		
 		add(verticalBox);
 		
@@ -39,9 +56,32 @@ this.setPreferredSize(new Dimension(1000, 130));
 		JLabel lblOpeningText = new JLabel("Opening Text:");
 		horizontalBox.add(lblOpeningText);
 		
-		textField = new JTextField();
-		horizontalBox.add(textField);
-		textField.setColumns(10);
+		textFieldIntro = new JTextField();
+		textFieldIntro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String text = textFieldIntro.getText();
+                SetPreview(txtPreview, text, Color.BLACK, (int)fontSize.getValue());    
+                txtPreview.selectAll();
+            }
+
+			private void SetPreview(JTextPane tp, String msg, Color c, int fontSize) {
+				 StyleContext sc = StyleContext.getDefaultStyleContext();
+			        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+			        aset=sc.addAttribute(aset, StyleConstants.FontSize, fontSize);
+
+			        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+			        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+			        int len = tp.getDocument().getLength();
+			        tp.setCaretPosition(len);
+			        tp.setCharacterAttributes(aset, false);
+			        tp.replaceSelection(msg);
+				
+			}
+        });     
+		horizontalBox.add(textFieldIntro);
+		textFieldIntro.setColumns(10);
 		
 		Component verticalStrut = Box.createVerticalStrut(10);
 		verticalBox.add(verticalStrut);
@@ -52,9 +92,9 @@ this.setPreferredSize(new Dimension(1000, 130));
 		JLabel lblClosingText = new JLabel("Closing Text:   ");
 		horizontalBox_1.add(lblClosingText);
 		
-		textField_1 = new JTextField();
-		horizontalBox_1.add(textField_1);
-		textField_1.setColumns(10);
+		textFieldEnd = new JTextField();
+		horizontalBox_1.add(textFieldEnd);
+		textFieldEnd.setColumns(10);
 		
 		Component verticalStrut_1 = Box.createVerticalStrut(10);
 		verticalBox.add(verticalStrut_1);
@@ -65,11 +105,10 @@ this.setPreferredSize(new Dimension(1000, 130));
 		JLabel lblFontSize = new JLabel("Font Size:");
 		horizontalBox_2.add(lblFontSize);
 		
-		JSpinner spinner = new JSpinner();
-		spinner.setMaximumSize(new Dimension(20, 30));
-		spinner.setModel(new SpinnerNumberModel(8, 8, 48, 1));
-		//spinner.setPreferredSize(new Dimension(2,1));
-		horizontalBox_2.add(spinner);
+		fontSize = new JSpinner();
+		fontSize.setMaximumSize(new Dimension(20, 30));
+		fontSize.setModel(new SpinnerNumberModel(8, 8, 48, 1));
+		horizontalBox_2.add(fontSize);
 		
 		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox_2.add(rigidArea);
@@ -77,11 +116,11 @@ this.setPreferredSize(new Dimension(1000, 130));
 		JLabel lblNewLabel = new JLabel("Font Colour: ");
 		horizontalBox_2.add(lblNewLabel);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setToolTipText("Font Colour");
-		comboBox.setMaximumSize(new Dimension(25, 32767));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Black", "White"}));
-		horizontalBox_2.add(comboBox);
+		fontColour = new JComboBox();
+		fontColour.setToolTipText("Font Colour");
+		fontColour.setMaximumSize(new Dimension(25, 32767));
+		fontColour.setModel(new DefaultComboBoxModel(new String[] {"Black", "White"}));
+		horizontalBox_2.add(fontColour);
 		
 		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox_2.add(rigidArea_1);
@@ -89,17 +128,28 @@ this.setPreferredSize(new Dimension(1000, 130));
 		JLabel lblFontType = new JLabel("Font Type: ");
 		horizontalBox_2.add(lblFontType);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setMaximumSize(new Dimension(40, 32767));
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Font 1", "Font 2", "Font 3", "Font 4"}));
-		comboBox_1.setToolTipText("Font Type");
-		horizontalBox_2.add(comboBox_1);
+		fontType = new JComboBox();
+		fontType.setMaximumSize(new Dimension(40, 32767));
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		String []fontFamilies = ge.getAvailableFontFamilyNames();
+
+		fontType.setModel(new DefaultComboBoxModel(fontFamilies));
+		fontType.setToolTipText("Font Type");
+		horizontalBox_2.add(fontType);
+		 EmptyBorder eb = new EmptyBorder(new Insets(10, 10, 10, 10));
 		
 		Component horizontalGlue = Box.createHorizontalGlue();
 		horizontalBox_2.add(horizontalGlue);
 		
 		JButton apply = new JButton("Apply Changes");
 		horizontalBox_2.add(apply);
+		
+		Box horizontalBox_3 = Box.createHorizontalBox();
+		verticalBox.add(horizontalBox_3);
+		
+		txtPreview = new JTextPane();
+		horizontalBox_3.add(txtPreview);
+		txtPreview.setText("Text preview");
 		
 	}
 }

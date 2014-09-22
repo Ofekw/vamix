@@ -39,6 +39,8 @@ public class AudioTab extends Tab {
 	private JButton _inputVideoSelect;
 	private JButton _inputAudioSelect;
 	private JButton _outputSelect;
+	private Box horizontalBox_1;
+	private Box horizontalBox_2;
 
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
@@ -63,18 +65,6 @@ public class AudioTab extends Tab {
 		_extractAudio = new JButton("Extract Audio");
 		_extractAudio.setEnabled(false);
 
-		_cancel = new JButton("Cancel");
-		_cancel.setEnabled(false);
-		_cancel.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				process.cancel();
-				enableButtons();
-				_extractProgressBar.setValue(_extractProgressBar.getMaximum());
-			}
-		});
-
 		_extractAudio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				/*
@@ -86,11 +76,51 @@ public class AudioTab extends Tab {
 				saveDialog();
 			}
 		});
+		_inputAudioSelect = new JButton("Select Audio");
+		_outputSelect = new JButton();
 
-		_replaceProgressBar = new JProgressBar();
-		_replace = new JButton("Replace Audio");
+		horizontalBox.add(_extractAudio);
+
+		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
+		horizontalBox.add(rigidArea);
+
+		_extractProgressBar = new JProgressBar();
+		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
+		horizontalBox.add(_extractProgressBar);
+		_extractProgressBar.setValue(0);
+		
+				_cancel = new JButton("Cancel");
+				horizontalBox.add(_cancel);
+				_cancel.setEnabled(false);
+				_cancel.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						process.cancel();
+						enableButtons();
+						_extractProgressBar.setValue(_extractProgressBar.getMaximum());
+					}
+				});
+		
+		horizontalBox_1 = Box.createHorizontalBox();
+		verticalBox.add(horizontalBox_1);
+				_replace = new JButton("Replace Audio");
+				horizontalBox_1.add(_replace);
+				
+						_replaceProgressBar = new JProgressBar();
+						horizontalBox_1.add(_replaceProgressBar);
+		
+		horizontalBox_2 = Box.createHorizontalBox();
+		verticalBox.add(horizontalBox_2);
 		_inputVideo = new JTextField();
+		horizontalBox_2.add(_inputVideo);
+		
+		_inputAudio = new JTextField();
+		horizontalBox_2.add(_inputAudio);
+		_outputVideo = new JTextField();
+		horizontalBox_2.add(_outputVideo);
 		_inputVideoSelect = new JButton("Select Video");
+		horizontalBox_2.add(_inputVideoSelect);
 		_inputVideoSelect.addActionListener(new ActionListener() {
 
 			@Override
@@ -116,29 +146,6 @@ public class AudioTab extends Tab {
 				}
 			}
 		});
-		
-		_inputAudio = new JTextField();
-		_inputAudioSelect = new JButton("Select Audio");
-		_outputVideo = new JTextField();
-		_outputSelect = new JButton();
-
-		horizontalBox.add(_extractAudio);
-
-		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
-		horizontalBox.add(rigidArea);
-
-		_extractProgressBar = new JProgressBar();
-		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
-		horizontalBox.add(_extractProgressBar);
-		_extractProgressBar.setValue(0);
-
-		this.add(_cancel);
-		this.add(_replace);
-		this.add(_replaceProgressBar);
-		this.add(_inputVideo);
-		this.add(_inputVideoSelect);
-		this.add(_inputAudio);
-		this.add(_outputVideo);
 
 	}
 	private void extractAudio() {
