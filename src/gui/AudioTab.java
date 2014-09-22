@@ -7,7 +7,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import controller.CheckAudioFile;
+import controller.CheckFile;
 import controller.ExtractAudioProcess;
 import controller.ShellProcess;
 import controller.testAbPro;
@@ -101,11 +101,11 @@ public class AudioTab extends Tab {
 				int returnValue = fileChooser.showOpenDialog(null);
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fileChooser.getSelectedFile();
-					if ((_inputVideo == null || _inputVideo.getText().isEmpty()) || !fileExists(_inputVideo) ) {
+					if ((selectedFile == null || selectedFile.getAbsolutePath().isEmpty()) || !fileExists(selectedFile)) {
 						filePathInvalid();
 					}else{
-						CheckAudioFile check = new CheckAudioFile(selectedFile.getAbsolutePath());
-						if (!check.getResult()){
+						CheckFile check = new CheckFile(selectedFile.getAbsolutePath(), true);
+						if (!check.checkFileType()){
 							JOptionPane
 							.showMessageDialog(_inputVideo,"Invalid Video File",
 									"Extract Error", JOptionPane.ERROR_MESSAGE);
@@ -116,6 +116,7 @@ public class AudioTab extends Tab {
 				}
 			}
 		});
+		
 		_inputAudio = new JTextField();
 		_inputAudioSelect = new JButton("Select Audio");
 		_outputVideo = new JTextField();
@@ -241,8 +242,7 @@ public class AudioTab extends Tab {
 		_extractProgressBar.setValue(value);
 	}
 
-	private boolean fileExists(JTextField field) {
-		File f = new File(field.getText());
+	private boolean fileExists(File f) {
 		if (f.exists()) {
 			return true;
 		} else {
