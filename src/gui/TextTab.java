@@ -1,9 +1,9 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -12,7 +12,9 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -24,6 +26,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class TextTab extends Tab {
 	private JTextField textFieldIntro;
@@ -33,6 +37,8 @@ public class TextTab extends Tab {
 	private JSpinner fontSize;
 	private JComboBox fontColour;
 	private JComboBox fontType;
+	private Color _colourSelect = Color.BLACK;
+	private JButton _btnColourSelect;
 
 	public TextTab(VideoPanel panel) {
 		
@@ -46,7 +52,7 @@ public class TextTab extends Tab {
 this.setPreferredSize(new Dimension(1000, 130));
 		
 		Box verticalBox = Box.createVerticalBox();
-		verticalBox.setPreferredSize(new Dimension(980,130));
+		verticalBox.setPreferredSize(new Dimension(980,150));
 		
 		add(verticalBox);
 		
@@ -61,24 +67,10 @@ this.setPreferredSize(new Dimension(1000, 130));
             @Override
             public void actionPerformed(ActionEvent ae) {
                 String text = textFieldIntro.getText();
-                SetPreview(txtPreview, text, Color.BLACK, (int)fontSize.getValue());    
+                SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());    
                 txtPreview.selectAll();
             }
 
-			private void SetPreview(JTextPane tp, String msg, Color c, int fontSize) {
-				 StyleContext sc = StyleContext.getDefaultStyleContext();
-			        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
-			        aset=sc.addAttribute(aset, StyleConstants.FontSize, fontSize);
-
-			        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
-			        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-
-			        int len = tp.getDocument().getLength();
-			        tp.setCaretPosition(len);
-			        tp.setCharacterAttributes(aset, false);
-			        tp.replaceSelection(msg);
-				
-			}
         });     
 		horizontalBox.add(textFieldIntro);
 		textFieldIntro.setColumns(10);
@@ -107,20 +99,42 @@ this.setPreferredSize(new Dimension(1000, 130));
 		
 		fontSize = new JSpinner();
 		fontSize.setMaximumSize(new Dimension(20, 30));
-		fontSize.setModel(new SpinnerNumberModel(8, 8, 48, 1));
+		fontSize.setModel(new SpinnerNumberModel(14, 8, 48, 1));
 		horizontalBox_2.add(fontSize);
 		
 		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox_2.add(rigidArea);
 		
 		JLabel lblNewLabel = new JLabel("Font Colour: ");
-		horizontalBox_2.add(lblNewLabel);
+		//horizontalBox_2.add(lblNewLabel);
 		
 		fontColour = new JComboBox();
 		fontColour.setToolTipText("Font Colour");
 		fontColour.setMaximumSize(new Dimension(25, 32767));
-		fontColour.setModel(new DefaultComboBoxModel(new String[] {"Black", "White"}));
-		horizontalBox_2.add(fontColour);
+		Color[] colours = {
+                Color.RED,
+                Color.BLUE,
+                Color.DARK_GRAY,
+                Color.PINK,
+                Color.BLACK,
+                Color.MAGENTA,
+                Color.YELLOW,
+                Color.ORANGE
+              };
+		fontColour.setModel(new DefaultComboBoxModel(colours));
+		
+		//horizontalBox_2.add(colorChooser);
+		
+		_btnColourSelect = new JButton("Colour Select");
+		_btnColourSelect.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				createColourChooser();
+				_btnColourSelect.setForeground(getUserColour());
+			}
+		});
+		horizontalBox_2.add(_btnColourSelect);
+		//horizontalBox_2.add(fontColour);
 		
 		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox_2.add(rigidArea_1);
@@ -145,11 +159,51 @@ this.setPreferredSize(new Dimension(1000, 130));
 		horizontalBox_2.add(apply);
 		
 		Box horizontalBox_3 = Box.createHorizontalBox();
+		horizontalBox_3.setPreferredSize(new Dimension(980, 600));
 		verticalBox.add(horizontalBox_3);
 		
 		txtPreview = new JTextPane();
+		txtPreview.setEditable(false);
 		horizontalBox_3.add(txtPreview);
 		txtPreview.setText("Text preview");
 		
+		JScrollPane scrollBar = new JScrollPane(txtPreview);
+		//scrollBar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR);
+		//scrollBar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollBar.setViewportView(txtPreview);
+		horizontalBox_3.add(scrollBar);
+		
+	}
+	
+	private void createColourChooser() {
+		
+		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.WHITE);
+		System.out.println("The selected color was:" + _colourSelect);
+
+	}
+
+
+	private void SetPreview(JTextPane tp, String msg, Color c, int fontSize, String font) {
+		 StyleContext sc = StyleContext.getDefaultStyleContext();
+	        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+	        aset=sc.addAttribute(aset, StyleConstants.FontSize, fontSize);
+
+	        aset = sc.addAttribute(aset, StyleConstants.FontFamily, font);
+	        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+	        int len = tp.getDocument().getLength();
+	        tp.setCaretPosition(len);
+	        tp.setCharacterAttributes(aset, false);
+	        tp.setText(msg);
+		
+	}
+	
+	private String getUserFont() {
+		String fontString = fontType.getSelectedItem().toString();
+		return fontString;
+	}
+	
+	private Color getUserColour() {
+		return _colourSelect;
 	}
 }
