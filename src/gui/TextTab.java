@@ -1,5 +1,6 @@
 package gui;
 
+import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -35,23 +36,31 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
+import sun.security.util.DisabledAlgorithmConstraints;
+
 import controller.ReplaceAudioProcess;
 import controller.ShellProcess;
-import controller.videoIntroProcess;
+import controller.VideoIntroProcess;
+import controller.VideoOutroProcess;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class TextTab extends Tab {
-	private JTextField textFieldIntro;
-	private JTextField textFieldEnd;
-	private JTextPane txtPreview;
-	private JSpinner fontSize;
+	private JTextField _textFieldIntro;
+	private JTextField _textFieldEnd;
+	private JTextPane _txtPreview;
+	private JSpinner _fontSize;
 	private JComboBox fontColour;
-	private JComboBox fontType;
+	private JComboBox _fontType;
 	private Color _colourSelect = Color.BLACK;
 	private JButton _btnColourSelect;
 	private TextTab _tab;
 	private String _saveLoc;
 	private JProgressBar _progressBar;
-	private JButton apply;
+	private JButton _apply;
 
 	public TextTab(VideoPanel panel) {
 
@@ -71,26 +80,44 @@ public class TextTab extends Tab {
 
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
-		
-		txtPreview = new JTextPane();
-		txtPreview.setEditable(false);
-		txtPreview.setText("Text preview");
+
+		_txtPreview = new JTextPane();
+		_txtPreview.setEditable(false);
+		_txtPreview.setText("Text preview");
 
 		JLabel lblOpeningText = new JLabel("Opening Text:");
 		horizontalBox.add(lblOpeningText);
 
-		textFieldIntro = new JTextField();
-		textFieldIntro.addActionListener(new ActionListener() {
+		_textFieldIntro = new JTextField();
+		_textFieldIntro.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				String text = _textFieldIntro.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
+		});
+		_textFieldIntro.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				String text = textFieldIntro.getText();
-				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());    
-				txtPreview.selectAll();
+				String text = _textFieldIntro.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
 			}
 
 		});     
-		horizontalBox.add(textFieldIntro);
-		textFieldIntro.setColumns(10);
+		horizontalBox.add(_textFieldIntro);
+		_textFieldIntro.setColumns(10);
 
 		Component verticalStrut = Box.createVerticalStrut(10);
 		verticalBox.add(verticalStrut);
@@ -101,17 +128,36 @@ public class TextTab extends Tab {
 		JLabel lblClosingText = new JLabel("Closing Text:   ");
 		horizontalBox_1.add(lblClosingText);
 
-		textFieldEnd = new JTextField();
-		textFieldEnd.addActionListener(new ActionListener() {
+		_textFieldEnd = new JTextField();
+		_textFieldEnd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				String text = textFieldEnd.getText();
-				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());    
-				txtPreview.selectAll();
+				String text = _textFieldEnd.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
 			}
 		});
-		horizontalBox_1.add(textFieldEnd);
-		textFieldEnd.setColumns(10);
+
+		_textFieldEnd.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				String text = _textFieldEnd.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
+		});
+		horizontalBox_1.add(_textFieldEnd);
+		_textFieldEnd.setColumns(10);
 
 		Component verticalStrut_1 = Box.createVerticalStrut(10);
 		verticalBox.add(verticalStrut_1);
@@ -122,17 +168,17 @@ public class TextTab extends Tab {
 		JLabel lblFontSize = new JLabel("Font Size:");
 		horizontalBox_2.add(lblFontSize);
 
-		fontSize = new JSpinner();
-		fontSize.addChangeListener(new ChangeListener() {
+		_fontSize = new JSpinner();
+		_fontSize.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				String text = txtPreview.getText();
-				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());    
-				txtPreview.selectAll();
+				String text = _txtPreview.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
 			}
 		});
-		fontSize.setMaximumSize(new Dimension(20, 30));
-		fontSize.setModel(new SpinnerNumberModel(14, 8, 64, 1));
-		horizontalBox_2.add(fontSize);
+		_fontSize.setMaximumSize(new Dimension(20, 30));
+		_fontSize.setModel(new SpinnerNumberModel(24, 8, 54, 1));
+		horizontalBox_2.add(_fontSize);
 
 		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox_2.add(rigidArea);
@@ -174,49 +220,50 @@ public class TextTab extends Tab {
 		JLabel lblFontType = new JLabel("Font Type: ");
 		horizontalBox_2.add(lblFontType);
 
-		fontType = new JComboBox();
-		
-		
-		fontType.setMaximumSize(new Dimension(40, 32767));
+		_fontType = new JComboBox();
+
+
+		_fontType.setMaximumSize(new Dimension(40, 32767));
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String []fontFamilies = ge.getAvailableFontFamilyNames();
 
-		fontType.setModel(new DefaultComboBoxModel(fontFamilies));
-		fontType.setToolTipText("Font Type");
-		
-//		fontType.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mousePressed(MouseEvent arg0) {
-//				String text = txtPreview.getText();
-//				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());
-//			}
-//		});
-		
-		fontType.addItemListener(new ItemListener() {
+		_fontType.setModel(new DefaultComboBoxModel(fontFamilies));
+		_fontType.setToolTipText("Font Type");
+
+		//		fontType.addMouseListener(new MouseAdapter() {
+		//			@Override
+		//			public void mousePressed(MouseEvent arg0) {
+		//				String text = txtPreview.getText();
+		//				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());
+		//			}
+		//		});
+
+		_fontType.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
-				String text = txtPreview.getText();
-				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());
+				String text = _txtPreview.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());
 			}
 		});
 
-		horizontalBox_2.add(fontType);
+		horizontalBox_2.add(_fontType);
 		EmptyBorder eb = new EmptyBorder(new Insets(10, 10, 10, 10));
 
-		apply = new JButton("Apply Changes");
-		apply.addMouseListener(new MouseAdapter() {
+		_apply = new JButton("Apply Changes");
+		_apply.setEnabled(false);
+		_apply.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				createProcess();	
+				SaveLocAndTextProcess();	
 			}
 		});
-		
+
 		_progressBar = new JProgressBar();
 		horizontalBox_2.add(_progressBar);
-		horizontalBox_2.add(apply);
-		
+		horizontalBox_2.add(_apply);
+
 		Box horizontalBox_4 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_4);
-		
+
 		Component verticalStrut_2 = Box.createVerticalStrut(20);
 		verticalStrut_2.setMaximumSize(new Dimension(32767, 10));
 		verticalStrut_2.setPreferredSize(new Dimension(0, 10));
@@ -226,13 +273,13 @@ public class TextTab extends Tab {
 		horizontalBox_3.setPreferredSize(new Dimension(980, 600));
 		verticalBox.add(horizontalBox_3);
 
-		
-		horizontalBox_3.add(txtPreview);
 
-		JScrollPane scrollBar = new JScrollPane(txtPreview);
+		horizontalBox_3.add(_txtPreview);
+
+		JScrollPane scrollBar = new JScrollPane(_txtPreview);
 		//scrollBar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR);
 		//scrollBar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollBar.setViewportView(txtPreview);
+		scrollBar.setViewportView(_txtPreview);
 		horizontalBox_3.add(scrollBar);
 
 	}
@@ -241,10 +288,10 @@ public class TextTab extends Tab {
 
 		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.WHITE);
 		System.out.println("The selected color was:" + _colourSelect);
-		
-		String text = txtPreview.getText();
-		SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());
-		
+
+		String text = _txtPreview.getText();
+		SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());
+
 
 	}
 
@@ -265,20 +312,27 @@ public class TextTab extends Tab {
 	}
 
 	private String getUserFont() {
-		String fontString = fontType.getSelectedItem().toString();
+		String fontString = _fontType.getSelectedItem().toString();
 		return fontString;
 	}
 
 	private Color getUserColour() {
 		return _colourSelect;
 	}
-	
+
 	private void createProcess() {
-		System.out.println(_colourSelect.toString());
-		videoIntroProcess process = new videoIntroProcess(this, (int)fontSize.getValue(), getUserFont(), textFieldIntro.getText(), _colourSelect);
-		process.execute();
+		if(!_textFieldIntro.getText().isEmpty()){
+			VideoIntroProcess process1 = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldIntro.getText(), _colourSelect);
+			process1.execute();
+			
+		}
+		
+		if(!_textFieldEnd.getText().isEmpty()){
+			VideoOutroProcess process2 = new VideoOutroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldEnd.getText(), _colourSelect);
+			process2.execute();
+		}
 	}
-	
+
 	private void SaveLocAndTextProcess(){
 		JFileChooser fileChooser = new JFileChooser() {
 			@Override
@@ -321,14 +375,14 @@ public class TextTab extends Tab {
 			}
 		};
 
-		fileChooser.setDialogTitle("Specify where to save media file with text");
+		fileChooser.setDialogTitle("Specify where to save the modified video");
 
 		int userSelection = fileChooser.showSaveDialog(this);
 		File fileToSave = null;
 		if (userSelection == JFileChooser.OPEN_DIALOG) {
 			fileToSave = fileChooser.getSelectedFile();
 			/*
-			 * Makes sure the filename ends with extension .mp3
+			 * Makes sure the filename ends with extension .mp4
 			 */
 
 			if (!fileChooser.getSelectedFile().getAbsolutePath()
@@ -338,9 +392,35 @@ public class TextTab extends Tab {
 			}
 			_saveLoc=fileToSave.getAbsolutePath();
 			createProcess();
-			apply.setEnabled(false);
+			_progressBar.setValue(0);
+			_apply.setEnabled(false);
 			_progressBar.setIndeterminate(true);
+			_progressBar.setValue(100);
+			disableButtons();
 		}
-		
+
+	}
+
+	public String getSaveloc(){
+		return _saveLoc;
+	}
+
+	public void disableButtons(){
+		_textFieldEnd.setEnabled(false);
+		_textFieldIntro.setEnabled(false);
+		_apply.setEnabled(false);
+		_btnColourSelect.setEnabled(false);
+		_fontSize.setEnabled(false);
+		_fontType.setEnabled(false);
+	}
+
+	public void enableButtons(){
+		_textFieldEnd.setEnabled(true);
+		_textFieldIntro.setEnabled(true);
+		_apply.setEnabled(true);
+		_btnColourSelect.setEnabled(true);
+		_fontSize.setEnabled(true);
+		_fontType.setEnabled(true);
+		_progressBar.setIndeterminate(false);
 	}
 }

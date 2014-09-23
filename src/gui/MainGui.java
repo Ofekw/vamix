@@ -63,7 +63,7 @@ public class MainGui {
 		editFrame = new JFrame();
 		ImageIcon img = new ImageIcon("V.png");
 		frame.setIconImage(img.getImage());
-		frame.setBounds(100, 100, 1040, 690);
+		frame.setBounds(0, 0, 1040, 720);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
