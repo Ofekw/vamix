@@ -1,17 +1,19 @@
 package gui;
 
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,11 +21,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
+import javax.swing.LookAndFeel;
 import javax.swing.Timer;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.SliderUI;
 import javax.swing.plaf.basic.BasicSliderUI;
+import javax.swing.plaf.metal.MetalSliderUI;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.caprica.vlcj.binding.LibVlcConst;
@@ -46,7 +51,7 @@ public class VideoPanel extends JPanel {
 	private JToggleButton _fastForwardButton;
 	private JSlider _volumeSlider;
 	private Timer timer;
-
+	private boolean isPlaying = false;
 	private String videoLocation;
 
 	//Constant value for progress bar
@@ -103,15 +108,11 @@ public class VideoPanel extends JPanel {
 
 	private void createControls() {
 		_timeLabel = new JLabel("00:00:00");
-		_progressSlider = new JSlider();
+		_progressSlider = new JSlider(JSlider.HORIZONTAL);
 		_progressSlider.setMinimum(0);
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
 		_progressSlider.setToolTipText("Position");
-		_progressSlider.setMajorTickSpacing(1);
-		_progressSlider.setSnapToTicks(false);
-//		_progressSlider.setBackground(Color.BLACK);
-//		_progressSlider.setUI(new CircleSliderUI(_progressSlider));
 
 		_rewindButton = new JToggleButton();
 		_rewindButton.setIcon(new ImageIcon(("icons/rewind.png")));
@@ -162,24 +163,27 @@ public class VideoPanel extends JPanel {
 
 	private void registerListeners() {
 
-		//		_positionSlider.addMouseListener(new MouseAdapter() {
-		//			@Override
-		//			public void mousePressed(MouseEvent e) {
-		//				if(mediaPlayer.isPlaying()) {
-		//					mousePressedPlaying = true;
-		//					mediaPlayer.pause();
-		//				}else {
-		//					mousePressedPlaying = false;
-		//				}
-		//				setSliderBasedPosition();
-		//			}
-		//
-		//			@Override
-		//			public void mouseReleased(MouseEvent e) {
-		//				setSliderBasedPosition();
-		//				updateUIState();
-		//			}
-		//		});
+		_progressSlider.addMouseListener(new MouseAdapter(){
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				setSliderBasedPosition();
+				if (isPlaying){
+					play();
+					isPlaying = false;
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (mediaPlayer.isPlaying()){
+					pause();
+					isPlaying = true;
+				}
+				setSliderBasedPosition();
+			}
+		});
+
 
 		_stopButton.addActionListener(new ActionListener() {
 			@Override
@@ -202,12 +206,6 @@ public class VideoPanel extends JPanel {
 		_playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//This bit keeps restarting video, need to find
-				//better way to check file (maybe in MainGui
-				//where JFileChooser is located
-
-				//Fixed it :D working now, video tab takes a video panel
-				//which then allows for setting the media file
 
 				//check if video hasn't started at all
 				if (mediaPlayer.getTime() == -1){
@@ -231,14 +229,10 @@ public class VideoPanel extends JPanel {
 					}
 					//check if video is paused
 				}else if (!mediaPlayer.isPlaying()){
-					mediaPlayer.start();
-					timer.start();
-					_playButton.setIcon(new ImageIcon(("icons/pause.png")));
+					play();
 					//pause video otherwise
 				}else{
-					mediaPlayer.pause();
-					timer.stop();
-					_playButton.setIcon(new ImageIcon(("icons/play.png")));
+					pause();
 					if(_fastForwardButton.isSelected()){
 						skipper.cancel(true);
 						_fastForwardButton.setSelected(false);
@@ -286,13 +280,6 @@ public class VideoPanel extends JPanel {
 			}
 		});
 
-		//		_fastForwardButton.addActionListener(new ActionListener() {
-		////			@Override
-		////			public void actionPerformed(ActionEvent e) {
-		////				skip(SKIP_TIME_MS);
-		////			}
-		//		});
-		//Volume slider listener
 		_volumeSlider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -311,34 +298,25 @@ public class VideoPanel extends JPanel {
 			}
 		});
 	}
+	
+	private void pause(){
+		mediaPlayer.pause();
+		timer.stop();
+		_playButton.setIcon(new ImageIcon(("icons/play.png")));
+	}
+	private void play(){
+		mediaPlayer.start();
+		timer.start();
+		_playButton.setIcon(new ImageIcon(("icons/pause.png")));
+	}
+
 
 	private void errorPlaybackFile() {
 		JOptionPane.showMessageDialog(this, "No valid media file selected",
 				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-	//	private void updateUIState() {
-	//		if(!mediaPlayer.isPlaying()) {
-	//			// Resume play or play a few frames then pause to show current position in video
-	//			mediaPlayer.start();
-	//			if(!mousePressedPlaying) {
-	//				try {
-	//					// Half a second probably gets an iframe
-	//					Thread.sleep(500);
-	//				}
-	//				catch(InterruptedException e) {
-	//					// Don't care if unblocked early
-	//				}
-	//				mediaPlayer.pause();
-	//			}
-	//		}
-	//		long time = mediaPlayer.getTime();
-	//		int position = (int)(mediaPlayer.getPosition() * 1000.0f);
-	//		int chapter = mediaPlayer.getChapter();
-	//		int chapterCount = mediaPlayer.getChapterCount();
-	//		updateTime(time);
-	//		updatePosition(position);
-	//	}
+
 
 	/**
 	 * Updates the time label
@@ -384,40 +362,87 @@ public class VideoPanel extends JPanel {
 		mediaPlayer.stop();
 	}
 
-	//	private void setSliderBasedPosition() {
-	//		if(!mediaPlayer.isSeekable()) {
-	//			return;
+	private void setSliderBasedPosition() {
+		if(!mediaPlayer.isSeekable()) {
+			return;
+		}
+		float positionValue = _progressSlider.getValue();
+		if (positionValue>=maxTime){
+			_progressSlider.setValue(maxTime);
+		}
+		//		System.out.println(positionValue);
+		//		System.out.println(positionValue/maxTime*mediaPlayer.getLength());
+		mediaPlayer.setPosition(positionValue/maxTime);
+		updateTime(mediaPlayer.getTime());
+	}
+
+	//
+	//				_positionSlider.addMouseListener(new MouseAdapter() {
+	//					@Override
+	//					public void mousePressed(MouseEvent e) {
+	//						if(mediaPlayer.isPlaying()) {
+	//							mousePressedPlaying = true;
+	//							mediaPlayer.pause();
+	//						}else {
+	//							mousePressedPlaying = false;
+	//						}
+	//						setSliderBasedPosition();
+	//					}
+	//		
+	//					@Override
+	//					public void mouseReleased(MouseEvent e) {
+	//						setSliderBasedPosition();
+	//						updateUIState();
+	//					}
+	//				});
+
+	//	private void updateUIState() {
+	//		if(!mediaPlayer.isPlaying()) {
+	//			// Resume play or play a few frames then pause to show current position in video
+	//			mediaPlayer.start();
+	//			if(!mousePressedPlaying) {
+	//				try {
+	//					// Half a second probably gets an iframe
+	//					Thread.sleep(500);
+	//				}
+	//				catch(InterruptedException e) {
+	//					// Don't care if unblocked early
+	//				}
+	//				mediaPlayer.pause();
+	//			}
 	//		}
-	//		float positionValue = _positionSlider.getValue() / 1000.0f;
-	//		// Avoid end of file freeze-up
-	//		if(positionValue > 0.99f) {
-	//			positionValue = 0.99f;
-	//		}
-	//		mediaPlayer.setPosition(positionValue);
+	//		long time = mediaPlayer.getTime();
+	//		int position = (int)(mediaPlayer.getPosition() * 1000.0f);
+	//		int chapter = mediaPlayer.getChapter();
+	//		int chapterCount = mediaPlayer.getChapterCount();
+	//		updateTime(time);
+	//		updatePosition(position);
 	//	}
-//
-//	private class CircleSliderUI extends BasicSliderUI {
-//
-//		Image sliderImage;
-//
-//		public CircleSliderUI(JSlider slider) {
-//
-//			super(slider);
-//
-//			try {
-//				this.sliderImage = ImageIO.read( new File( "icons/circle.png") );
-//
-//			} catch ( IOException e ) {
-//
-//				e.printStackTrace();
-//			}
-//		}
-//		public void paintThumb(Graphics g)  {        
-//
-//			g.drawImage( this.sliderImage, thumbRect.x, thumbRect.y, 16, 16, null );
-//
-//		}
-//
-//	}
+
+
+	//
+	//	private class CircleSliderUI extends BasicSliderUI {
+	//
+	//		Image sliderImage;
+	//
+	//		public CircleSliderUI(JSlider slider) {
+	//
+	//			super(slider);
+	//
+	//			try {
+	//				this.sliderImage = ImageIO.read( new File( "icons/circle.png") );
+	//
+	//			} catch ( IOException e ) {
+	//
+	//				e.printStackTrace();
+	//			}
+	//		}
+	//		public void paintThumb(Graphics g)  {        
+	//
+	//			g.drawImage( this.sliderImage, thumbRect.x, thumbRect.y, 16, 16, null );
+	//
+	//		}
+	//
+	//	}
 
 }

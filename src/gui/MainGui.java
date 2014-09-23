@@ -19,6 +19,12 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+
 public class MainGui {
 
 	private JFrame frame;
@@ -28,7 +34,10 @@ public class MainGui {
 	private TextTab _text;
 
 	public static void main(String[] args){
-
+		NativeLibrary.addSearchPath(
+                RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
+            );
+            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 			if ("GTK+".equals(info.getName())) {
 				try {

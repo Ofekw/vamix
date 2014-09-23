@@ -36,7 +36,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import sun.security.util.DisabledAlgorithmConstraints;
 
 import controller.ReplaceAudioProcess;
 import controller.ShellProcess;
