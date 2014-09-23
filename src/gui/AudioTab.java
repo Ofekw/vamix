@@ -270,14 +270,14 @@ public class AudioTab extends Tab {
 	 */
 	
 	private void extractAudio() {
-//		CheckFile check = new CheckFile(_mediaLoc, false);
-//		//check if checking for video file and video file has no audio
-//		if (!check.checkFileType()){
-//			JOptionPane
-//			.showMessageDialog(this,"Video file contains no audio!",
-//					"Extract Error", JOptionPane.ERROR_MESSAGE);
-//			return;
-//		}
+		CheckFile check = new CheckFile(false);
+		//check if checking for video file and video file has no audio
+		if (!check.checkVideoHasAudio(_mediaLoc)){
+			JOptionPane
+			.showMessageDialog(this,"Video file contains no audio!",
+					"Extract Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		JFileChooser fileChooser = new JFileChooser() {
 			@Override
 			public void approveSelection() {
@@ -395,8 +395,8 @@ public class AudioTab extends Tab {
 			if ((selectedFile == null || selectedFile.getAbsolutePath().isEmpty()) || !fileExists(selectedFile)) {
 				filePathInvalid();
 			}else{
-				CheckFile check = new CheckFile(selectedFile.getAbsolutePath(), checkVid);
-				if (!check.checkFileType()){
+				CheckFile check = new CheckFile(checkVid);
+				if (!check.checkFileType(selectedFile.getAbsolutePath())){
 					JOptionPane
 					.showMessageDialog(field,"Invalid Video File",
 							"Extract Error", JOptionPane.ERROR_MESSAGE);
