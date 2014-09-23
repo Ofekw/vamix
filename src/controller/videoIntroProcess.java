@@ -36,14 +36,28 @@ public class videoIntroProcess extends testAbPro {
 		
 	}
 	
-	private String makeCommand(int textSize, String input, String output, Color colour, String loc){
+	private String makeCommand(int textSize, String font, String text, Color colour, String loc){
 		
-		return "avconv -i "+loc+System.getProperty("file.separator")+"tempMedia"
-		+System.getProperty("file.separator")+"background.mp4 -strict experimental -vf "+
-				"\""+"drawtext=fontfile='/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf':text='"+input+
-				"':x=(main_w-text_w)/2:y=50:fontsize="+textSize+":fontcolor="+colour+"\""+" tempIntro.mp4";
+		String binLoc = loc+System.getProperty("file.separator")+"tempMedia"
+				+System.getProperty("file.separator");
+		return "avconv -i " + binLoc + "background.mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
+				+ "\"" + " "+binLoc+"tempIntro.mp4";
 	}
 	
+	public static String toHexString(Color c) {
+		  StringBuilder sb = new StringBuilder("#");
+
+		  if (c.getRed() < 16) sb.append('0');
+		  sb.append(Integer.toHexString(c.getRed()));
+
+		  if (c.getGreen() < 16) sb.append('0');
+		  sb.append(Integer.toHexString(c.getGreen()));
+
+		  if (c.getBlue() < 16) sb.append('0');
+		  sb.append(Integer.toHexString(c.getBlue()));
+
+		  return sb.toString();
+		}
 
 	
 
