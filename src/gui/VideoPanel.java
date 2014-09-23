@@ -3,42 +3,39 @@ package gui;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+import javax.swing.JSlider;
 import javax.swing.JToggleButton;
+import javax.swing.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicSliderUI;
 
 import net.miginfocom.swing.MigLayout;
-
 import uk.co.caprica.vlcj.binding.LibVlcConst;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-
-import javax.swing.Timer;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.SwingConstants;
 
 
 @SuppressWarnings("serial")
 public class VideoPanel extends JPanel {
 
 	private EmbeddedMediaPlayer mediaPlayer = null;
-	private JProgressBar _progressSlider;
+	private JSlider _progressSlider;
 	private MainGui _parent;
-	private static final int SKIP_TIME_MS = 10 * 1000;
 
 	private JLabel _timeLabel;
 
@@ -46,7 +43,6 @@ public class VideoPanel extends JPanel {
 	private JButton _stopButton;
 	private JButton _playButton;
 	private JToggleButton _fastForwardButton;
-	private JButton _toggleMuteButton;
 	private JSlider _volumeSlider;
 	private Timer timer;
 
@@ -102,20 +98,11 @@ public class VideoPanel extends JPanel {
 		timer.stop();
 
 		this.add(mediaCanvas, "cell 0 0,growx");
-
-		//		_progressSlider = new JProgressBar();
-		//		_progressSlider.addMouseMotionListener(new MouseMotionAdapter() {
-		//			@Override
-		//			public void mouseMoved(MouseEvent arg0) {
-		//				
-		//			}
-		//		});
 	}
 
 	private void createControls() {
 		_timeLabel = new JLabel("00:00:00");
-
-		_progressSlider = new JProgressBar();
+		_progressSlider = new JSlider();
 		_progressSlider.setMinimum(0);
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
@@ -123,7 +110,7 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setBackground(Color.BLACK);
 
 		_rewindButton = new JToggleButton();
-		_rewindButton.setIcon(new ImageIcon(("icons/fastforward.png")));
+		_rewindButton.setIcon(new ImageIcon(("icons/rewind.png")));
 		_rewindButton.setToolTipText("Skip back");
 
 		_stopButton = new JButton();
@@ -404,4 +391,29 @@ public class VideoPanel extends JPanel {
 	//		}
 	//		mediaPlayer.setPosition(positionValue);
 	//	}
+
+	private class CircleSliderUI extends BasicSliderUI {
+
+		Image knobImage;
+
+		public CircleSliderUI(JSlider slider) {
+
+			super(slider);
+
+			try {
+				this.knobImage = ImageIO.read( new File( "d:\\d.jpg") );
+
+			} catch ( IOException e ) {
+
+				e.printStackTrace();
+			}
+		}
+		public void paintThumb(Graphics g)  {        
+
+			g.drawImage( this.knobImage, thumbRect.x, thumbRect.y, 8, 8, null );
+
+		}
+
+	}
+
 }

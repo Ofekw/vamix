@@ -11,21 +11,19 @@ import java.io.InputStreamReader;
  *
  */
 public class CheckFile {
-	
-	private String file;
+
 	private boolean checkVideo = false;
-	
+
 	/**
 	 * 
 	 * @param filePath: path to file
 	 * @param checkVid: true to check if video, false to check audio
 	 */
-	public CheckFile(String filePath, boolean checkVid){
-		file = filePath;
+	public CheckFile(boolean checkVid){
 		checkVideo = checkVid;
 	}
 
-	public boolean checkFileType(){
+	public boolean checkFileType(String file) {
 		ProcessBuilder vBuilder = new ProcessBuilder("/bin/bash", "-c", "file "+file);
 		vBuilder.redirectErrorStream(true);
 		try {
@@ -47,7 +45,26 @@ public class CheckFile {
 						return false;
 					}
 				}
-				
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean checkVideoHasAudio(String file){
+		ProcessBuilder vBuilder = new ProcessBuilder("/bin/bash", "-c", "avconv -i "+file);
+		vBuilder.redirectErrorStream(true);
+		try {
+			Process process = vBuilder.start();
+			InputStream stdout = process.getInputStream();
+			BufferedReader stdoutBuffered = new BufferedReader(new InputStreamReader(stdout));
+			String line = new String();
+			while((line = stdoutBuffered.readLine()) != null){
+				if(line.contains("Audio")){
+					return true;
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
