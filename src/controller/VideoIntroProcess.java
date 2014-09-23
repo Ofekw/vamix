@@ -23,12 +23,12 @@ public class VideoIntroProcess extends testAbPro {
 			
 		} else if (get() > 0) {
 							JOptionPane
-									.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",
-											"Extract Error", JOptionPane.ERROR_MESSAGE);
+									.showMessageDialog(_tab,"Something went wrong with creating an intro. Please check input media file",
+											"Process Error", JOptionPane.ERROR_MESSAGE);
 		} else if (get() < 0){
 			JOptionPane
 			.showMessageDialog(_tab,"Process cancelled",
-					"Extract Error", JOptionPane.ERROR_MESSAGE);
+					"Process Error", JOptionPane.ERROR_MESSAGE);
 		}
 		_tab.enableButtons();
 	}

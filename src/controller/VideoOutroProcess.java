@@ -14,7 +14,7 @@ public class VideoOutroProcess extends testAbPro {
 
 	public VideoOutroProcess(TextTab tab,int textSize, String font, String text, Color colour){
 		String loc = System.getProperty("user.dir");
-		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+"tempMedia"+System.getProperty("file.separator")+"tempIntro.mp4");
+		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+"tempMedia"+System.getProperty("file.separator")+"tempOutro.mp4");
 		super.setCommand(makeCommand(textSize, font, text, colour, loc));
 		_tab = tab;
 }
@@ -23,12 +23,12 @@ public class VideoOutroProcess extends testAbPro {
 			
 		} else if (get() > 0) {
 							JOptionPane
-									.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",
-											"Extract Error", JOptionPane.ERROR_MESSAGE);
+									.showMessageDialog(_tab,"Something went wrong with creating an outro. Please check input media file",
+											"Process Error", JOptionPane.ERROR_MESSAGE);
 		} else if (get() < 0){
 			JOptionPane
 			.showMessageDialog(_tab,"Process cancelled",
-					"Extract Error", JOptionPane.ERROR_MESSAGE);
+					"Process Error", JOptionPane.ERROR_MESSAGE);
 		}
 		_tab.enableButtons();
 	}
@@ -43,7 +43,7 @@ public class VideoOutroProcess extends testAbPro {
 		String binLoc = loc+System.getProperty("file.separator")+"tempMedia"
 				+System.getProperty("file.separator");
 		return "avconv -i " + binLoc + "background.mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
-				+ "\"" + " "+binLoc+"tempIntro.mp4";
+				+ "\"" + " "+binLoc+"tempOutro.mp4";
 	}
 	
 	public static String toHexString(Color c) {

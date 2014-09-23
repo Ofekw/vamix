@@ -41,6 +41,8 @@ import sun.security.util.DisabledAlgorithmConstraints;
 import controller.ReplaceAudioProcess;
 import controller.ShellProcess;
 import controller.VideoIntroProcess;
+import controller.VideoOutroProcess;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import java.awt.event.FocusAdapter;
@@ -93,13 +95,11 @@ public class TextTab extends Tab {
 				String text = _textFieldIntro.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
-			}
-		});
-		_textFieldIntro.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
-				String text = _textFieldIntro.getText();
-				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
-				_txtPreview.selectAll();
+				if(!_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
 			}
 		});
 		_textFieldIntro.addActionListener(new ActionListener() {
@@ -108,6 +108,11 @@ public class TextTab extends Tab {
 				String text = _textFieldIntro.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
+				if(!_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
 			}
 
 		});     
@@ -130,6 +135,11 @@ public class TextTab extends Tab {
 				String text = _textFieldEnd.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
+				if(!_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
 			}
 		});
 
@@ -139,6 +149,11 @@ public class TextTab extends Tab {
 				String text = _textFieldEnd.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
+				if(!_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
 			}
 		});
 		horizontalBox_1.add(_textFieldEnd);
@@ -234,6 +249,7 @@ public class TextTab extends Tab {
 		EmptyBorder eb = new EmptyBorder(new Insets(10, 10, 10, 10));
 
 		_apply = new JButton("Apply Changes");
+		_apply.setEnabled(false);
 		_apply.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -306,13 +322,14 @@ public class TextTab extends Tab {
 
 	private void createProcess() {
 		if(!_textFieldIntro.getText().isEmpty()){
-			VideoIntroProcess process = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldIntro.getText(), _colourSelect);
-			process.execute();
+			VideoIntroProcess process1 = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldIntro.getText(), _colourSelect);
+			process1.execute();
+			
 		}
 		
 		if(!_textFieldEnd.getText().isEmpty()){
-			VideoIntroProcess process = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldIntro.getText(), _colourSelect);
-			process.execute();
+			VideoOutroProcess process2 = new VideoOutroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldEnd.getText(), _colourSelect);
+			process2.execute();
 		}
 	}
 
@@ -358,7 +375,7 @@ public class TextTab extends Tab {
 			}
 		};
 
-		fileChooser.setDialogTitle("Specify where to save the video with text");
+		fileChooser.setDialogTitle("Specify where to save the modified video");
 
 		int userSelection = fileChooser.showSaveDialog(this);
 		File fileToSave = null;
