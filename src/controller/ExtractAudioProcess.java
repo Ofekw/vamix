@@ -49,8 +49,7 @@ public class ExtractAudioProcess extends AbsProcess {
 
 	protected void doDone() {
 	if (this.getExitStatus() == 0) {
-		_tab.enableExtractButtons();
-		_tab.progressBarFinished();
+		_tab.extractFinished();
 	} else if (this.getExitStatus() > 0) {
 						JOptionPane
 								.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",

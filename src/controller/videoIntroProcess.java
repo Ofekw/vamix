@@ -7,7 +7,6 @@ import gui.TextTab;
 
 import javax.swing.JOptionPane;
 
-import com.sun.jndi.url.rmi.rmiURLContext;
 
 public class videoIntroProcess extends testAbPro {
 	

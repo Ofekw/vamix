@@ -4,6 +4,9 @@ package controller;
 import javax.swing.JOptionPane;
 import gui.AudioTab;
 
+//avconv -i infile.avi -an -c:v copy outfile.avi 
+//Strips audio off video file
+
 public class testExtractAudio extends testAbPro {
 	
 	private AudioTab _tab;
@@ -17,8 +20,10 @@ public class testExtractAudio extends testAbPro {
 	
 	protected void doDone() {
 		if (get() == 0) {
-			_tab.enableExtractButtons();
-			_tab.progressBarFinished();
+			_tab.extractFinished();
+			JOptionPane
+			.showMessageDialog(_tab,"Extraction Complete!",
+					"Extract Complete!", JOptionPane.INFORMATION_MESSAGE);
 		} else if (get() > 0) {
 							JOptionPane
 									.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",
@@ -39,13 +44,12 @@ public class testExtractAudio extends testAbPro {
 			time += Float.parseFloat(times[1])*60;
 			time += Float.parseFloat(times[2]);
 			totalTime = time;
-			_tab.setProgressBarMax(maxValue);
+			_tab.setExtractMax(maxValue);
 		}else if(line.contains("time")){
 			Float time = Float.parseFloat(line.substring(line.indexOf("time")+5, line.indexOf("b")));
 			Float value = time/totalTime*maxValue;
-			_tab.setProgressValue(value.intValue());
+			_tab.setExtractValue(value.intValue());
 		}
-		//System.out.println(line);
 	}
 	
 	private String makeCommand(String input, String output){
