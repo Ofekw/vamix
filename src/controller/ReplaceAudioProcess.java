@@ -2,14 +2,14 @@ package controller;
 
 import javax.swing.JOptionPane;
 
+import org.omg.stub.java.rmi._Remote_Stub;
+
 import gui.AudioTab;
 
 public class ReplaceAudioProcess extends testAbPro {
-
-	//avconv -i inputVideo.mov -i inputAudio.mp3 -c:v copy -c:a copy -map 0:1 -map 1:0 outputVideo.mov
 	
-	//5.7 in avconv for video options for creating film from images, can then concatenate two
-	//video files into one
+//	avconv -i sample.avi -i testAudio.mp3 -c:v copy -map 0:0 -c:a copy -map 1:0 VIDEOwithNEWaudio.mp4
+
 	
 	private AudioTab _tab;
 	
@@ -20,13 +20,15 @@ public class ReplaceAudioProcess extends testAbPro {
 	
 	protected void doDone() {
 		if (get() == 0) {
-			_tab.enableExtractButtons();
-			_tab.progressBarFinished();
+			_tab.replaceFinished();
+			JOptionPane
+			.showMessageDialog(_tab,"Replacement Complete!",
+					"Replace Complete!", JOptionPane.INFORMATION_MESSAGE);
 		} else if (get() > 0) {
 							JOptionPane
-									.showMessageDialog(_tab,"Something went wrong with the replacement. Please check input media file",
+									.showMessageDialog(_tab,"Something went wrong with the replacement. Please check input media files",
 											"Replace Error", JOptionPane.ERROR_MESSAGE);
-		}else if (get() >0){
+		}else if (get() > 0){
 			JOptionPane
 			.showMessageDialog(_tab,"Process cancelled",
 					"Replace Error", JOptionPane.ERROR_MESSAGE);
@@ -34,10 +36,9 @@ public class ReplaceAudioProcess extends testAbPro {
 	}
 	
 	protected void doProcess(String line){
-		System.out.println(line);
 	}
 	
 	private String makeCommand(String inputVideo, String inputAudio, String outputVideo){
-		return "avconv -i "+ inputVideo+" -i "+inputAudio+" -c:v copy -c:a copy -map 0:1 -map 1:0 "+outputVideo+".avi";
+		return "avconv -i "+ inputVideo+" -i "+inputAudio+" -c:v copy -map 0:0 -c:a copy -map 1:0 "+outputVideo;
 	}
 }
