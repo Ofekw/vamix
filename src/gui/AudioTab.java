@@ -39,6 +39,13 @@ public class AudioTab extends Tab {
 	private JButton _inputAudioSelect;
 	private Box horizontalBox_1;
 	private Box horizontalBox_2;
+	private Component rigidArea;
+	private Component rigidArea_1;
+	private Component rigidArea_2;
+	private Component rigidArea_3;
+	private Component rigidArea_4;
+	private Component rigidArea_5;
+	private Component rigidArea_6;
 
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
@@ -52,6 +59,7 @@ public class AudioTab extends Tab {
 	protected void initialise() {
 		this.setPreferredSize(new Dimension(1000, 130));
 		Box verticalBox = Box.createVerticalBox();
+		verticalBox.setPreferredSize(new Dimension(980,160));
 		add(verticalBox);
 
 		Component verticalStrut = Box.createVerticalStrut(20);
@@ -60,21 +68,25 @@ public class AudioTab extends Tab {
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 
-		_extractAudio = new JButton("Extract Audio");
+		_extractAudio = new JButton("Extract Audio ");
 		_extractAudio.setEnabled(false);
 
 
 		_inputAudioSelect = new JButton("Select Audio");
 
 		horizontalBox.add(_extractAudio);
-
-		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
+		
+		rigidArea = Box.createRigidArea(new Dimension(20, 20));
+		rigidArea.setPreferredSize(new Dimension(12, 20));
 		horizontalBox.add(rigidArea);
 
 		_extractProgressBar = new JProgressBar();
 		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
 		horizontalBox.add(_extractProgressBar);
 		_extractProgressBar.setValue(0);
+		
+		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
+		horizontalBox.add(rigidArea_2);
 
 		_cancel = new JButton("Cancel");
 		horizontalBox.add(_cancel);
@@ -87,22 +99,54 @@ public class AudioTab extends Tab {
 		_replace = new JButton("Replace Audio");
 		_replace.setEnabled(false);
 		horizontalBox_1.add(_replace);
+		
+		rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
+		rigidArea_1.setPreferredSize(new Dimension(12, 21));
+		horizontalBox_1.add(rigidArea_1);
 
 
 		_replaceProgressBar = new JProgressBar();
 		horizontalBox_1.add(_replaceProgressBar);
+		
+		rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
+		rigidArea_3.setPreferredSize(new Dimension(80, 20));
+		horizontalBox_1.add(rigidArea_3);
 
 		horizontalBox_2 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_2);
 		_inputVideo = new JTextField();
+		_inputVideo.setMaximumSize(new Dimension(2147483647, 28));
 		_inputVideo.setEditable(false);
 		horizontalBox_2.add(_inputVideo);
-
-		_inputAudio = new JTextField();
-		_inputAudio.setEditable(false);
-		horizontalBox_2.add(_inputAudio);
+		
+		rigidArea_5 = Box.createRigidArea(new Dimension(20, 20));
+		rigidArea_5.setPreferredSize(new Dimension(6, 20));
+		horizontalBox_2.add(rigidArea_5);
 		_inputVideoSelect = new JButton("Select Video");
 		horizontalBox_2.add(_inputVideoSelect);
+		
+		_inputVideoSelect.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				fileChooser(_inputVideo, true);
+				if(!_inputAudio.getText().isEmpty()){
+					enableReplaceButton();
+				}
+			}
+		});
+		
+		rigidArea_4 = Box.createRigidArea(new Dimension(20, 20));
+		horizontalBox_2.add(rigidArea_4);
+
+		_inputAudio = new JTextField();
+		_inputAudio.setMaximumSize(new Dimension(2147483647, 28));
+		_inputAudio.setEditable(false);
+		horizontalBox_2.add(_inputAudio);
+		
+		rigidArea_6 = Box.createRigidArea(new Dimension(20, 20));
+		rigidArea_6.setPreferredSize(new Dimension(6, 20));
+		horizontalBox_2.add(rigidArea_6);
 		_inputAudioSelect = new JButton("Select Audio");
 		horizontalBox_2.add(_inputAudioSelect);
 		
@@ -143,17 +187,6 @@ public class AudioTab extends Tab {
 			public void actionPerformed(ActionEvent arg0) {
 				fileChooser(_inputAudio, false);
 				if(!_inputVideo.getText().isEmpty()){
-					enableReplaceButton();
-				}
-			}
-		});
-		
-		_inputVideoSelect.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				fileChooser(_inputVideo, true);
-				if(!_inputAudio.getText().isEmpty()){
 					enableReplaceButton();
 				}
 			}
