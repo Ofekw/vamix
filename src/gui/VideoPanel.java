@@ -22,6 +22,7 @@ import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.SliderUI;
 import javax.swing.plaf.basic.BasicSliderUI;
 
 import net.miginfocom.swing.MigLayout;
@@ -107,7 +108,10 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
 		_progressSlider.setToolTipText("Position");
-		_progressSlider.setBackground(Color.BLACK);
+		_progressSlider.setMajorTickSpacing(1);
+		_progressSlider.setSnapToTicks(false);
+//		_progressSlider.setBackground(Color.BLACK);
+//		_progressSlider.setUI(new CircleSliderUI(_progressSlider));
 
 		_rewindButton = new JToggleButton();
 		_rewindButton.setIcon(new ImageIcon(("icons/rewind.png")));
@@ -391,29 +395,29 @@ public class VideoPanel extends JPanel {
 	//		}
 	//		mediaPlayer.setPosition(positionValue);
 	//	}
-
-	private class CircleSliderUI extends BasicSliderUI {
-
-		Image knobImage;
-
-		public CircleSliderUI(JSlider slider) {
-
-			super(slider);
-
-			try {
-				this.knobImage = ImageIO.read( new File( "d:\\d.jpg") );
-
-			} catch ( IOException e ) {
-
-				e.printStackTrace();
-			}
-		}
-		public void paintThumb(Graphics g)  {        
-
-			g.drawImage( this.knobImage, thumbRect.x, thumbRect.y, 8, 8, null );
-
-		}
-
-	}
+//
+//	private class CircleSliderUI extends BasicSliderUI {
+//
+//		Image sliderImage;
+//
+//		public CircleSliderUI(JSlider slider) {
+//
+//			super(slider);
+//
+//			try {
+//				this.sliderImage = ImageIO.read( new File( "icons/circle.png") );
+//
+//			} catch ( IOException e ) {
+//
+//				e.printStackTrace();
+//			}
+//		}
+//		public void paintThumb(Graphics g)  {        
+//
+//			g.drawImage( this.sliderImage, thumbRect.x, thumbRect.y, 16, 16, null );
+//
+//		}
+//
+//	}
 
 }
