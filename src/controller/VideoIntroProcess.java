@@ -8,18 +8,19 @@ import gui.TextTab;
 import javax.swing.JOptionPane;
 
 
-public class videoIntroProcess extends testAbPro {
+public class VideoIntroProcess extends testAbPro {
 	
 	private TextTab _tab;
 
-	public videoIntroProcess(TextTab tab,int textSize, String font, String text, Color colour){
+	public VideoIntroProcess(TextTab tab,int textSize, String font, String text, Color colour){
 		String loc = System.getProperty("user.dir");
-		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+"tempIntro.mp4");
+		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+"tempMedia"+System.getProperty("file.separator")+"tempIntro.mp4");
 		super.setCommand(makeCommand(textSize, font, text, colour, loc));
 		_tab = tab;
 }
 	protected void doDone() {
 		if (get() == 0) {
+			
 		} else if (get() > 0) {
 							JOptionPane
 									.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",
@@ -29,6 +30,7 @@ public class videoIntroProcess extends testAbPro {
 			.showMessageDialog(_tab,"Process cancelled",
 					"Extract Error", JOptionPane.ERROR_MESSAGE);
 		}
+		_tab.enableButtons();
 	}
 
 	protected void doProcess(String line){
