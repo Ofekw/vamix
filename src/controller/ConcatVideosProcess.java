@@ -41,7 +41,10 @@ public class ConcatVideosProcess extends testAbPro {
 		String loc = System.getProperty("user.dir");
 		String binLoc = loc+System.getProperty("file.separator")+"tempMedia"
 				+System.getProperty("file.separator");
-		return "avconv -i "+binLoc+"tempIntro.mp4 -qscale 1 "+binLoc+"1.mpeg; avconv -i "+saveLoc+" -qscale 1 "+binLoc+"2.mpeg avconv -i "+binLoc+"tempOutro.mp4 -qscale 1 "+binLoc+"3.mpeg; cat "+binLoc+"1.mpeg "+binLoc+"2.mpeg "+binLoc+"3.mpeg | avconv -f mpeg -i - -vcodec mpeg4 -strict experimental output.mp4";
+		return "avconv -i "+binLoc+"tempIntro.mp4 -qscale 1 "+binLoc
+				+"1.mpeg; avconv -i "+saveLoc+" -qscale 1 "+binLoc+"2.mpeg avconv -i "+binLoc
+				+"tempOutro.mp4 -qscale 1 "+binLoc+"3.mpeg; cat "+binLoc+"1.mpeg "+binLoc
+				+"2.mpeg "+binLoc+"3.mpeg | avconv -f mpeg -i - -vcodec mpeg4 -strict experimental output.mp4";
 	}
 
 	

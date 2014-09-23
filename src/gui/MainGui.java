@@ -88,7 +88,7 @@ public class MainGui {
 		EditPanel.add(tabbedPane);
 
 		_audio = new AudioTab(videoPanel);
-		_text = new TextTab(videoPanel);
+		_text = new TextTab(videoPanel, this);
 		_video = new VideoTab(videoPanel,_audio);
 		tabbedPane.addTab("Media", null, _video, null);
 		tabbedPane.addTab("Audio", null, _audio, null);

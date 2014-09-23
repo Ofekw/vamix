@@ -57,15 +57,15 @@ public class TextTab extends Tab {
 	private JComboBox _fontType;
 	private Color _colourSelect = Color.BLACK;
 	private JButton _btnColourSelect;
-	private TextTab _tab;
+	private MainGui _main;
 	private String _saveLoc;
 	private JProgressBar _progressBar;
 	private JButton _apply;
 
-	public TextTab(VideoPanel panel) {
+	public TextTab(VideoPanel panel, MainGui main) {
 
 		super(panel);
-		this._tab=this;
+		this._main=main;
 
 	}
 
