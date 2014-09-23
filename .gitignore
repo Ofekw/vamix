@@ -4,6 +4,8 @@
 .settings/
 *.mp3
 *.class
+tempIntro.mp4
+tempOutro.mp4
 
 
 ### Eclipse ###
