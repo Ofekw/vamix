@@ -8,7 +8,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import controller.CheckFile;
-import controller.ExtractAudioProcess;
 import controller.ReplaceAudioProcess;
 import controller.ShellProcess;
 import controller.testAbPro;
@@ -124,8 +123,17 @@ public class AudioTab extends Tab {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				process.cancel();
+				if (process instanceof testExtractAudio){
 				enableExtractButtons();
 				_extractProgressBar.setValue(_extractProgressBar.getMaximum());
+				JOptionPane.showMessageDialog(_cancel, "Extract cancelled!",
+						"Cancelled!", JOptionPane.ERROR_MESSAGE);
+				}else if (process instanceof ReplaceAudioProcess){
+					_replaceProgressBar.setIndeterminate(false);
+					JOptionPane.showMessageDialog(_cancel, "Replace cancelled!",
+							"Cancelled!", JOptionPane.ERROR_MESSAGE);
+				}
+				
 			}
 		});
 		

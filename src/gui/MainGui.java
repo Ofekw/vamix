@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Field;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -32,6 +33,7 @@ public class MainGui {
 			if ("GTK+".equals(info.getName())) {
 				try {
 					UIManager.setLookAndFeel(info.getClassName());
+					UIManager.put("Slider.paintValue", false);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
