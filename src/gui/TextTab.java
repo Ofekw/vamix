@@ -3,41 +3,41 @@ package gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
+import controller.ReplaceAudioProcess;
+import controller.ShellProcess;
 import controller.videoIntroProcess;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 
 public class TextTab extends Tab {
 	private JTextField textFieldIntro;
@@ -49,6 +49,9 @@ public class TextTab extends Tab {
 	private Color _colourSelect = Color.BLACK;
 	private JButton _btnColourSelect;
 	private TextTab _tab;
+	private String _saveLoc;
+	private JProgressBar _progressBar;
+	private JButton apply;
 
 	public TextTab(VideoPanel panel) {
 
@@ -62,7 +65,7 @@ public class TextTab extends Tab {
 		this.setPreferredSize(new Dimension(1000, 130));
 
 		Box verticalBox = Box.createVerticalBox();
-		verticalBox.setPreferredSize(new Dimension(980,150));
+		verticalBox.setPreferredSize(new Dimension(980,170));
 
 		add(verticalBox);
 
@@ -199,17 +202,25 @@ public class TextTab extends Tab {
 		horizontalBox_2.add(fontType);
 		EmptyBorder eb = new EmptyBorder(new Insets(10, 10, 10, 10));
 
-		Component horizontalGlue = Box.createHorizontalGlue();
-		horizontalBox_2.add(horizontalGlue);
-
-		JButton apply = new JButton("Apply Changes");
+		apply = new JButton("Apply Changes");
 		apply.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				createProcess();	
 			}
 		});
+		
+		_progressBar = new JProgressBar();
+		horizontalBox_2.add(_progressBar);
 		horizontalBox_2.add(apply);
+		
+		Box horizontalBox_4 = Box.createHorizontalBox();
+		verticalBox.add(horizontalBox_4);
+		
+		Component verticalStrut_2 = Box.createVerticalStrut(20);
+		verticalStrut_2.setMaximumSize(new Dimension(32767, 10));
+		verticalStrut_2.setPreferredSize(new Dimension(0, 10));
+		horizontalBox_4.add(verticalStrut_2);
 
 		Box horizontalBox_3 = Box.createHorizontalBox();
 		horizontalBox_3.setPreferredSize(new Dimension(980, 600));
@@ -266,5 +277,70 @@ public class TextTab extends Tab {
 		System.out.println(_colourSelect.toString());
 		videoIntroProcess process = new videoIntroProcess(this, (int)fontSize.getValue(), getUserFont(), textFieldIntro.getText(), _colourSelect);
 		process.execute();
+	}
+	
+	private void SaveLocAndTextProcess(){
+		JFileChooser fileChooser = new JFileChooser() {
+			@Override
+			public void approveSelection() {
+
+				File f = getSelectedFile();
+				/*
+				 * Makes sure the filename ends with extension .mp3 when checking for overwrite
+				 */
+
+				if (!f.getAbsolutePath()
+						.endsWith(".mp4")) {
+					f = new File(getSelectedFile()
+							+ ".mp4");
+				}
+				if (f.exists() && getDialogType() == SAVE_DIALOG) {
+					int result = JOptionPane
+							.showConfirmDialog(
+									this,
+									"The file exists, overwrite?",
+									"Existing file",
+									JOptionPane.YES_NO_OPTION);
+					switch (result) {
+					case JOptionPane.YES_OPTION:
+						ShellProcess
+						.command("rm -f " + f.getAbsolutePath());
+						super.approveSelection();
+						return;
+					case JOptionPane.NO_OPTION:
+						cancelSelection();
+						return;
+					case JOptionPane.CLOSED_OPTION:
+						return;
+					case JOptionPane.CANCEL_OPTION:
+						cancelSelection();
+						return;
+					}
+				}
+				super.approveSelection();
+			}
+		};
+
+		fileChooser.setDialogTitle("Specify where to save media file with text");
+
+		int userSelection = fileChooser.showSaveDialog(this);
+		File fileToSave = null;
+		if (userSelection == JFileChooser.OPEN_DIALOG) {
+			fileToSave = fileChooser.getSelectedFile();
+			/*
+			 * Makes sure the filename ends with extension .mp3
+			 */
+
+			if (!fileChooser.getSelectedFile().getAbsolutePath()
+					.endsWith(".mp4")) {
+				fileToSave = new File(fileChooser.getSelectedFile()
+						+ ".mp4");
+			}
+			_saveLoc=fileToSave.getAbsolutePath();
+			createProcess();
+			apply.setEnabled(false);
+			_progressBar.setIndeterminate(true);
+		}
+		
 	}
 }
