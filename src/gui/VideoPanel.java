@@ -113,6 +113,7 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
 		_progressSlider.setToolTipText("Position");
+		_progressSlider.setEnabled(false);
 
 		_rewindButton = new JToggleButton();
 		_rewindButton.setIcon(new ImageIcon(("icons/rewind.png")));
@@ -206,9 +207,9 @@ public class VideoPanel extends JPanel {
 		_playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				//check if video hasn't started at all
-				if (mediaPlayer.getTime() == -1){
+				System.out.println(_progressSlider.getValue());
+				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
 					//check if there has been an input file selected
 					if (videoLocation == null){
 						errorPlaybackFile();
@@ -235,12 +236,10 @@ public class VideoPanel extends JPanel {
 					pause();
 					if(_fastForwardButton.isSelected()){
 						skipper.cancel(true);
-						_fastForwardButton.setSelected(false);
-						_rewindButton.setSelected(false);
+						enableSkips();
 					}else if (_rewindButton.isSelected()){
 						skipper.cancel(true);
-						_rewindButton.setSelected(false);
-						_fastForwardButton.setSelected(false);
+						enableSkips();
 					}
 				}
 			}
@@ -376,73 +375,13 @@ public class VideoPanel extends JPanel {
 		updateTime(mediaPlayer.getTime());
 	}
 
-	//
-	//				_positionSlider.addMouseListener(new MouseAdapter() {
-	//					@Override
-	//					public void mousePressed(MouseEvent e) {
-	//						if(mediaPlayer.isPlaying()) {
-	//							mousePressedPlaying = true;
-	//							mediaPlayer.pause();
-	//						}else {
-	//							mousePressedPlaying = false;
-	//						}
-	//						setSliderBasedPosition();
-	//					}
-	//		
-	//					@Override
-	//					public void mouseReleased(MouseEvent e) {
-	//						setSliderBasedPosition();
-	//						updateUIState();
-	//					}
-	//				});
-
-	//	private void updateUIState() {
-	//		if(!mediaPlayer.isPlaying()) {
-	//			// Resume play or play a few frames then pause to show current position in video
-	//			mediaPlayer.start();
-	//			if(!mousePressedPlaying) {
-	//				try {
-	//					// Half a second probably gets an iframe
-	//					Thread.sleep(500);
-	//				}
-	//				catch(InterruptedException e) {
-	//					// Don't care if unblocked early
-	//				}
-	//				mediaPlayer.pause();
-	//			}
-	//		}
-	//		long time = mediaPlayer.getTime();
-	//		int position = (int)(mediaPlayer.getPosition() * 1000.0f);
-	//		int chapter = mediaPlayer.getChapter();
-	//		int chapterCount = mediaPlayer.getChapterCount();
-	//		updateTime(time);
-	//		updatePosition(position);
-	//	}
-
-
-	//
-	//	private class CircleSliderUI extends BasicSliderUI {
-	//
-	//		Image sliderImage;
-	//
-	//		public CircleSliderUI(JSlider slider) {
-	//
-	//			super(slider);
-	//
-	//			try {
-	//				this.sliderImage = ImageIO.read( new File( "icons/circle.png") );
-	//
-	//			} catch ( IOException e ) {
-	//
-	//				e.printStackTrace();
-	//			}
-	//		}
-	//		public void paintThumb(Graphics g)  {        
-	//
-	//			g.drawImage( this.sliderImage, thumbRect.x, thumbRect.y, 16, 16, null );
-	//
-	//		}
-	//
-	//	}
-
+	public void enableSlider(){
+		_progressSlider.setEnabled(true);
+	}
+	
+	public void enableSkips(){
+		_fastForwardButton.setSelected(false);
+		_rewindButton.setSelected(false);
+	}
+	
 }

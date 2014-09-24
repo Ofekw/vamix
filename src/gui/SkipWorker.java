@@ -32,8 +32,14 @@ public class SkipWorker extends SwingWorker<Void, Integer> {
 	protected Void doInBackground() throws Exception {
 		while(!isCancelled()){
 			if (_fastForward){
+				if (_player.getTime()>=_player.getLength()){
+					cancel(true);
+				}
 				publish(SKIP_TIME_MS);
 			}else{
+				if (_player.getTime()<=_player.getLength()){
+					cancel(true);
+				}
 				publish(-SKIP_TIME_MS);
 			}
 			Thread.sleep(100);
