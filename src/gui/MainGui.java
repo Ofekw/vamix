@@ -32,6 +32,7 @@ public class MainGui {
 	private VideoTab _video;
 	private AudioTab _audio;
 	private TextTab _text;
+	private VideoPanel _videoPanel;
 
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
@@ -69,6 +70,7 @@ public class MainGui {
 
 	private void initialize() {
 		frame = new JFrame();
+		frame.setResizable(false);
 		editFrame = new JFrame();
 		ImageIcon img = new ImageIcon("V.png");
 		frame.setIconImage(img.getImage());
@@ -82,8 +84,8 @@ public class MainGui {
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 
-		VideoPanel videoPanel = new VideoPanel(this);
-		horizontalBox.add(videoPanel);
+		_videoPanel = new VideoPanel(this);
+		horizontalBox.add(_videoPanel);
 		//videoPanel.setBackground(Color.BLACK);
 
 		Box horizontalBox_1 = Box.createHorizontalBox();
@@ -96,9 +98,9 @@ public class MainGui {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		EditPanel.add(tabbedPane);
 
-		_audio = new AudioTab(videoPanel);
-		_text = new TextTab(videoPanel, this);
-		_video = new VideoTab(videoPanel,_audio);
+		_audio = new AudioTab(_videoPanel);
+		_text = new TextTab(_videoPanel, this);
+		_video = new VideoTab(_videoPanel,_audio);
 		tabbedPane.addTab("Media", null, _video, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
 		tabbedPane.addTab("Text", null, _text, null);
@@ -126,5 +128,8 @@ public class MainGui {
 
 	public VideoTab getVideo() {
 		return _video;
+	}
+	public VideoPanel getPlayer() {
+		return _videoPanel;
 	}
 }
