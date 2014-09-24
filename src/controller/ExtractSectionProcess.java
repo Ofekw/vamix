@@ -14,8 +14,8 @@ public class ExtractSectionProcess extends testAbPro{
 	}
 	
 	protected void doDone() {
+		_tab.extractFinished();
 		if (get() == 0) {
-			_tab.extractFinished();
 			JOptionPane
 			.showMessageDialog(_tab,"Extraction Complete!",
 					"Extract Complete!", JOptionPane.INFORMATION_MESSAGE);

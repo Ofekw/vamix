@@ -15,10 +15,11 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import controller.CheckFile;
+import controller.OverlayAudioProcess;
 import controller.ReplaceAudioProcess;
 import controller.ShellProcess;
 import controller.testAbPro;
-import controller.testExtractAudio;
+import controller.ExtractAudioProcess;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -62,6 +63,10 @@ public class AudioTab extends Tab {
 
 	private JButton _removeAudio;
 	private JButton _overLayAudio;
+	
+	private final String REMOVE = "REMOVE";
+	private final String OVERLAY = "OVERLAY";
+	private final String REPLACE = "REPLACE";
 
 
 
@@ -182,7 +187,7 @@ public class AudioTab extends Tab {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				replaceAudio(false);
+				replaceAudio(REPLACE);
 			}
 		});
 		
@@ -190,7 +195,15 @@ public class AudioTab extends Tab {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				replaceAudio(true);
+				replaceAudio(REMOVE);
+			}
+		});
+		
+		_overLayAudio.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				replaceAudio(OVERLAY);
 			}
 		});
 	}
@@ -199,7 +212,7 @@ public class AudioTab extends Tab {
 	 * Asks user for output file name and checks if it exists, asks to overwrite if file does exist
 	 * Runs replace audio command once all inputs valid
 	 */
-	private void replaceAudio(boolean removeAudio){
+	private void replaceAudio(String command){
 		JFileChooser fileChooser = new JFileChooser() {
 			@Override
 			public void approveSelection() {
@@ -257,9 +270,12 @@ public class AudioTab extends Tab {
 						+ ".mp4");
 			}
 			_newFileLoc=fileToSave.getAbsolutePath();
-			if (removeAudio){
-				process = new ReplaceAudioProcess(_mediaLoc, "", _newFileLoc, this, true);
+			if (command.equals(REMOVE)){
 				_extractProgressBar.setValue(0);
+				process = new ReplaceAudioProcess(_mediaLoc, _inputAudio.getText(), _newFileLoc, this, true);
+			}else if (command.equals(OVERLAY)){
+				process = new OverlayAudioProcess(_mediaLoc, _inputAudio.getText(), _newFileLoc, this);
+				_extractProgressBar.setIndeterminate(true);
 			}else{
 				process = new 
 						ReplaceAudioProcess(_mediaLoc, _inputAudio.getText(), 
@@ -348,7 +364,7 @@ public class AudioTab extends Tab {
 					_startMinutes.getValue()+"", _startSeconds.getValue()+"");
 			String duration = createTime(_durationHours.getValue()+"", 
 					_durationMinutes.getValue()+"", _durationSeconds.getValue()+"");
-			process = new testExtractAudio(_mediaLoc,fileToSave.getAbsolutePath(), this, start, duration);
+			process = new ExtractAudioProcess(_mediaLoc,fileToSave.getAbsolutePath(), this, start, duration);
 
 			process.execute();
 			_cancel.setEnabled(true);
@@ -391,7 +407,6 @@ public class AudioTab extends Tab {
 	}
 
 	public void replaceFinished(){
-//		_extractProgressBar.setIndeterminate(false);
 		if (!_inputAudio.getText().isEmpty()){
 			enableReplaceButton();
 			_extractProgressBar.setIndeterminate(false);
