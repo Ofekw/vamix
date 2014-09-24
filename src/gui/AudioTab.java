@@ -44,19 +44,9 @@ public class AudioTab extends Tab {
 	private testAbPro process;
 	private JButton _replace;
 	private JProgressBar _replaceProgressBar;
-	private JTextField _inputVideo;
 	private JTextField _inputAudio;
-	private JButton _inputVideoSelect;
 	private JButton _inputAudioSelect;
-	private Box horizontalBox_1;
-	private Box horizontalBox_2;
-	private Component rigidArea;
-	private Component rigidArea_1;
-	private Component rigidArea_2;
-	private Component rigidArea_3;
-	private Component rigidArea_4;
-	private Component rigidArea_5;
-	private Component rigidArea_6;
+
 
 	private JLabel _startLabel;
 	private JSpinner _startHours;
@@ -174,18 +164,6 @@ public class AudioTab extends Tab {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				process.cancel();
-				//				if (process instanceof testExtractAudio){
-				//				enableExtractButtons();
-				//				_extractProgressBar.setValue(_extractProgressBar.getMaximum());
-				//				JOptionPane.showMessageDialog(_cancel, "Process cancelled!",
-				//						"Cancelled!", JOptionPane.ERROR_MESSAGE);
-				//				}
-				//				}else if (process instanceof ReplaceAudioProcess){
-				//					_replaceProgressBar.setIndeterminate(false);
-				//					JOptionPane.showMessageDialog(_cancel, "Replace cancelled!",
-				//							"Cancelled!", JOptionPane.ERROR_MESSAGE);
-				//				}
-
 			}
 		});
 
@@ -203,7 +181,15 @@ public class AudioTab extends Tab {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				replaceAudio();
+				replaceAudio(false);
+			}
+		});
+		
+		_removeAudio.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				replaceAudio(true);
 			}
 		});
 	}
@@ -212,7 +198,7 @@ public class AudioTab extends Tab {
 	 * Asks user for output file name and checks if it exists, asks to overwrite if file does exist
 	 * Runs replace audio command once all inputs valid
 	 */
-	private void replaceAudio(){
+	private void replaceAudio(boolean removeAudio){
 		JFileChooser fileChooser = new JFileChooser() {
 			@Override
 			public void approveSelection() {
@@ -270,13 +256,16 @@ public class AudioTab extends Tab {
 						+ ".mp4");
 			}
 			_newFileLoc=fileToSave.getAbsolutePath();
-
-			process = new 
-					ReplaceAudioProcess(_inputVideo.getText(), _inputAudio.getText(), 
-							_newFileLoc, this);
+			if (removeAudio){
+				process = new ReplaceAudioProcess(_mediaLoc, "", _newFileLoc, this);
+			}else{
+				process = new 
+						ReplaceAudioProcess(_mediaLoc, _inputAudio.getText(), 
+								_newFileLoc, this);
+			}
 			process.execute();
 			_cancel.setEnabled(true);
-			_replaceProgressBar.setIndeterminate(true);
+			_extractProgressBar.setIndeterminate(true);
 			disableReplaceButton();
 		}
 
@@ -309,10 +298,7 @@ public class AudioTab extends Tab {
 	}
 
 	public void replaceFinished(){
-		_replaceProgressBar.setIndeterminate(false);
-		_replace.setEnabled(false);
-		_inputAudio.setText("");
-		_inputVideo.setText("");
+		_extractProgressBar.setIndeterminate(false);
 	}
 	/**
 	 * Asks the user for output file name then runs the extract audio process
@@ -390,7 +376,7 @@ public class AudioTab extends Tab {
 			String duration = createTime(_durationHours.getValue()+"", 
 					_durationMinutes.getValue()+"", _durationSeconds.getValue()+"");
 			process = new testExtractAudio(_mediaLoc,fileToSave.getAbsolutePath(), this, start, duration);
-			
+
 			process.execute();
 			_cancel.setEnabled(true);
 			disableExtractButtons();

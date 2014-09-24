@@ -6,8 +6,6 @@ import java.awt.Color;
 
 import javax.swing.JOptionPane;
 
-import sun.font.FontManager;
-
 
 public class VideoIntroProcess extends testAbPro {
 	

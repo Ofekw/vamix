@@ -36,12 +36,19 @@ public class testExtractAudio extends testAbPro {
 					"Extract Error", JOptionPane.ERROR_MESSAGE);
 		}
 		_tab.enableExtractButtons();
+		_tab.setExtractValue(maxValue);
 	}
 
 	protected void doProcess(String line){
-		if (_duration.equals("00:00:00") && line.contains("Duration:")){
+
+		if (line.contains("Duration:")){
 			Float time;
-			String duration = line.substring(line.indexOf(":")+1, line.indexOf(",")).trim();
+			String duration;
+			if (_duration.equals("00:00:00")){
+				duration = line.substring(line.indexOf(":")+1, line.indexOf(",")).trim();
+			}else{
+				duration = _duration;
+			}
 			String[] times = duration.split(":");
 			time = Float.parseFloat(times[0])*360;
 			time += Float.parseFloat(times[1])*60;
