@@ -1,11 +1,18 @@
 package gui;
 
 import java.awt.Dimension;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import controller.CheckFile;
 import controller.ReplaceAudioProcess;
@@ -19,6 +26,10 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+
+import org.omg.CORBA._PolicyStub;
+
+import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public class AudioTab extends Tab {
@@ -46,10 +57,18 @@ public class AudioTab extends Tab {
 	private Component rigidArea_4;
 	private Component rigidArea_5;
 	private Component rigidArea_6;
+	
+	private JLabel _startLabel;
+	private JSpinner _startHours;
+	private JSpinner _startMinutes;
+	private JSpinner _startSeconds;
 
-	public void setMediaLoc(String _mediaLoc) {
-		this._mediaLoc = _mediaLoc;
-	}
+	private JLabel _durationLabel;
+	private JSpinner _durationHours;
+	private JSpinner _durationMinutes;
+	private JSpinner _durationSeconds;
+
+
 
 	public AudioTab(VideoPanel panel){
 		super(panel);
@@ -57,7 +76,63 @@ public class AudioTab extends Tab {
 
 	@Override
 	protected void initialise() {
+		this.setLayout(new MigLayout("", "[500px, grow][500px, grow]", "[300px, grow][200px,grow]"));
+		
+		JPanel progressPanel = new JPanel(new MigLayout());
+		JPanel rightSide = new JPanel(new MigLayout());
 		this.setPreferredSize(new Dimension(1000, 130));
+		JPanel leftSide = new JPanel(new MigLayout());
+		
+		
+		leftSide.setPreferredSize(new Dimension(500, 200));
+		rightSide.setPreferredSize(new Dimension(500, 200));
+		
+		
+		leftSide.setBorder(BorderFactory.createBevelBorder(1));
+		rightSide.setBorder(BorderFactory.createBevelBorder(1));
+		progressPanel.setBorder(BorderFactory.createBevelBorder(1));
+		
+		_startLabel = new JLabel("Enter start time (HH:MM:SS)");
+		_startHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+		_startMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
+		_startSeconds = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
+
+		_durationLabel = new JLabel("Enter duration (HH:MM:SS)");
+		_durationHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+		_durationMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
+		_durationSeconds = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
+		
+		_extractAudio = new JButton("Extract Audio");
+		_extractAudio.setEnabled(false);
+		
+		_cancel = new JButton("Cancel");
+//		horizontalBox.add(_cancel);
+		_cancel.setEnabled(false);
+		
+		_extractProgressBar = new JProgressBar();
+		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
+//		horizontalBox.add(_extractProgressBar);
+		_extractProgressBar.setValue(0);
+		
+		leftSide.add(_startLabel);
+		leftSide.add(_startHours, "split 3, wmax 40, w 100%");
+		leftSide.add(_startMinutes, "wmax 40, w 100%");
+		leftSide.add(_startSeconds, "wmax 40, wrap 5, w 100%");
+		leftSide.add(_durationLabel);
+		leftSide.add(_durationHours, "split 3, wmax 40, w 100%");
+		leftSide.add(_durationMinutes, "wmax 40, w 100%");
+		leftSide.add(_durationSeconds, "wmax 40, w 100%");
+		
+		rightSide.add(_extractAudio,"w 100%, h 100%,span,wrap");
+		rightSide.add(_cancel, "w 100%, h 100%,span,wrap");
+		
+		progressPanel.add(_extractProgressBar, "w 100%");
+		
+		add(leftSide, "growx");
+		add(rightSide, "growx, wrap");
+		add(progressPanel, "w 100%, span 2");
+		
+//		this.add(progressPanel);
 //		Box verticalBox = Box.createVerticalBox();
 //		verticalBox.setPreferredSize(new Dimension(980,160));
 //		add(verticalBox);
@@ -68,8 +143,7 @@ public class AudioTab extends Tab {
 //		Box horizontalBox = Box.createHorizontalBox();
 //		verticalBox.add(horizontalBox);
 
-		_extractAudio = new JButton("Extract Audio ");
-		_extractAudio.setEnabled(false);
+
 
 
 		_inputAudioSelect = new JButton("Select Audio");
@@ -80,17 +154,12 @@ public class AudioTab extends Tab {
 		rigidArea.setPreferredSize(new Dimension(12, 20));
 //		horizontalBox.add(rigidArea);
 
-		_extractProgressBar = new JProgressBar();
-		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
-//		horizontalBox.add(_extractProgressBar);
-		_extractProgressBar.setValue(0);
+
 		
 		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
 //		horizontalBox.add(rigidArea_2);
 
-		_cancel = new JButton("Cancel");
-//		horizontalBox.add(_cancel);
-		_cancel.setEnabled(false);
+
 
 
 		horizontalBox_1 = Box.createHorizontalBox();
@@ -150,7 +219,7 @@ public class AudioTab extends Tab {
 		_inputAudioSelect = new JButton("Select Audio");
 		horizontalBox_2.add(_inputAudioSelect);
 		
-		this.add(new ExtractPane());
+		//this.add(new ExtractPane());
 		
 		_extractAudio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -448,5 +517,9 @@ public class AudioTab extends Tab {
 			}
 			field.setText(selectedFile.getAbsolutePath());
 		}
+	}
+
+	public void setMediaLoc(String _mediaLoc) {
+		this._mediaLoc = _mediaLoc;
 	}
 }
