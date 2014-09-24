@@ -110,7 +110,7 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setMinimum(0);
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
-		_progressSlider.setToolTipText("Position");
+//		_progressSlider.setToolTipText("Position");
 		_progressSlider.setEnabled(false);
 
 		_rewindButton = new JToggleButton();
@@ -225,7 +225,6 @@ public class VideoPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//check if video hasn't started at all
-				System.out.println(_progressSlider.getValue());
 				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
 					//check if there has been an input file selected
 					if (videoLocation == null){
