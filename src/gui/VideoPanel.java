@@ -208,7 +208,6 @@ public class VideoPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//check if video hasn't started at all
-				System.out.println(_progressSlider.getValue());
 				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
 					//check if there has been an input file selected
 					if (videoLocation == null){
