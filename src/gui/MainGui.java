@@ -132,4 +132,8 @@ public class MainGui {
 	public VideoPanel getPlayer() {
 		return _videoPanel;
 	}
+	
+	public JFrame getFrame(){
+		return frame;
+	}
 }
