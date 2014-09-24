@@ -20,7 +20,10 @@ public class VideoIntroProcess extends testAbPro {
 }
 	protected void doDone() {
 		if (get() == 0) {
-			
+			if(_tab.getProcessNumber() == 1){
+				ConcatVideosProcess process = new ConcatVideosProcess(_tab);
+				process.execute();
+			}
 		} else if (get() > 0) {
 							JOptionPane
 									.showMessageDialog(_tab,"Something went wrong with creating an intro. Please check input media file",
@@ -30,7 +33,6 @@ public class VideoIntroProcess extends testAbPro {
 			.showMessageDialog(_tab,"Process cancelled",
 					"Process Error", JOptionPane.ERROR_MESSAGE);
 		}
-		_tab.enableButtons();
 	}
 
 	protected void doProcess(String line){

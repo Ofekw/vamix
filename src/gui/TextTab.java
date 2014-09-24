@@ -36,6 +36,9 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
+import org.xml.sax.InputSource;
+
+import sun.security.action.GetBooleanAction;
 import sun.security.util.DisabledAlgorithmConstraints;
 
 import controller.ReplaceAudioProcess;
@@ -61,6 +64,7 @@ public class TextTab extends Tab {
 	private String _saveLoc;
 	private JProgressBar _progressBar;
 	private JButton _apply;
+	private int _processNumber;
 
 	public TextTab(VideoPanel panel, MainGui main) {
 
@@ -177,7 +181,7 @@ public class TextTab extends Tab {
 			}
 		});
 		_fontSize.setMaximumSize(new Dimension(20, 30));
-		_fontSize.setModel(new SpinnerNumberModel(24, 8, 54, 1));
+		_fontSize.setModel(new SpinnerNumberModel(24, 8, 64, 1));
 		horizontalBox_2.add(_fontSize);
 
 		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
@@ -253,7 +257,14 @@ public class TextTab extends Tab {
 		_apply.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				SaveLocAndTextProcess();	
+				if(_apply.isEnabled()){
+					System.out.println(getMain().getVideo().getVideoLoc());
+					if (!_main.getVideo().getVideoLoc().isEmpty()){
+						SaveLocAndTextProcess();	
+					}else {
+						noMediaSelected();
+					}
+				}
 			}
 		});
 
@@ -321,16 +332,24 @@ public class TextTab extends Tab {
 	}
 
 	private void createProcess() {
+		_processNumber = 0;
 		if(!_textFieldIntro.getText().isEmpty()){
 			VideoIntroProcess process1 = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldIntro.getText(), _colourSelect);
 			process1.execute();
-			
+			_processNumber = 1;
+
 		}
-		
+
 		if(!_textFieldEnd.getText().isEmpty()){
 			VideoOutroProcess process2 = new VideoOutroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldEnd.getText(), _colourSelect);
 			process2.execute();
+			_processNumber = 2;
 		}
+	}
+
+	private void noMediaSelected() {
+		JOptionPane.showMessageDialog(this, "No media selected in the Media tab to edit",
+				"Media Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void SaveLocAndTextProcess(){
@@ -392,10 +411,9 @@ public class TextTab extends Tab {
 			}
 			_saveLoc=fileToSave.getAbsolutePath();
 			createProcess();
-			_progressBar.setValue(0);
+			progressReset();
 			_apply.setEnabled(false);
 			_progressBar.setIndeterminate(true);
-			_progressBar.setValue(100);
 			disableButtons();
 		}
 
@@ -422,5 +440,26 @@ public class TextTab extends Tab {
 		_fontSize.setEnabled(true);
 		_fontType.setEnabled(true);
 		_progressBar.setIndeterminate(false);
+	}
+
+	public MainGui getMain(){
+		return _main;
+	}
+
+	public void progressDone(){
+		_progressBar.setValue(100);
+	}
+
+	public void progressReset(){
+		_progressBar.setValue(0);
+	}
+
+	public String[] userText(){
+		String[] inputs ={_textFieldIntro.getText(), _textFieldEnd.getText()};
+		return inputs;
+	}
+	
+	public int getProcessNumber(){
+		return _processNumber;
 	}
 }
