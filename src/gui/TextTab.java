@@ -36,10 +36,13 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
+<<<<<<< HEAD
 import org.xml.sax.InputSource;
 
 import sun.security.action.GetBooleanAction;
 import sun.security.util.DisabledAlgorithmConstraints;
+=======
+>>>>>>> e14b238fba726ad6dc3656aaa90c82033e71a84c
 
 import controller.ReplaceAudioProcess;
 import controller.ShellProcess;

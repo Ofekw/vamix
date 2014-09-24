@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.List;
+
 import javax.swing.SwingWorker;
 
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -10,12 +12,12 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
  * @author patrick
  *
  */
-public class SkipWorker extends SwingWorker<Void, Void> {
+public class SkipWorker extends SwingWorker<Void, Integer> {
 
 	private static final int SKIP_TIME_MS = 1000;
 	private EmbeddedMediaPlayer _player;
 	private boolean _fastForward;
-	
+
 	/**
 	 * 
 	 * @param mediaPlayer: media player with content to skip
@@ -25,20 +27,33 @@ public class SkipWorker extends SwingWorker<Void, Void> {
 		_player = mediaPlayer;
 		_fastForward = fastFoward;
 	}
-	
+
 	@Override
 	protected Void doInBackground() throws Exception {
 		while(!isCancelled()){
 			if (_fastForward){
-			skip(SKIP_TIME_MS);
+				if (_player.getTime()>=_player.getLength()){
+					cancel(true);
+				}
+				publish(SKIP_TIME_MS);
 			}else{
-				skip(-SKIP_TIME_MS);
+				if (_player.getTime()<=_player.getLength()){
+					cancel(true);
+				}
+				publish(-SKIP_TIME_MS);
 			}
 			Thread.sleep(100);
 		}
 		return null;
 	}
-	
+
+	@Override
+	protected void process(List<Integer> chunks) {
+		for (Integer i : chunks) {
+			skip(i);
+		}
+	}
+
 	private void skip(int skipTime) {
 		// Only skip time if can handle time setting
 		if(_player.getLength() > 0) {

@@ -58,15 +58,15 @@ public class AudioTab extends Tab {
 	@Override
 	protected void initialise() {
 		this.setPreferredSize(new Dimension(1000, 130));
-		Box verticalBox = Box.createVerticalBox();
-		verticalBox.setPreferredSize(new Dimension(980,160));
-		add(verticalBox);
-
-		Component verticalStrut = Box.createVerticalStrut(20);
-		verticalBox.add(verticalStrut);
-
-		Box horizontalBox = Box.createHorizontalBox();
-		verticalBox.add(horizontalBox);
+//		Box verticalBox = Box.createVerticalBox();
+//		verticalBox.setPreferredSize(new Dimension(980,160));
+//		add(verticalBox);
+//
+//		Component verticalStrut = Box.createVerticalStrut(20);
+//		verticalBox.add(verticalStrut);
+//
+//		Box horizontalBox = Box.createHorizontalBox();
+//		verticalBox.add(horizontalBox);
 
 		_extractAudio = new JButton("Extract Audio ");
 		_extractAudio.setEnabled(false);
@@ -74,27 +74,27 @@ public class AudioTab extends Tab {
 
 		_inputAudioSelect = new JButton("Select Audio");
 
-		horizontalBox.add(_extractAudio);
+//		horizontalBox.add(_extractAudio);
 		
 		rigidArea = Box.createRigidArea(new Dimension(20, 20));
 		rigidArea.setPreferredSize(new Dimension(12, 20));
-		horizontalBox.add(rigidArea);
+//		horizontalBox.add(rigidArea);
 
 		_extractProgressBar = new JProgressBar();
 		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
-		horizontalBox.add(_extractProgressBar);
+//		horizontalBox.add(_extractProgressBar);
 		_extractProgressBar.setValue(0);
 		
 		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
-		horizontalBox.add(rigidArea_2);
+//		horizontalBox.add(rigidArea_2);
 
 		_cancel = new JButton("Cancel");
-		horizontalBox.add(_cancel);
+//		horizontalBox.add(_cancel);
 		_cancel.setEnabled(false);
 
 
 		horizontalBox_1 = Box.createHorizontalBox();
-		verticalBox.add(horizontalBox_1);
+//		verticalBox.add(horizontalBox_1);
 
 		_replace = new JButton("Replace Audio");
 		_replace.setEnabled(false);
@@ -113,7 +113,7 @@ public class AudioTab extends Tab {
 		horizontalBox_1.add(rigidArea_3);
 
 		horizontalBox_2 = Box.createHorizontalBox();
-		verticalBox.add(horizontalBox_2);
+//		verticalBox.add(horizontalBox_2);
 		_inputVideo = new JTextField();
 		_inputVideo.setMaximumSize(new Dimension(2147483647, 28));
 		_inputVideo.setEditable(false);
@@ -149,6 +149,8 @@ public class AudioTab extends Tab {
 		horizontalBox_2.add(rigidArea_6);
 		_inputAudioSelect = new JButton("Select Audio");
 		horizontalBox_2.add(_inputAudioSelect);
+		
+		this.add(new ExtractPane());
 		
 		_extractAudio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
