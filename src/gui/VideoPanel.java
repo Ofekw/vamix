@@ -164,12 +164,19 @@ public class VideoPanel extends JPanel {
 		add(_fullScreen, "cell 0 3");
 		this.add(_volumeSlider, "cell 0 3");
 
-		skipper = new SkipWorker(mediaPlayer, true);
+		skipper = new SkipWorker(mediaPlayer, true, VideoPanel.this);
 	}
 
 	protected void fullScreenToggle() {
 		init();
 
+	}
+	
+	protected void stopSkipping(){
+		skipper.cancel(true);
+		_fastForwardButton.setSelected(false);
+		_rewindButton.setSelected(false);
+		pause();
 	}
 
 	private void filePathInvalid() {
@@ -271,7 +278,7 @@ public class VideoPanel extends JPanel {
 				}
 				if(_fastForwardButton.isSelected()){
 					skipper.cancel(true);
-					skipper = new SkipWorker(mediaPlayer, true);
+					skipper = new SkipWorker(mediaPlayer, true, VideoPanel.this);
 					skipper.execute();
 				}else{
 					skipper.cancel(true);
@@ -287,7 +294,7 @@ public class VideoPanel extends JPanel {
 				}
 				if(_rewindButton.isSelected()){
 					skipper.cancel(true);
-					skipper = new SkipWorker(mediaPlayer, false);
+					skipper = new SkipWorker(mediaPlayer, false, VideoPanel.this);
 					skipper.execute();
 				}else{
 					skipper.cancel(true);
