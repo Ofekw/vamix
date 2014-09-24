@@ -125,7 +125,7 @@ public class TextTab extends Tab {
 		horizontalBox.add(_textFieldIntro);
 		_textFieldIntro.setColumns(10);
 
-		JButton btnPreview = new JButton("Preview");
+		JButton btnPreview = new JButton("Apply");
 		btnPreview.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String text = _textFieldIntro.getText();
@@ -185,7 +185,7 @@ public class TextTab extends Tab {
 		horizontalBox_1.add(_textFieldEnd);
 		_textFieldEnd.setColumns(10);
 
-		JButton button = new JButton("Preview");
+		JButton button = new JButton("Apply");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String text = _textFieldEnd.getText();
@@ -289,7 +289,7 @@ public class TextTab extends Tab {
 		horizontalBox_2.add(_fontType);
 		EmptyBorder eb = new EmptyBorder(new Insets(10, 10, 10, 10));
 
-		_apply = new JButton("Apply Changes");
+		_apply = new JButton("Convert");
 		_apply.setEnabled(false);
 		_apply.addMouseListener(new MouseAdapter() {
 			@Override

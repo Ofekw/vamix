@@ -30,7 +30,7 @@ public class ConcatVideosProcess extends testAbPro {
 			_tab.progressDone();
 			VideoTab videoTab = _tab.getMain().getVideo();
 			videoTab.getVideoLocField().setText(_tab.getSaveloc());
-			_tab.getMain().getPlayer().resetPlayer();
+			_tab.getMain().getPlayer().setMedia(_tab.getSaveloc());
 			_tab.getMain().getPlayer().play();
 			
 		} else if (get() > 0) {
