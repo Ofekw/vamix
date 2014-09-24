@@ -38,9 +38,6 @@ import javax.swing.text.StyleContext;
 
 import org.xml.sax.InputSource;
 
-import sun.security.action.GetBooleanAction;
-import sun.security.util.DisabledAlgorithmConstraints;
-
 import controller.ReplaceAudioProcess;
 import controller.ShellProcess;
 import controller.VideoIntroProcess;

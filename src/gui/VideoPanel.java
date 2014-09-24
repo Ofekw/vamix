@@ -112,7 +112,7 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setMinimum(0);
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
-		_progressSlider.setToolTipText("Position");
+//		_progressSlider.setToolTipText("Position");
 		_progressSlider.setEnabled(false);
 
 		_rewindButton = new JToggleButton();

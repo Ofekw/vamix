@@ -57,7 +57,7 @@ public class AudioTab extends Tab {
 	private Component rigidArea_4;
 	private Component rigidArea_5;
 	private Component rigidArea_6;
-	
+
 	private JLabel _startLabel;
 	private JSpinner _startHours;
 	private JSpinner _startMinutes;
@@ -68,6 +68,9 @@ public class AudioTab extends Tab {
 	private JSpinner _durationMinutes;
 	private JSpinner _durationSeconds;
 
+	private JButton _removeAudio;
+	private JButton _overLayAudio;
+
 
 
 	public AudioTab(VideoPanel panel){
@@ -76,44 +79,57 @@ public class AudioTab extends Tab {
 
 	@Override
 	protected void initialise() {
-		this.setLayout(new MigLayout("", "[500px, grow][500px, grow]", "[300px, grow][200px,grow]"));
-		
+		this.setLayout(new MigLayout("", "[400px, grow][400px, grow]", "[300px, grow][200px,grow]"));
+
 		JPanel progressPanel = new JPanel(new MigLayout());
 		JPanel rightSide = new JPanel(new MigLayout());
 		this.setPreferredSize(new Dimension(1000, 130));
 		JPanel leftSide = new JPanel(new MigLayout());
-		
-		
+
+
 		leftSide.setPreferredSize(new Dimension(500, 200));
 		rightSide.setPreferredSize(new Dimension(500, 200));
-		
-		
-		leftSide.setBorder(BorderFactory.createBevelBorder(1));
-		rightSide.setBorder(BorderFactory.createBevelBorder(1));
-		progressPanel.setBorder(BorderFactory.createBevelBorder(1));
-		
+
+
+		leftSide.setBorder(BorderFactory.createTitledBorder(""));
+		rightSide.setBorder(BorderFactory.createTitledBorder(""));
+		//		progressPanel.setBorder(BorderFactory.createBevelBorder(1));
+
 		_startLabel = new JLabel("Enter start time (HH:MM:SS)");
 		_startHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
-		_startMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
-		_startSeconds = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
+		_startMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+		_startSeconds = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
 
 		_durationLabel = new JLabel("Enter duration (HH:MM:SS)");
 		_durationHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
-		_durationMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
-		_durationSeconds = new JSpinner(new SpinnerNumberModel(0, 0, 60, 1));
-		
+		_durationMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+		_durationSeconds = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+
 		_extractAudio = new JButton("Extract Audio");
 		_extractAudio.setEnabled(false);
-		
+
 		_cancel = new JButton("Cancel");
-//		horizontalBox.add(_cancel);
 		_cancel.setEnabled(false);
-		
+
 		_extractProgressBar = new JProgressBar();
 		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
-//		horizontalBox.add(_extractProgressBar);
 		_extractProgressBar.setValue(0);
-		
+
+		_removeAudio = new JButton("Remove Audio");
+		_removeAudio.setEnabled(false);
+
+		_replace = new JButton("Replace Audio");
+		_replace.setEnabled(false);
+
+		_overLayAudio = new JButton("Overlay Audio");
+		_overLayAudio.setEnabled(false);
+
+		_inputAudioSelect = new JButton("Select Audio");
+
+		_inputAudio = new JTextField();
+		_inputAudio.setEditable(false);
+		_inputAudio.setVisible(true);
+
 		leftSide.add(_startLabel);
 		leftSide.add(_startHours, "split 3, wmax 40, w 100%");
 		leftSide.add(_startMinutes, "wmax 40, w 100%");
@@ -121,106 +137,26 @@ public class AudioTab extends Tab {
 		leftSide.add(_durationLabel);
 		leftSide.add(_durationHours, "split 3, wmax 40, w 100%");
 		leftSide.add(_durationMinutes, "wmax 40, w 100%");
-		leftSide.add(_durationSeconds, "wmax 40, w 100%");
-		
-		rightSide.add(_extractAudio,"w 100%, h 100%,span,wrap");
-		rightSide.add(_cancel, "w 100%, h 100%,span,wrap");
-		
+		leftSide.add(_durationSeconds, "wmax 40, w 100%, wrap");
+
+		leftSide.add(_inputAudio, "split 5, span 4, w 100%");
+		leftSide.add(_inputAudioSelect, "span 1");
+
+		rightSide.add(_extractAudio,"w 100%, h 100%");
+		rightSide.add(_removeAudio, "w 100%, h 100%,wrap");
+		rightSide.add(_replace, "w 100%, h 100%");
+		rightSide.add(_overLayAudio, "w 100%, h 100%,wrap");
+		rightSide.add(_cancel, "w 100%, h 100%,span");
+
+
 		progressPanel.add(_extractProgressBar, "w 100%");
-		
+
 		add(leftSide, "growx");
 		add(rightSide, "growx, wrap");
 		add(progressPanel, "w 100%, span 2");
-		
-//		this.add(progressPanel);
-//		Box verticalBox = Box.createVerticalBox();
-//		verticalBox.setPreferredSize(new Dimension(980,160));
-//		add(verticalBox);
-//
-//		Component verticalStrut = Box.createVerticalStrut(20);
-//		verticalBox.add(verticalStrut);
-//
-//		Box horizontalBox = Box.createHorizontalBox();
-//		verticalBox.add(horizontalBox);
 
-
-
-
-		_inputAudioSelect = new JButton("Select Audio");
-
-//		horizontalBox.add(_extractAudio);
-		
-		rigidArea = Box.createRigidArea(new Dimension(20, 20));
-		rigidArea.setPreferredSize(new Dimension(12, 20));
-//		horizontalBox.add(rigidArea);
-
-
-		
-		rigidArea_2 = Box.createRigidArea(new Dimension(20, 20));
-//		horizontalBox.add(rigidArea_2);
-
-
-
-
-		horizontalBox_1 = Box.createHorizontalBox();
-//		verticalBox.add(horizontalBox_1);
-
-		_replace = new JButton("Replace Audio");
-		_replace.setEnabled(false);
-		horizontalBox_1.add(_replace);
-		
-		rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
-		rigidArea_1.setPreferredSize(new Dimension(12, 21));
-		horizontalBox_1.add(rigidArea_1);
-
-
-		_replaceProgressBar = new JProgressBar();
-		horizontalBox_1.add(_replaceProgressBar);
-		
-		rigidArea_3 = Box.createRigidArea(new Dimension(20, 20));
-		rigidArea_3.setPreferredSize(new Dimension(80, 20));
-		horizontalBox_1.add(rigidArea_3);
-
-		horizontalBox_2 = Box.createHorizontalBox();
-//		verticalBox.add(horizontalBox_2);
-		_inputVideo = new JTextField();
-		_inputVideo.setMaximumSize(new Dimension(2147483647, 28));
-		_inputVideo.setEditable(false);
-		horizontalBox_2.add(_inputVideo);
-		
-		rigidArea_5 = Box.createRigidArea(new Dimension(20, 20));
-		rigidArea_5.setPreferredSize(new Dimension(6, 20));
-		horizontalBox_2.add(rigidArea_5);
-		_inputVideoSelect = new JButton("Select Video");
-		horizontalBox_2.add(_inputVideoSelect);
-		
-		_inputVideoSelect.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				fileChooser(_inputVideo, true);
-				if(!_inputAudio.getText().isEmpty()){
-					enableReplaceButton();
-				}
-			}
-		});
-		
-		rigidArea_4 = Box.createRigidArea(new Dimension(20, 20));
-		horizontalBox_2.add(rigidArea_4);
-
-		_inputAudio = new JTextField();
-		_inputAudio.setMaximumSize(new Dimension(2147483647, 28));
-		_inputAudio.setEditable(false);
-		horizontalBox_2.add(_inputAudio);
-		
-		rigidArea_6 = Box.createRigidArea(new Dimension(20, 20));
-		rigidArea_6.setPreferredSize(new Dimension(6, 20));
-		horizontalBox_2.add(rigidArea_6);
-		_inputAudioSelect = new JButton("Select Audio");
-		horizontalBox_2.add(_inputAudioSelect);
-		
 		//this.add(new ExtractPane());
-		
+
 		_extractAudio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				/*
@@ -232,47 +168,46 @@ public class AudioTab extends Tab {
 				extractAudio();
 			}
 		});
-		
+
 		_cancel.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				process.cancel();
-				if (process instanceof testExtractAudio){
-				enableExtractButtons();
-				_extractProgressBar.setValue(_extractProgressBar.getMaximum());
-				JOptionPane.showMessageDialog(_cancel, "Extract cancelled!",
-						"Cancelled!", JOptionPane.ERROR_MESSAGE);
-				}else if (process instanceof ReplaceAudioProcess){
-					_replaceProgressBar.setIndeterminate(false);
-					JOptionPane.showMessageDialog(_cancel, "Replace cancelled!",
-							"Cancelled!", JOptionPane.ERROR_MESSAGE);
-				}
-				
+				//				if (process instanceof testExtractAudio){
+				//				enableExtractButtons();
+				//				_extractProgressBar.setValue(_extractProgressBar.getMaximum());
+				//				JOptionPane.showMessageDialog(_cancel, "Process cancelled!",
+				//						"Cancelled!", JOptionPane.ERROR_MESSAGE);
+				//				}
+				//				}else if (process instanceof ReplaceAudioProcess){
+				//					_replaceProgressBar.setIndeterminate(false);
+				//					JOptionPane.showMessageDialog(_cancel, "Replace cancelled!",
+				//							"Cancelled!", JOptionPane.ERROR_MESSAGE);
+				//				}
+
 			}
 		});
-		
+
 		_inputAudioSelect.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				fileChooser(_inputAudio, false);
-				if(!_inputVideo.getText().isEmpty()){
-					enableReplaceButton();
-				}
+				enableReplaceButton();
 			}
 		});
-		
+
 
 		_replace.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				replaceAudio();
 			}
 		});
 	}
-	
+
 	/**
 	 * Asks user for output file name and checks if it exists, asks to overwrite if file does exist
 	 * Runs replace audio command once all inputs valid
@@ -335,7 +270,7 @@ public class AudioTab extends Tab {
 						+ ".mp4");
 			}
 			_newFileLoc=fileToSave.getAbsolutePath();
-			
+
 			process = new 
 					ReplaceAudioProcess(_inputVideo.getText(), _inputAudio.getText(), 
 							_newFileLoc, this);
@@ -344,21 +279,23 @@ public class AudioTab extends Tab {
 			_replaceProgressBar.setIndeterminate(true);
 			disableReplaceButton();
 		}
-		
+
 	}
 
 	public void enableExtractButtons() {
 		_extractAudio.setEnabled(true);
+		_removeAudio.setEnabled(true);
 	}
-	
+
 	private void enableReplaceButton(){
 		_replace.setEnabled(true);
 	}
 
 	private void disableExtractButtons(){
 		_extractAudio.setEnabled(false);
+		_removeAudio.setEnabled(false);
 	}
-	
+
 	private void disableReplaceButton(){
 		_replace.setEnabled(false);
 	}
@@ -380,10 +317,10 @@ public class AudioTab extends Tab {
 	/**
 	 * Asks the user for output file name then runs the extract audio process
 	 */
-	
+
 	private void extractAudio() {
 		CheckFile check = new CheckFile(false);
-		//check if checking for video file and video file has no audio
+		//check if video file has no audio
 		if (!check.checkVideoHasAudio(_mediaLoc)){
 			JOptionPane
 			.showMessageDialog(this,"Video file contains no audio!",
@@ -447,7 +384,13 @@ public class AudioTab extends Tab {
 						+ ".mp3");
 			}
 			_extractProgressBar.setValue(0);
-			process = new testExtractAudio(_mediaLoc,fileToSave.getAbsolutePath(), this);
+			//Get values from spinners for start and duration times
+			String start = createTime(_startHours.getValue()+"", 
+					_startMinutes.getValue()+"", _startSeconds.getValue()+"");
+			String duration = createTime(_durationHours.getValue()+"", 
+					_durationMinutes.getValue()+"", _durationSeconds.getValue()+"");
+			process = new testExtractAudio(_mediaLoc,fileToSave.getAbsolutePath(), this, start, duration);
+			
 			process.execute();
 			_cancel.setEnabled(true);
 			disableExtractButtons();
@@ -510,7 +453,7 @@ public class AudioTab extends Tab {
 				CheckFile check = new CheckFile(checkVid);
 				if (!check.checkFileType(selectedFile.getAbsolutePath())){
 					JOptionPane
-					.showMessageDialog(field,"Invalid Video File",
+					.showMessageDialog(field,"Invalid Audio File",
 							"Extract Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -521,5 +464,18 @@ public class AudioTab extends Tab {
 
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
+	}
+
+	private String createTime(String hours, String minutes, String seconds){
+		if (hours.length() == 1){
+			hours="0"+hours;
+		}
+		if (minutes.length() == 1){
+			minutes="0"+minutes;
+		}
+		if (seconds.length() == 1){
+			seconds="0"+seconds;
+		}
+		return hours+":"+minutes+":"+seconds;
 	}
 }
