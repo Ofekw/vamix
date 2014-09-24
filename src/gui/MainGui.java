@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -129,14 +130,22 @@ public class MainGui {
 		menuBar.add(help);
 		JMenuItem save = new JMenuItem("Save Project",KeyEvent.VK_T);
 		save.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_1, ActionEvent.ALT_MASK));
+				KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		save.getAccessibleContext().setAccessibleDescription(
 				"Save current project settings");
+		save.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("actionPerformed");
+			}
+		});
+		
 		mainMenu.add(save);
 		
 		JMenuItem load = new JMenuItem("Load Project",KeyEvent.VK_T);
 		load.setAccelerator(KeyStroke.getKeyStroke(
-				KeyEvent.VK_2, ActionEvent.ALT_MASK));
+				KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		load.getAccessibleContext().setAccessibleDescription(
 				"Load project settings");
 		mainMenu.add(load);
