@@ -24,6 +24,9 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainGui {
 
@@ -109,7 +112,15 @@ public class MainGui {
 		frame.setJMenuBar(menuBar);
 
 		JMenu mainMenu = new JMenu("Project");
+		JMenu help = new JMenu("Help");
+		help.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				System.out.println("test");
+			}
+		});
 		menuBar.add(mainMenu);
+		menuBar.add(help);
 		JMenuItem save = new JMenuItem("Save Project",KeyEvent.VK_T);
 		save.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_1, ActionEvent.ALT_MASK));
@@ -131,5 +142,9 @@ public class MainGui {
 	}
 	public VideoPanel getPlayer() {
 		return _videoPanel;
+	}
+	
+	public JFrame getFrame(){
+		return frame;
 	}
 }

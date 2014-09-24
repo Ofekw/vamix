@@ -1,37 +1,32 @@
 package gui;
 
 import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
-import javax.swing.LookAndFeel;
 import javax.swing.Timer;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicSliderUI;
-import javax.swing.plaf.metal.MetalSliderUI;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.caprica.vlcj.binding.LibVlcConst;
+import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
@@ -53,6 +48,7 @@ public class VideoPanel extends JPanel {
 	private Timer timer;
 	private boolean isPlaying = false;
 	private String videoLocation;
+	private JDialog dialog;
 
 	//Constant value for progress bar
 	//it is now scaled so it updates alot
@@ -62,13 +58,15 @@ public class VideoPanel extends JPanel {
 	private JButton _muteToggle;
 
 	private SkipWorker skipper;
+	private JButton _fullScreen;
+	private EmbeddedMediaPlayer _mediaPlayerFull;
 
 
 
 	public VideoPanel(MainGui parent){
 		this._parent = parent;
 		this.setMinimumSize(new Dimension(900, 500));
-		this.setLayout(new MigLayout("", "[]", "[][][][][]"));
+		this.setLayout(new MigLayout("", "push[center]push", "[][][][][]"));
 		createControls();
 		registerListeners();
 
@@ -149,9 +147,28 @@ public class VideoPanel extends JPanel {
 
 		_muteToggle = new JButton("mute");
 		add(_muteToggle, "cell 0 3");
+
+		_fullScreen = new JButton("Full Screen");
+		_fullScreen.setToolTipText("Toggles Full Screen");
+		_fullScreen.addActionListener(new ActionListener() {
+			private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//			FullScreenMultiMediaTest full = new FullScreenMultiMediaTest(_parent);
+				//			full.setMedia(videoLocation);
+				//			full.play();
+				fullScreenToggle();
+
+			}
+		});
+		add(_fullScreen, "cell 0 3");
 		this.add(_volumeSlider, "cell 0 3");
 
 		skipper = new SkipWorker(mediaPlayer, true);
+	}
+
+	protected void fullScreenToggle() {
+		init();
 
 	}
 
@@ -296,7 +313,7 @@ public class VideoPanel extends JPanel {
 			}
 		});
 	}
-	
+
 	private void pause(){
 		mediaPlayer.pause();
 		timer.stop();
@@ -368,8 +385,6 @@ public class VideoPanel extends JPanel {
 		if (positionValue>=maxTime){
 			_progressSlider.setValue(maxTime);
 		}
-		//		System.out.println(positionValue);
-		//		System.out.println(positionValue/maxTime*mediaPlayer.getLength());
 		mediaPlayer.setPosition(positionValue/maxTime);
 		updateTime(mediaPlayer.getTime());
 	}
@@ -377,10 +392,71 @@ public class VideoPanel extends JPanel {
 	public void enableSlider(){
 		_progressSlider.setEnabled(true);
 	}
-	
+
 	public void enableSkips(){
 		_fastForwardButton.setSelected(false);
 		_rewindButton.setSelected(false);
 	}
+
+	//shit
+	protected void init() {  
+		this.dialog = new JDialog(this._parent.getFrame(), "FullScreen", true);  
+		this.dialog.setResizable(false);  
+		this.dialog.getContentPane().add(createPane());  
+		this.dialog.pack();  	
+		Dimension Size = Toolkit.getDefaultToolkit().getScreenSize();  
+		this.dialog.setSize(new Double((Size.getWidth()) - (dialog.getWidth())).intValue(), new Double((Size.getHeight()) - (dialog.getHeight())).intValue());  
+		this.dialog.setLocation(new Double((Size.getWidth()/2) - (dialog.getWidth()/2)).intValue(), new Double((Size.getHeight()/2) - (dialog.getHeight()/2)).intValue());  
+		show();
+		resetPlayerFull(_mediaPlayerFull);
+		_mediaPlayerFull.start();
+	}  
+
+	protected Container createPane() {  
+		JPanel fullScreen = new JPanel(); 
+		fullScreen.setBackground(Color.BLACK);
+		fullScreen.setLayout(new MigLayout("", "[]", "[][][][][]"));
+		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
+
+		// Setup canvas for player to go on
+
+
+		Canvas mediaCanvasFull = new Canvas();
+		mediaCanvasFull.setPreferredSize(new Dimension(800,300));
+		_mediaPlayerFull = mediaPlayerFactory.newEmbeddedMediaPlayer();
+		_mediaPlayerFull.setVideoSurface(mediaPlayerFactory.newVideoSurface(mediaCanvasFull));
+
+		fullScreen.add(mediaCanvasFull, "cell 0 0,growx");
+		
+		//fullScreen.add(mediaCanvasFull);
+		
+		//setMediaFull(mediaPlayerFull);
+		return fullScreen;  
+
+	}  
+
+	public void show() {  
+		if (this.dialog == null) {  
+			init();  
+		}  
+		this.dialog.setVisible(true);  
+	}  
+
+	protected void close() {  
+		this.dialog.dispose();  
+		this.dialog.setVisible(false);  
+	}  
 	
+	public void setMediaFull(EmbeddedMediaPlayer player){
+		player.prepareMedia(videoLocation);
+		resetPlayerFull(player);
+		player.start();
+		player.stop();
+	}
+
+	private void resetPlayerFull(EmbeddedMediaPlayer player) {
+		player.prepareMedia(videoLocation);
+	}
+
+
 }
