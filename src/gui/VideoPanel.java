@@ -303,7 +303,7 @@ public class VideoPanel extends JPanel {
 		timer.stop();
 		_playButton.setIcon(new ImageIcon(("icons/play.png")));
 	}
-	private void play(){
+	public void play(){
 		mediaPlayer.start();
 		timer.start();
 		_playButton.setIcon(new ImageIcon(("icons/pause.png")));
@@ -339,7 +339,7 @@ public class VideoPanel extends JPanel {
 	 * Resets the media player to it's default starting point
 	 */
 
-	private void resetPlayer(){
+	public void resetPlayer(){
 		timer.restart();
 		timer.stop();
 		mediaPlayer.prepareMedia(videoLocation);

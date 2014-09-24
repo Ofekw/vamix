@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import gui.AudioTab;
 import gui.TextTab;
+import gui.VideoTab;
 
 import javax.swing.JOptionPane;
 
@@ -27,6 +28,11 @@ public class ConcatVideosProcess extends testAbPro {
 	protected void doDone() {
 		if (get() == 0) {
 			_tab.progressDone();
+			VideoTab videoTab = _tab.getMain().getVideo();
+			videoTab.getVideoLocField().setText(_tab.getSaveloc());
+			_tab.getMain().getPlayer().resetPlayer();
+			_tab.getMain().getPlayer().play();
+			
 		} else if (get() > 0) {
 			_tab.progressReset();
 			JOptionPane

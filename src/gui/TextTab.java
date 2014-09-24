@@ -1,6 +1,5 @@
 package gui;
 
-import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -8,6 +7,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -31,22 +32,16 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-
-import org.xml.sax.InputSource;
-
-import controller.ReplaceAudioProcess;
+import model.CharsOnlyLimitFilter;
 import controller.ShellProcess;
 import controller.VideoIntroProcess;
 import controller.VideoOutroProcess;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.Font;
 
 public class TextTab extends Tab {
 	private JTextField _textFieldIntro;
@@ -83,6 +78,7 @@ public class TextTab extends Tab {
 		verticalBox.add(horizontalBox);
 
 		_txtPreview = new JTextPane();
+		_txtPreview.setFont(new Font("Dialog", Font.PLAIN, 24));
 		_txtPreview.setEditable(false);
 		_txtPreview.setText("Text preview");
 
@@ -90,12 +86,21 @@ public class TextTab extends Tab {
 		horizontalBox.add(lblOpeningText);
 
 		_textFieldIntro = new JTextField();
+
+		CharsOnlyLimitFilter charFilter = new CharsOnlyLimitFilter(999); // characters limited to 999 and no special chars
+
+
+		((AbstractDocument) _textFieldIntro.getDocument()).setDocumentFilter(charFilter);
+
+
+
+		_textFieldIntro.setToolTipText("Text to be placed at the start of the video (999 character limit)");
 		_textFieldIntro.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				String text = _textFieldIntro.getText();
-				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
-				_txtPreview.selectAll();
+//			String text = _textFieldIntro.getText();
+//				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+//				_txtPreview.selectAll();
 				if(!_textFieldIntro.getText().isEmpty()){
 					_apply.setEnabled(true);
 				}else if(_textFieldEnd.getText().isEmpty()){
@@ -120,6 +125,21 @@ public class TextTab extends Tab {
 		horizontalBox.add(_textFieldIntro);
 		_textFieldIntro.setColumns(10);
 
+		JButton btnPreview = new JButton("Preview");
+		btnPreview.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String text = _textFieldIntro.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
+		});
+		horizontalBox.add(btnPreview);
+
 		Component verticalStrut = Box.createVerticalStrut(10);
 		verticalBox.add(verticalStrut);
 
@@ -130,6 +150,11 @@ public class TextTab extends Tab {
 		horizontalBox_1.add(lblClosingText);
 
 		_textFieldEnd = new JTextField();
+		_textFieldEnd.setToolTipText("Text to be placed at the end of the video (999 character limit)");
+
+
+		((AbstractDocument) _textFieldEnd.getDocument()).setDocumentFilter(charFilter);
+
 		_textFieldEnd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
@@ -147,6 +172,22 @@ public class TextTab extends Tab {
 		_textFieldEnd.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
+//				String text = _textFieldEnd.getText();
+//				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+//				_txtPreview.selectAll();
+				if(!_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
+		});
+		horizontalBox_1.add(_textFieldEnd);
+		_textFieldEnd.setColumns(10);
+
+		JButton button = new JButton("Preview");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				String text = _textFieldEnd.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
@@ -157,8 +198,7 @@ public class TextTab extends Tab {
 				}
 			}
 		});
-		horizontalBox_1.add(_textFieldEnd);
-		_textFieldEnd.setColumns(10);
+		horizontalBox_1.add(button);
 
 		Component verticalStrut_1 = Box.createVerticalStrut(10);
 		verticalBox.add(verticalStrut_1);
@@ -320,7 +360,20 @@ public class TextTab extends Tab {
 	}
 
 	private String getUserFont() {
+
 		String fontString = _fontType.getSelectedItem().toString();
+		/*Font f = new Font(fontString, 0, 10);
+
+		Font2D f2d = FontManager.findFont2D(f.getFontName(), f.getStyle(),      
+		               FontManager.LOGICAL_FALLBACK).handle.font2D;
+
+		Field platName = PhysicalFont.class.getDeclaredField("platName");
+		platName.setAccessible(true);
+		String fontPath = (String)platName.get(f2d);
+		platName.setAccessible(false);
+
+		// that's it..
+		System.out.println(fontPath);*/
 		return fontString;
 	}
 
@@ -455,8 +508,9 @@ public class TextTab extends Tab {
 		String[] inputs ={_textFieldIntro.getText(), _textFieldEnd.getText()};
 		return inputs;
 	}
-	
+
 	public int getProcessNumber(){
 		return _processNumber;
 	}
+
 }

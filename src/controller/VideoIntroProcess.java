@@ -1,11 +1,12 @@
 package controller;
 
-import java.awt.Color;
-
-import gui.AudioTab;
 import gui.TextTab;
 
+import java.awt.Color;
+
 import javax.swing.JOptionPane;
+
+import sun.font.FontManager;
 
 
 public class VideoIntroProcess extends testAbPro {

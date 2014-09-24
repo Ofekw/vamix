@@ -105,4 +105,8 @@ public class VideoTab extends Tab {
 		public String getVideoLoc() {
 			return _txtVideoLoc.getText();
 		}
+		
+		public JTextField getVideoLocField() {
+			return _txtVideoLoc;
+		}
 }
