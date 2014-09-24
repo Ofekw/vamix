@@ -35,7 +35,9 @@ public class SkipWorker extends SwingWorker<Void, Integer> {
 	@Override
 	protected Void doInBackground() throws Exception {
 		while(!isCancelled()){
-			if (_fastForward){
+			if (_player.getTime()>_player.getLength() || _player.getTime()<=0){
+				_panel.stopSkipping();
+			}else if (_fastForward){
 				publish(SKIP_TIME_MS);
 			}else{
 				publish(-SKIP_TIME_MS);
