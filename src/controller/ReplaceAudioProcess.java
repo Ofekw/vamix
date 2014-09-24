@@ -12,16 +12,25 @@ public class ReplaceAudioProcess extends testAbPro {
 	private AudioTab _tab;
 	private float totalTime;
 	private static final int maxValue = 100000;
-	private boolean doUpdate;
+	private boolean _removeAudio;
 
+	/**
+	 * 
+	 * @param inputVideo
+	 * @param inputAudio
+	 * @param outputVideo
+	 * @param tab
+	 * @param doProcessing: True if running remove audio and want processing, false if replacing audio 
+	 */
 	public ReplaceAudioProcess(String inputVideo, String inputAudio, String outputVideo,
-			AudioTab tab, boolean doProcessing){
+			AudioTab tab, boolean removeAudio){
 		super.setCommand(makeCommand(inputVideo, inputAudio, outputVideo));
 		_tab = tab;
-		doUpdate = doProcessing;
+		_removeAudio = removeAudio;
 	}
 
 	protected void doDone() {
+		_tab.replaceFinished();
 		if (get() == 0) {
 			JOptionPane
 			.showMessageDialog(_tab,"Replacement Complete!",
@@ -35,11 +44,11 @@ public class ReplaceAudioProcess extends testAbPro {
 			.showMessageDialog(_tab,"Process cancelled",
 					"Replace Error", JOptionPane.ERROR_MESSAGE);
 		}
-		_tab.replaceFinished();
+
 	}
 
 	protected void doProcess(String line){
-		if (doUpdate){
+		if (_removeAudio){
 			if (line.contains("Duration:")){
 				Float time;
 				String duration = line.substring(line.indexOf(":")+1, line.indexOf(",")).trim();
@@ -65,7 +74,8 @@ public class ReplaceAudioProcess extends testAbPro {
 	 * @return
 	 */
 	private String makeCommand(String inputVideo, String inputAudio, String outputVideo){
-		if (inputAudio.equals("")){
+		if (_removeAudio){
+			//Replaces audio with nothing
 			return "avconv -i " +inputVideo+ " -an -c:v copy " +outputVideo; 
 		}else{
 			return "avconv -i "+ inputVideo+" -i "+inputAudio+" -c:v copy -map 0:0 -c:a copy -map 1:0 "+outputVideo;
