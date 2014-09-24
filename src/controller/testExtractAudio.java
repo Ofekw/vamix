@@ -22,7 +22,6 @@ public class testExtractAudio extends testAbPro {
 
 	protected void doDone() {
 		if (get() == 0) {
-			_tab.extractFinished();
 			JOptionPane
 			.showMessageDialog(_tab,"Extraction Complete!",
 					"Extract Complete!", JOptionPane.INFORMATION_MESSAGE);
@@ -35,8 +34,7 @@ public class testExtractAudio extends testAbPro {
 			.showMessageDialog(_tab,"Process cancelled",
 					"Extract Error", JOptionPane.ERROR_MESSAGE);
 		}
-		_tab.enableExtractButtons();
-		_tab.setExtractValue(maxValue);
+		_tab.extractFinished();
 	}
 
 	protected void doProcess(String line){

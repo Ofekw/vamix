@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.omg.CORBA._PolicyStub;
 
@@ -145,7 +147,6 @@ public class AudioTab extends Tab {
 		add(rightSide, "growx, wrap");
 		add(progressPanel, "w 100%, span 2");
 
-		//this.add(new ExtractPane());
 
 		_extractAudio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -257,49 +258,21 @@ public class AudioTab extends Tab {
 			}
 			_newFileLoc=fileToSave.getAbsolutePath();
 			if (removeAudio){
-				process = new ReplaceAudioProcess(_mediaLoc, "", _newFileLoc, this);
+				process = new ReplaceAudioProcess(_mediaLoc, "", _newFileLoc, this, true);
+				_extractProgressBar.setValue(0);
 			}else{
 				process = new 
 						ReplaceAudioProcess(_mediaLoc, _inputAudio.getText(), 
-								_newFileLoc, this);
+								_newFileLoc, this, false);
+				_extractProgressBar.setIndeterminate(true);
 			}
 			process.execute();
 			_cancel.setEnabled(true);
-			_extractProgressBar.setIndeterminate(true);
-			disableReplaceButton();
+			disableAllButtons();
 		}
 
 	}
-
-	public void enableExtractButtons() {
-		_extractAudio.setEnabled(true);
-		_removeAudio.setEnabled(true);
-	}
-
-	private void enableReplaceButton(){
-		_replace.setEnabled(true);
-	}
-
-	private void disableExtractButtons(){
-		_extractAudio.setEnabled(false);
-		_removeAudio.setEnabled(false);
-	}
-
-	private void disableReplaceButton(){
-		_replace.setEnabled(false);
-	}
-
-	/**
-	 * Set the extract progress bar to finished
-	 */
-	public void extractFinished() {
-		_extractProgressBar.setValue(_extractProgressBar.getMaximum());
-		enableExtractButtons();
-	}
-
-	public void replaceFinished(){
-		_extractProgressBar.setIndeterminate(false);
-	}
+	
 	/**
 	 * Asks the user for output file name then runs the extract audio process
 	 */
@@ -379,9 +352,55 @@ public class AudioTab extends Tab {
 
 			process.execute();
 			_cancel.setEnabled(true);
-			disableExtractButtons();
+			disableAllButtons();
 		}
 	}
+
+	public void enableExtractButtons() {
+		_extractAudio.setEnabled(true);
+		_removeAudio.setEnabled(true);
+	}
+
+	private void enableReplaceButton(){
+		_replace.setEnabled(true);
+		_overLayAudio.setEnabled(true);
+	}
+
+	private void disableExtractButtons(){
+		_extractAudio.setEnabled(false);
+		_removeAudio.setEnabled(false);
+	}
+
+	private void disableReplaceButton(){
+		_replace.setEnabled(false);
+		_overLayAudio.setEnabled(false);
+	}
+	
+	private void disableAllButtons(){
+		disableExtractButtons();
+		disableReplaceButton();
+	}
+
+	/**
+	 * Set the extract progress bar to finished
+	 */
+	public void extractFinished() {
+		_extractProgressBar.setValue(_extractProgressBar.getMaximum());
+		enableExtractButtons();
+		_cancel.setEnabled(false);
+	}
+
+	public void replaceFinished(){
+//		_extractProgressBar.setIndeterminate(false);
+		if (!_inputAudio.getText().isEmpty()){
+			enableReplaceButton();
+			_extractProgressBar.setIndeterminate(false);
+		}
+		_extractProgressBar.setValue(_extractProgressBar.getMaximum());
+		enableExtractButtons();
+		_cancel.setEnabled(false);
+	}
+	
 
 	/**
 	 * Set max value of extract progress bar
@@ -445,11 +464,17 @@ public class AudioTab extends Tab {
 				}
 			}
 			field.setText(selectedFile.getAbsolutePath());
+			if (!(_mediaLoc.equals(null))){
+				enableReplaceButton();
+			}
 		}
 	}
 
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
+		if(!_inputAudio.getText().isEmpty()){
+			enableReplaceButton();
+		}
 	}
 
 	private String createTime(String hours, String minutes, String seconds){
