@@ -48,8 +48,8 @@ public class TextTab extends Tab {
 	private JTextField _textFieldEnd;
 	private JTextPane _txtPreview;
 	private JSpinner _fontSize;
-	private JComboBox fontColour;
-	private JComboBox _fontType;
+	private JComboBox<String> fontColour;
+	private JComboBox<String> _fontType;
 	private Color _colourSelect = Color.BLACK;
 	private JButton _btnColourSelect;
 	private MainGui _main;
