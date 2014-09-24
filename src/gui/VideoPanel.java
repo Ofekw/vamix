@@ -66,7 +66,7 @@ public class VideoPanel extends JPanel {
 	public VideoPanel(MainGui parent){
 		this._parent = parent;
 		this.setMinimumSize(new Dimension(900, 500));
-		this.setLayout(new MigLayout("", "[]", "[][][][][]"));
+		this.setLayout(new MigLayout("", "push[center]push", "[][][][][]"));
 		createControls();
 		registerListeners();
 
