@@ -1,38 +1,28 @@
 package gui;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.Box;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import net.miginfocom.swing.MigLayout;
 import controller.CheckFile;
+import controller.ExtractAudioProcess;
 import controller.OverlayAudioProcess;
 import controller.ReplaceAudioProcess;
 import controller.ShellProcess;
 import controller.testAbPro;
-import controller.ExtractAudioProcess;
-
-import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import org.omg.CORBA._PolicyStub;
-
-import net.miginfocom.swing.MigLayout;
 
 @SuppressWarnings("serial")
 public class AudioTab extends Tab {
@@ -46,7 +36,6 @@ public class AudioTab extends Tab {
 	private JButton _cancel;
 	private testAbPro process;
 	private JButton _replace;
-	private JProgressBar _replaceProgressBar;
 	private JTextField _inputAudio;
 	private JButton _inputAudioSelect;
 

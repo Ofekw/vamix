@@ -38,6 +38,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import model.CharsOnlyLimitFilter;
+import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.VideoIntroProcess;
 import controller.VideoOutroProcess;
@@ -48,8 +49,8 @@ public class TextTab extends Tab {
 	private JTextField _textFieldEnd;
 	private JTextPane _txtPreview;
 	private JSpinner _fontSize;
-	private JComboBox fontColour;
-	private JComboBox _fontType;
+	private JComboBox<String> fontColour;
+	private JComboBox<String> _fontType;
 	private Color _colourSelect = Color.BLACK;
 	private JButton _btnColourSelect;
 	private MainGui _main;
@@ -57,6 +58,8 @@ public class TextTab extends Tab {
 	private JProgressBar _progressBar;
 	private JButton _apply;
 	private int _processNumber;
+	
+	private SaveLoadState saveLoad;
 
 	public TextTab(VideoPanel panel, MainGui main) {
 
@@ -511,6 +514,18 @@ public class TextTab extends Tab {
 
 	public int getProcessNumber(){
 		return _processNumber;
+	}
+	
+	public void save(String saveFileName){
+		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
+				fontColour, _fontType, saveFileName);
+		saveLoad.save();
+	}
+	
+	public void load(String loadFileName){
+		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
+				fontColour, _fontType, loadFileName);
+		saveLoad.load();
 	}
 
 }

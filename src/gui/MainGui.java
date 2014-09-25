@@ -13,21 +13,27 @@ import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.filechooser.FileView;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
+
+import controller.CheckFile;
+import controller.SaveLoadState;
 
 public class MainGui {
 
@@ -109,7 +115,7 @@ public class MainGui {
 		tabbedPane.addTab("Audio", null, _audio, null);
 		tabbedPane.addTab("Text", null, _text, null);
 
-		JMenuBar menuBar = new JMenuBar();
+		final JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 
 		JMenu mainMenu = new JMenu("Project");
@@ -137,7 +143,13 @@ public class MainGui {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("actionPerformed");
+				String result = JOptionPane.showInputDialog("Enter save file name");
+				if (!result.equals(null)){
+					if (!result.endsWith(".txt")){
+						result+=".txt";
+					}
+					_text.save(result);
+				}
 			}
 		});
 		
@@ -148,6 +160,23 @@ public class MainGui {
 				KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		load.getAccessibleContext().setAccessibleDescription(
 				"Load project settings");
+		load.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser chooser = new JFileChooser(new File(SaveLoadState.VAMIX.toString())); 
+                chooser.setFileView(new FileView() {
+                    @Override
+                    public Boolean isTraversable(File f) {
+                        return (f.isDirectory() && f.getName().equals(SaveLoadState.VAMIX.toString())); 
+                    }
+                });
+                int returnVal = chooser.showOpenDialog(menuBar);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                	_text.load(chooser.getSelectedFile().getName());
+                }
+			}
+		});
 		mainMenu.add(load);
 
 	}
