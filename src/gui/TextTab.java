@@ -508,7 +508,7 @@ public class TextTab extends Tab {
 	public void load(String loadFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
 				fontColour, _fontType, loadFileName);
-		saveLoad.load();
+		saveLoad.load(true);
 	}
 
 }

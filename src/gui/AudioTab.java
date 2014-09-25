@@ -21,6 +21,7 @@ import controller.CheckFile;
 import controller.ExtractAudioProcess;
 import controller.OverlayAudioProcess;
 import controller.ReplaceAudioProcess;
+import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.testAbPro;
 
@@ -38,7 +39,10 @@ public class AudioTab extends Tab {
 	private JButton _replace;
 	private JTextField _inputAudio;
 	private JButton _inputAudioSelect;
+	
+	private VideoTab _tab;
 
+	private SaveLoadState saveLoad;
 
 	private JLabel _startLabel;
 	private JSpinner _startHours;
@@ -59,8 +63,9 @@ public class AudioTab extends Tab {
 
 
 
-	public AudioTab(VideoPanel panel){
+	public AudioTab(VideoPanel panel, VideoTab tab){
 		super(panel);
+		_tab = tab;
 	}
 
 	@Override
@@ -167,7 +172,6 @@ public class AudioTab extends Tab {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				fileChooser(_inputAudio, false);
-				enableReplaceButton();
 			}
 		});
 
@@ -468,7 +472,7 @@ public class AudioTab extends Tab {
 				}
 			}
 			field.setText(selectedFile.getAbsolutePath());
-			if (!(_mediaLoc.equals(null))){
+			if (!(_mediaLoc == null)){
 				enableReplaceButton();
 			}
 		}
@@ -492,5 +496,21 @@ public class AudioTab extends Tab {
 			seconds="0"+seconds;
 		}
 		return hours+":"+minutes+":"+seconds;
+	}
+
+	public void save(String saveFile){
+		saveLoad = new SaveLoadState(_tab.getVideoLocField(), _startHours,
+				_startMinutes, _startSeconds, _durationHours,
+				_durationMinutes, _durationSeconds, _inputAudio, 
+				saveFile);
+		saveLoad.save();
+	}
+	
+	public void load(String saveFile){
+		saveLoad = new SaveLoadState(_tab.getVideoLocField(), _startHours,
+				_startMinutes, _startSeconds, _durationHours,
+				_durationMinutes, _durationSeconds, _inputAudio, 
+				saveFile);
+		saveLoad.load(false);
 	}
 }
