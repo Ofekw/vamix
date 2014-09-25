@@ -13,7 +13,7 @@ import javax.swing.SwingWorker;
  * @author patrick
  *
  */
-public abstract class testAbPro{
+public abstract class AbstractProcess{
 
 	protected ProcessBuilder _pb;
 	protected Process _process = null;

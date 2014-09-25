@@ -7,7 +7,7 @@ import java.awt.Color;
 import javax.swing.JOptionPane;
 
 
-public class VideoIntroProcess extends testAbPro {
+public class VideoIntroProcess extends AbstractProcess {
 	
 	private TextTab _tab;
 

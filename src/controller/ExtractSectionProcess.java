@@ -4,7 +4,7 @@ import gui.AudioTab;
 
 import javax.swing.JOptionPane;
 
-public class ExtractSectionProcess extends testAbPro{
+public class ExtractSectionProcess extends AbstractProcess{
 	
 	private AudioTab _tab;
 	

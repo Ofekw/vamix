@@ -9,7 +9,7 @@ import gui.VideoTab;
 import javax.swing.JOptionPane;
 
 
-public class ConcatVideosProcess extends testAbPro {
+public class ConcatVideosProcess extends AbstractProcess {
 
 	private TextTab _tab;
 

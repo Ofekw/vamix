@@ -7,7 +7,7 @@ import gui.AudioTab;
 //avconv -i infile.avi -an -c:v copy outfile.avi 
 //Strips audio off video file
 
-public class ExtractAudioProcess extends testAbPro {
+public class ExtractAudioProcess extends AbstractProcess {
 
 	private AudioTab _tab;
 	private static final int maxValue = 100000;

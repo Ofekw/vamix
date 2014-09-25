@@ -23,9 +23,14 @@ import controller.OverlayAudioProcess;
 import controller.ReplaceAudioProcess;
 import controller.SaveLoadState;
 import controller.ShellProcess;
-import controller.testAbPro;
+import controller.AbstractProcess;
 
 @SuppressWarnings("serial")
+/**
+ * Tab for audio manipulation
+ * @author Patrick Poole
+ *
+ */
 public class AudioTab extends Tab {
 	/*
 	 * This tab is used to extract the audio from the movie file, future implementation can include extracting specific time frame audio
@@ -33,9 +38,9 @@ public class AudioTab extends Tab {
 	private JButton _extractAudio;
 	protected String _newFileLoc;
 	private String _mediaLoc;
-	private JProgressBar _extractProgressBar;
+	private JProgressBar _progressBar;
 	private JButton _cancel;
-	private testAbPro process;
+	private AbstractProcess process;
 	private JButton _replace;
 	private JTextField _inputAudio;
 	private JButton _inputAudioSelect;
@@ -102,9 +107,9 @@ public class AudioTab extends Tab {
 		_cancel = new JButton("Cancel");
 		_cancel.setEnabled(false);
 
-		_extractProgressBar = new JProgressBar();
-		_extractProgressBar.setPreferredSize(new Dimension(300, 10));
-		_extractProgressBar.setValue(0);
+		_progressBar = new JProgressBar();
+		_progressBar.setPreferredSize(new Dimension(300, 10));
+		_progressBar.setValue(0);
 
 		_removeAudio = new JButton("Remove Audio");
 		_removeAudio.setEnabled(false);
@@ -140,7 +145,7 @@ public class AudioTab extends Tab {
 		rightSide.add(_cancel, "w 100%, h 100%,span");
 
 
-		progressPanel.add(_extractProgressBar, "w 100%");
+		progressPanel.add(_progressBar, "w 100%");
 
 		add(leftSide, "growx");
 		add(rightSide, "growx, wrap");
@@ -264,16 +269,16 @@ public class AudioTab extends Tab {
 			}
 			_newFileLoc=fileToSave.getAbsolutePath();
 			if (command.equals(REMOVE)){
-				_extractProgressBar.setValue(0);
+				_progressBar.setValue(0);
 				process = new ReplaceAudioProcess(_mediaLoc, _inputAudio.getText(), _newFileLoc, this, true);
 			}else if (command.equals(OVERLAY)){
 				process = new OverlayAudioProcess(_mediaLoc, _inputAudio.getText(), _newFileLoc, this);
-				_extractProgressBar.setIndeterminate(true);
+				_progressBar.setIndeterminate(true);
 			}else{
 				process = new 
 						ReplaceAudioProcess(_mediaLoc, _inputAudio.getText(), 
 								_newFileLoc, this, false);
-				_extractProgressBar.setIndeterminate(true);
+				_progressBar.setIndeterminate(true);
 			}
 			process.execute();
 			_cancel.setEnabled(true);
@@ -351,7 +356,7 @@ public class AudioTab extends Tab {
 				fileToSave = new File(fileChooser.getSelectedFile()
 						+ ".mp3");
 			}
-			_extractProgressBar.setValue(0);
+			_progressBar.setValue(0);
 			//Get values from spinners for start and duration times
 			String start = createTime(_startHours.getValue()+"", 
 					_startMinutes.getValue()+"", _startSeconds.getValue()+"");
@@ -394,17 +399,20 @@ public class AudioTab extends Tab {
 	 * Set the extract progress bar to finished
 	 */
 	public void extractFinished() {
-		_extractProgressBar.setValue(_extractProgressBar.getMaximum());
+		_progressBar.setValue(_progressBar.getMaximum());
 		enableExtractButtons();
 		_cancel.setEnabled(false);
 	}
 
+	/**
+	 * Sets progressBar to finished and re-enables buttons
+	 */
 	public void replaceFinished(){
 		if (!_inputAudio.getText().isEmpty()){
 			enableReplaceButton();
-			_extractProgressBar.setIndeterminate(false);
+			_progressBar.setIndeterminate(false);
 		}
-		_extractProgressBar.setValue(_extractProgressBar.getMaximum());
+		_progressBar.setValue(_progressBar.getMaximum());
 		enableExtractButtons();
 		_cancel.setEnabled(false);
 	}
@@ -415,7 +423,7 @@ public class AudioTab extends Tab {
 	 * @param max: max value
 	 */
 	public void setExtractMax(int max){
-		_extractProgressBar.setMaximum(max);
+		_progressBar.setMaximum(max);
 	}
 
 	/**
@@ -423,7 +431,7 @@ public class AudioTab extends Tab {
 	 * @param value: Value to be set
 	 */
 	public void setExtractValue(int value){
-		_extractProgressBar.setValue(value);
+		_progressBar.setValue(value);
 	}
 
 	/**
@@ -478,6 +486,10 @@ public class AudioTab extends Tab {
 		}
 	}
 
+	/**
+	 * Set the location of media loaded
+	 * @param _mediaLoc: Location of media
+	 */
 	public void setMediaLoc(String _mediaLoc) {
 		this._mediaLoc = _mediaLoc;
 		if(!_inputAudio.getText().isEmpty()){
@@ -498,6 +510,10 @@ public class AudioTab extends Tab {
 		return hours+":"+minutes+":"+seconds;
 	}
 
+	/**
+	 * Save audio settings
+	 * @param saveFile: Path to save file
+	 */
 	public void save(String saveFile){
 		saveLoad = new SaveLoadState(_tab.getVideoLocField(), _startHours,
 				_startMinutes, _startSeconds, _durationHours,
@@ -506,6 +522,10 @@ public class AudioTab extends Tab {
 		saveLoad.save();
 	}
 	
+	/**
+	 * Load audio settings
+	 * @param saveFile: Path to file to load
+	 */
 	public void load(String saveFile){
 		saveLoad = new SaveLoadState(_tab.getVideoLocField(), _startHours,
 				_startMinutes, _startSeconds, _durationHours,

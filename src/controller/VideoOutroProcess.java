@@ -7,7 +7,7 @@ import gui.TextTab;
 import javax.swing.JOptionPane;
 
 
-public class VideoOutroProcess extends testAbPro {
+public class VideoOutroProcess extends AbstractProcess {
 
 	private TextTab _tab;
 

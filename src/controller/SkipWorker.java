@@ -1,9 +1,9 @@
-package gui;
+package controller;
+
+import gui.VideoPanel;
 
 import java.util.List;
 
-import javax.swing.JToggleButton;
-import javax.swing.JViewport;
 import javax.swing.SwingWorker;
 
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -11,7 +11,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 /**
  * Swing worker class for handling constant fast forwarding/ rewinding of video
- * @author patrick
+ * @author Patrick Poole
  *
  */
 public class SkipWorker extends SwingWorker<Void, Integer> {
@@ -22,7 +22,7 @@ public class SkipWorker extends SwingWorker<Void, Integer> {
 	private VideoPanel _panel;
 
 	/**
-	 * 
+	 * Creates new skipworker
 	 * @param mediaPlayer: media player with content to skip
 	 * @param fastFoward: true if fastForwarding, false if rewinding
 	 */

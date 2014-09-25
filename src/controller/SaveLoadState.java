@@ -14,6 +14,11 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
+/**
+ * Class for saving and loading settings
+ * @author Patrick Poole
+ *
+ */
 public class SaveLoadState {
 
 	public static final String HOME = System.getProperty("user.home");
@@ -44,6 +49,18 @@ public class SaveLoadState {
 
 	private String saveFormat;
 
+	/**
+	 * Constructor for creating object for saving/loading audio settings
+	 * @param video
+	 * @param startHours
+	 * @param startMinutes
+	 * @param startSeconds
+	 * @param durationHours
+	 * @param durationMinutes
+	 * @param durationSeconds
+	 * @param inputAudio
+	 * @param saveFileName
+	 */
 	public SaveLoadState(JTextField video, JSpinner startHours, JSpinner startMinutes, JSpinner startSeconds,
 			JSpinner durationHours, JSpinner durationMinutes, JSpinner durationSeconds, JTextField inputAudio
 			, String saveFileName){
@@ -65,6 +82,16 @@ public class SaveLoadState {
 		SaveFile = new File(SAVE+saveFileName);
 	}
 
+	/**
+	 * Constructor for saving/loading text settings
+	 * @param intro
+	 * @param end
+	 * @param preview
+	 * @param fontSize
+	 * @param fontColour
+	 * @param fontType
+	 * @param saveFileName
+	 */
 	public SaveLoadState(JTextField intro, JTextField end, JTextPane preview, 
 			JSpinner fontSize, Color fontColour, JComboBox<String> fontType, 
 			String saveFileName){
@@ -82,6 +109,9 @@ public class SaveLoadState {
 		SaveFile = new File(SAVE+saveFileName);
 	}
 
+	/**
+	 * Saves settings to file
+	 */
 	public void save(){
 		checkVamix();
 		try {
@@ -93,6 +123,11 @@ public class SaveLoadState {
 		}
 	}
 
+	/**
+	 * Loads settings from file
+	 * @param loadingText: True if loading text settings, false if loading audio settings
+	 * @return: RGB Color or 0 if not applicable
+	 */
 	public int load(boolean loadingText){
 		String [] textSettings = null;
 		String [] audioSettings = null;
@@ -128,6 +163,18 @@ public class SaveLoadState {
 		}
 	}
 
+	/**
+	 * Formats Audio settings into string for saving
+	 * @param video
+	 * @param inputAudio
+	 * @param startHours
+	 * @param startMinutes
+	 * @param startSeconds
+	 * @param durationHours
+	 * @param durationMinutes
+	 * @param durationSeconds
+	 * @return
+	 */
 	private String format(String video, String inputAudio, String startHours, String startMinutes, String startSeconds,
 			String durationHours, String durationMinutes, String durationSeconds){
 
@@ -135,11 +182,24 @@ public class SaveLoadState {
 				+":"+durationSeconds;
 	}
 
+	/**
+	 * Formats text settings into string for saving
+	 * @param intro
+	 * @param end
+	 * @param preview
+	 * @param fontSize
+	 * @param fontColour
+	 * @param fontType
+	 * @return
+	 */
 	private String format(String intro, String end, String preview, 
 			String fontSize, String fontColour, String fontType){
 		return intro+":"+end+":"+preview+":"+fontSize+":"+fontColour+":"+fontType;		
 	}
 
+	/**
+	 * Checks that the .vamix file exists, create's it if it does not
+	 */
 	private void checkVamix(){
 		if (!VAMIX.exists()){
 			VAMIX.mkdir();

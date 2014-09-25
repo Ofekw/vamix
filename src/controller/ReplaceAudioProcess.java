@@ -4,7 +4,7 @@ import javax.swing.JOptionPane;
 
 import gui.AudioTab;
 
-public class ReplaceAudioProcess extends testAbPro {
+public class ReplaceAudioProcess extends AbstractProcess {
 
 	//	avconv -i sample.avi -i testAudio.mp3 -c:v copy -map 0:0 -c:a copy -map 1:0 VIDEOwithNEWaudio.mp4
 

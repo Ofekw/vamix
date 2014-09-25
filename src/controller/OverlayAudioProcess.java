@@ -4,7 +4,7 @@ import javax.swing.JOptionPane;
 
 import gui.AudioTab;
 
-public class OverlayAudioProcess extends testAbPro {
+public class OverlayAudioProcess extends AbstractProcess {
 
 	private final String loc = System.getProperty("user.dir");
 	private final String binLoc = loc+System.getProperty("file.separator")+

@@ -29,6 +29,7 @@ import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import controller.FullScreenPlayer;
+import controller.SkipWorker;
 
 
 @SuppressWarnings("serial")
@@ -216,7 +217,7 @@ public class VideoPanel extends JPanel {
 	/**
 	 * Cancels fast forward/rewind
 	 */
-	protected void stopSkipping(){
+	public void stopSkipping(){
 		skipper.cancel(true);
 		_fastForwardButton.setSelected(false);
 		_rewindButton.setSelected(false);
