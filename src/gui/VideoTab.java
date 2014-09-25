@@ -74,11 +74,12 @@ public class VideoTab extends Tab {
 					if ((_txtVideoLoc == null || _txtVideoLoc.getText().isEmpty()) || !fileExists() ) {
 						filePathInvalid();
 					}else{
-						/*
+						/**
 						 * need to add valid files checks here
 						 */
 						_videoPanel.setMedia(_txtVideoLoc.getText());
-						_audio.enableButtons();
+						_videoPanel.enableSlider();
+						_audio.enableExtractButtons();
 						_audio.setMediaLoc(_txtVideoLoc.getText());
 					}
 				}
@@ -101,7 +102,11 @@ public class VideoTab extends Tab {
 				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-	//	public JTextField getVideoLoc() {
-	//		return _txtVideoLoc;
-	//	}
+		public String getVideoLoc() {
+			return _txtVideoLoc.getText();
+		}
+		
+		public JTextField getVideoLocField() {
+			return _txtVideoLoc;
+		}
 }

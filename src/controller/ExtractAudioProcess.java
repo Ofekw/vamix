@@ -1,66 +1,74 @@
 package controller;
 
 
+import javax.swing.JOptionPane;
 import gui.AudioTab;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+//avconv -i infile.avi -an -c:v copy outfile.avi 
+//Strips audio off video file
 
-import javax.swing.JOptionPane;
+public class ExtractAudioProcess extends testAbPro {
 
-public class ExtractAudioProcess extends AbsProcess {
-	
 	private AudioTab _tab;
+	private static final int maxValue = 100000;
+	private float totalTime;
+	private String _duration;
 
-	public void command(String cmd) {
-		_pb = new ProcessBuilder("/bin/bash", "-c", cmd);
-		_process = null;
-		_pb.redirectErrorStream(true);
-		try {
-			_process = _pb.start();
-
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		InputStream stdout = _process.getInputStream();
-		BufferedReader stdoutBuffered = new BufferedReader(
-				new InputStreamReader(stdout));
-		String line = null;
-		try {
-			while ((line = stdoutBuffered.readLine()) != null) {
-//				 System.out.println(line);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				super._status = _process.waitFor();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			destroy();
-		}
-
+	public ExtractAudioProcess(String mediaLocation, String outputLocation, AudioTab tab, String start, String duration){
+		super.setCommand(makeCommand(mediaLocation, outputLocation, start, duration));
+		_tab = tab;
+		_duration = duration;
 	}
 
 	protected void doDone() {
-	if (this.getExitStatus() == 0) {
-		_tab.enableButtons();
-		_tab.progressBarFinished();
-	} else if (this.getExitStatus() > 0) {
-						JOptionPane
-								.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",
-										"Extract Error", JOptionPane.ERROR_MESSAGE);
+		_tab.extractFinished();
+		if (get() == 0) {
+			JOptionPane
+			.showMessageDialog(_tab,"Extraction Complete!",
+					"Extract Complete!", JOptionPane.INFORMATION_MESSAGE);
+		} else if (get() > 0) {
+			JOptionPane
+			.showMessageDialog(_tab,"Something went wrong with the extract. Please check input media file",
+					"Extract Error", JOptionPane.ERROR_MESSAGE);
+		} else if (get() < 0){
+			JOptionPane
+			.showMessageDialog(_tab,"Process cancelled",
+					"Extract Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
-}
-	
-	public void setTab(AudioTab tab){
-		this._tab = tab;
+	protected void doProcess(String line){
+
+		if (line.contains("Duration:")){
+			Float time;
+			String duration;
+			if (_duration.equals("00:00:00")){
+				duration = line.substring(line.indexOf(":")+1, line.indexOf(",")).trim();
+			}else{
+				duration = _duration;
+			}
+			String[] times = duration.split(":");
+			time = Float.parseFloat(times[0])*360;
+			time += Float.parseFloat(times[1])*60;
+			time += Float.parseFloat(times[2]);
+			totalTime = time;
+			_tab.setExtractMax(maxValue);
+		}else if(line.contains("time")){
+			Float time = Float.parseFloat(line.substring(line.indexOf("time")+5, line.indexOf("b")));
+			Float value = time/totalTime*maxValue;
+			_tab.setExtractValue(value.intValue());
+		}
 	}
+
+	private String makeCommand(String input, String output, String start, String duration){
+		if(duration.equals("00:00:00")){
+			return "avconv -i "+input+" "+output;
+		}else{
+			return "avconv -i "+input+ " -ss " +start + " -t " +duration + " "+output;
+		}
+	}
+
+
+
 
 }

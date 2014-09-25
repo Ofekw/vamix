@@ -1,43 +1,41 @@
 package gui;
 
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JToggleButton;
-
-import net.miginfocom.swing.MigLayout;
-
-import uk.co.caprica.vlcj.binding.LibVlcConst;
-import uk.co.caprica.vlcj.player.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-
-import javax.swing.Timer;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.SwingConstants;
+import net.miginfocom.swing.MigLayout;
+import uk.co.caprica.vlcj.binding.LibVlcConst;
+import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import controller.FullScreenPlayer;
+
 
 @SuppressWarnings("serial")
 public class VideoPanel extends JPanel {
 
 	private EmbeddedMediaPlayer mediaPlayer = null;
-	private JProgressBar _progressSlider;
+	private JSlider _progressSlider;
 	private MainGui _parent;
-	private static final int SKIP_TIME_MS = 10 * 1000;
 
 	private JLabel _timeLabel;
 
@@ -45,11 +43,10 @@ public class VideoPanel extends JPanel {
 	private JButton _stopButton;
 	private JButton _playButton;
 	private JToggleButton _fastForwardButton;
-	private JButton _toggleMuteButton;
 	private JSlider _volumeSlider;
-	private Timer timer;
-
-	private String videoLocation;
+	private Timer _timer;
+	private boolean isPlaying = false;
+	private String _videoLocation;
 
 	//Constant value for progress bar
 	//it is now scaled so it updates alot
@@ -59,13 +56,16 @@ public class VideoPanel extends JPanel {
 	private JButton _muteToggle;
 
 	private SkipWorker skipper;
-
+	private JButton _fullScreen;
+	private EmbeddedMediaPlayer _mediaPlayerFull;
+	private FullScreenPlayer _fullScreenPlayer;
+	private  AudioTab _audioTab;
 
 
 	public VideoPanel(MainGui parent){
 		this._parent = parent;
 		this.setMinimumSize(new Dimension(900, 500));
-		this.setLayout(new MigLayout("", "[]", "[][][][][]"));
+		this.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][]"));
 		createControls();
 		registerListeners();
 
@@ -83,7 +83,7 @@ public class VideoPanel extends JPanel {
 
 
 		//just setting up the timer and stopping it so it doesnt run
-		timer = new Timer(300, new ActionListener() {
+		_timer = new Timer(300, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//checks if the file is at the end and resets it
@@ -98,31 +98,23 @@ public class VideoPanel extends JPanel {
 				}
 			}
 		});
-		timer.stop();
+		_timer.stop();
 
 		this.add(mediaCanvas, "cell 0 0,growx");
-
-		//		_progressSlider = new JProgressBar();
-		//		_progressSlider.addMouseMotionListener(new MouseMotionAdapter() {
-		//			@Override
-		//			public void mouseMoved(MouseEvent arg0) {
-		//				
-		//			}
-		//		});
+			
 	}
 
 	private void createControls() {
 		_timeLabel = new JLabel("00:00:00");
-
-		_progressSlider = new JProgressBar();
+		_progressSlider = new JSlider(JSlider.HORIZONTAL);
 		_progressSlider.setMinimum(0);
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
-		_progressSlider.setToolTipText("Position");
-		_progressSlider.setBackground(Color.BLACK);
+		//		_progressSlider.setToolTipText("Position");
+		_progressSlider.setEnabled(false);
 
 		_rewindButton = new JToggleButton();
-		_rewindButton.setIcon(new ImageIcon(("icons/fastforward.png")));
+		_rewindButton.setIcon(new ImageIcon(("icons/rewind.png")));
 		_rewindButton.setToolTipText("Skip back");
 
 		_stopButton = new JButton();
@@ -153,12 +145,78 @@ public class VideoPanel extends JPanel {
 		this.add(_playButton, "cell 0 3");
 		this.add(_fastForwardButton, "cell 0 3");
 
-		_muteToggle = new JButton("mute");
+		_muteToggle = new JButton();
+		_muteToggle.setToolTipText("mute/unmute");
 		add(_muteToggle, "cell 0 3");
+
+		_fullScreen = new JButton();
+		_fullScreen.setToolTipText("Toggles Full Screen");
+		_fullScreen.setIcon(new ImageIcon(("icons/fullscreen.png")));
+		_fullScreen.addActionListener(new ActionListener() {
+			private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//			FullScreenMultiMediaTest full = new FullScreenMultiMediaTest(_parent);
+				//			full.setMedia(videoLocation);
+				//			full.play();
+				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
+					//check if there has been an input file selected
+					if (_videoLocation == null){
+						errorPlaybackFile();
+					}else{
+						//start media from beginning and set play button to pause logo
+						_progressSlider.setValue(0);
+						mediaPlayer.play();
+						//mediaPlayer.stop();
+						pause();
+						//have to sleep cause vlcj sucks and won't allow
+						//getting length until video has played for a small amount of time
+						try {
+							Thread.sleep(400);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						_timer.start();
+						fullScreenToggle();
+					}
+					//check if video is paused
+				}else if (!mediaPlayer.isPlaying()){
+					pause();
+					fullScreenToggle();
+					//pause video otherwise
+				}else{
+					pause();
+					if(_fastForwardButton.isSelected()){
+						skipper.cancel(true);
+						enableSkips();
+					}else if (_rewindButton.isSelected()){
+						skipper.cancel(true);
+						enableSkips();
+					}
+					fullScreenToggle();
+				}
+
+			}
+		});
+		add(_fullScreen, "cell 0 3");
 		this.add(_volumeSlider, "cell 0 3");
 
-		skipper = new SkipWorker(mediaPlayer, true);
+		skipper = new SkipWorker(mediaPlayer, true, VideoPanel.this);
+	}
 
+	protected void fullScreenToggle() {
+		//init();
+
+		String mrlString = mediaPlayer.mrl();
+		_fullScreenPlayer = new FullScreenPlayer(mrlString, this);
+	}
+
+	protected void stopSkipping(){
+		skipper.cancel(true);
+		_fastForwardButton.setSelected(false);
+		_rewindButton.setSelected(false);
+		pause();
 	}
 
 	private void filePathInvalid() {
@@ -170,24 +228,27 @@ public class VideoPanel extends JPanel {
 
 	private void registerListeners() {
 
-		//		_positionSlider.addMouseListener(new MouseAdapter() {
-		//			@Override
-		//			public void mousePressed(MouseEvent e) {
-		//				if(mediaPlayer.isPlaying()) {
-		//					mousePressedPlaying = true;
-		//					mediaPlayer.pause();
-		//				}else {
-		//					mousePressedPlaying = false;
-		//				}
-		//				setSliderBasedPosition();
-		//			}
-		//
-		//			@Override
-		//			public void mouseReleased(MouseEvent e) {
-		//				setSliderBasedPosition();
-		//				updateUIState();
-		//			}
-		//		});
+		_progressSlider.addMouseListener(new MouseAdapter(){
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				setSliderBasedPosition();
+				if (isPlaying){
+					play();
+					isPlaying = false;
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (mediaPlayer.isPlaying()){
+					pause();
+					isPlaying = true;
+				}
+				setSliderBasedPosition();
+			}
+		});
+
 
 		_stopButton.addActionListener(new ActionListener() {
 			@Override
@@ -210,17 +271,10 @@ public class VideoPanel extends JPanel {
 		_playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//This bit keeps restarting video, need to find
-				//better way to check file (maybe in MainGui
-				//where JFileChooser is located
-
-				//Fixed it :D working now, video tab takes a video panel
-				//which then allows for setting the media file
-
 				//check if video hasn't started at all
-				if (mediaPlayer.getTime() == -1){
+				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
 					//check if there has been an input file selected
-					if (videoLocation == null){
+					if (_videoLocation == null){
 						errorPlaybackFile();
 					}else{
 						//start media from beginning and set play button to pause logo
@@ -235,26 +289,20 @@ public class VideoPanel extends JPanel {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						timer.start();
+						_timer.start();
 					}
 					//check if video is paused
 				}else if (!mediaPlayer.isPlaying()){
-					mediaPlayer.start();
-					timer.start();
-					_playButton.setIcon(new ImageIcon(("icons/pause.png")));
+					play();
 					//pause video otherwise
 				}else{
-					mediaPlayer.pause();
-					timer.stop();
-					_playButton.setIcon(new ImageIcon(("icons/play.png")));
+					pause();
 					if(_fastForwardButton.isSelected()){
 						skipper.cancel(true);
-						_fastForwardButton.setSelected(false);
-						_rewindButton.setSelected(false);
+						enableSkips();
 					}else if (_rewindButton.isSelected()){
 						skipper.cancel(true);
-						_rewindButton.setSelected(false);
-						_fastForwardButton.setSelected(false);
+						enableSkips();
 					}
 				}
 			}
@@ -270,7 +318,7 @@ public class VideoPanel extends JPanel {
 				}
 				if(_fastForwardButton.isSelected()){
 					skipper.cancel(true);
-					skipper = new SkipWorker(mediaPlayer, true);
+					skipper = new SkipWorker(mediaPlayer, true, VideoPanel.this);
 					skipper.execute();
 				}else{
 					skipper.cancel(true);
@@ -286,7 +334,7 @@ public class VideoPanel extends JPanel {
 				}
 				if(_rewindButton.isSelected()){
 					skipper.cancel(true);
-					skipper = new SkipWorker(mediaPlayer, false);
+					skipper = new SkipWorker(mediaPlayer, false, VideoPanel.this);
 					skipper.execute();
 				}else{
 					skipper.cancel(true);
@@ -294,13 +342,6 @@ public class VideoPanel extends JPanel {
 			}
 		});
 
-		//		_fastForwardButton.addActionListener(new ActionListener() {
-		////			@Override
-		////			public void actionPerformed(ActionEvent e) {
-		////				skip(SKIP_TIME_MS);
-		////			}
-		//		});
-		//Volume slider listener
 		_volumeSlider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -311,42 +352,38 @@ public class VideoPanel extends JPanel {
 			}
 		});
 
-
+		_muteToggle.setIcon(new ImageIcon(("icons/unmute.png")));
 		_muteToggle.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.mute();
+				if (mediaPlayer.isMute()){
+					_muteToggle.setIcon(new ImageIcon(("icons/unmute.png")));
+				}else{
+					_muteToggle.setIcon(new ImageIcon(("icons/mute.png")));
+				}
 			}
 		});
 	}
+
+	private void pause(){
+		mediaPlayer.pause();
+		_timer.stop();
+		_playButton.setIcon(new ImageIcon(("icons/play.png")));
+	}
+	public void play(){
+		mediaPlayer.start();
+		_timer.start();
+		_playButton.setIcon(new ImageIcon(("icons/pause.png")));
+	}
+
 
 	private void errorPlaybackFile() {
 		JOptionPane.showMessageDialog(this, "No valid media file selected",
 				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-	//	private void updateUIState() {
-	//		if(!mediaPlayer.isPlaying()) {
-	//			// Resume play or play a few frames then pause to show current position in video
-	//			mediaPlayer.start();
-	//			if(!mousePressedPlaying) {
-	//				try {
-	//					// Half a second probably gets an iframe
-	//					Thread.sleep(500);
-	//				}
-	//				catch(InterruptedException e) {
-	//					// Don't care if unblocked early
-	//				}
-	//				mediaPlayer.pause();
-	//			}
-	//		}
-	//		long time = mediaPlayer.getTime();
-	//		int position = (int)(mediaPlayer.getPosition() * 1000.0f);
-	//		int chapter = mediaPlayer.getChapter();
-	//		int chapterCount = mediaPlayer.getChapterCount();
-	//		updateTime(time);
-	//		updatePosition(position);
-	//	}
+
 
 	/**
 	 * Updates the time label
@@ -370,10 +407,10 @@ public class VideoPanel extends JPanel {
 	 * Resets the media player to it's default starting point
 	 */
 
-	private void resetPlayer(){
-		timer.restart();
-		timer.stop();
-		mediaPlayer.prepareMedia(videoLocation);
+	public void resetPlayer(){
+		_timer.restart();
+		_timer.stop();
+		mediaPlayer.prepareMedia(_videoLocation);
 		_playButton.setIcon(new ImageIcon(("icons/play.png")));
 		_progressSlider.setValue(0);
 		_timeLabel.setText("00:00:00");
@@ -385,22 +422,53 @@ public class VideoPanel extends JPanel {
 	 */
 	public void setMedia(String mediaLocation){
 		//changes videolocation, prepares the video to be played, resets timer and progressSlider
-		videoLocation = mediaLocation;
+		_videoLocation = mediaLocation;
 		mediaPlayer.prepareMedia(mediaLocation);
 		resetPlayer();
 		mediaPlayer.start();
 		mediaPlayer.stop();
 	}
 
-	//	private void setSliderBasedPosition() {
-	//		if(!mediaPlayer.isSeekable()) {
-	//			return;
-	//		}
-	//		float positionValue = _positionSlider.getValue() / 1000.0f;
-	//		// Avoid end of file freeze-up
-	//		if(positionValue > 0.99f) {
-	//			positionValue = 0.99f;
-	//		}
-	//		mediaPlayer.setPosition(positionValue);
-	//	}
-}
+	private void setSliderBasedPosition() {
+		if(!mediaPlayer.isSeekable()) {
+			return;
+		}
+		float positionValue = _progressSlider.getValue();
+		if (positionValue>=maxTime){
+			_progressSlider.setValue(maxTime);
+		}
+		mediaPlayer.setPosition(positionValue/maxTime);
+		updateTime(mediaPlayer.getTime());
+	}
+
+	public void enableSlider(){
+		_progressSlider.setEnabled(true);
+	}
+
+	public void enableSkips(){
+		_fastForwardButton.setSelected(false);
+		_rewindButton.setSelected(false);
+	}
+
+
+
+	public void ContinuePlay(long time) {
+		play();
+		mediaPlayer.setTime(time);
+		updatePosition(time);
+		updateTime(time);
+	}
+
+	public void StopPlay(long time) {
+		play();
+		mediaPlayer.setTime(time);
+		updatePosition(time);
+		updateTime(time);
+		pause();
+	}
+
+	public long getTime(){
+		return mediaPlayer.getTime();
+	}
+
+	}

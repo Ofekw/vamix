@@ -152,4 +152,8 @@ public abstract class testAbPro{
 	protected final void setCommand(String cmd){
 		processWorker = new ProcessWorker(cmd);
 	}
+	
+	public boolean isDone(){
+		return processWorker.isDone();
+	}
 }
