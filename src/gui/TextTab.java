@@ -38,7 +38,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import sun.font.FontScaler;
 import model.CharsOnlyLimitFilter;
 import controller.SaveLoadState;
 import controller.ShellProcess;

@@ -1,36 +1,33 @@
 package gui;
 
 import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
-import javax.swing.UIDefaults;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import controller.FullScreenPlayer;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.caprica.vlcj.binding.LibVlcConst;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import controller.FullScreenPlayer;
 
 
 @SuppressWarnings("serial")
@@ -47,10 +44,9 @@ public class VideoPanel extends JPanel {
 	private JButton _playButton;
 	private JToggleButton _fastForwardButton;
 	private JSlider _volumeSlider;
-	private Timer timer;
+	private Timer _timer;
 	private boolean isPlaying = false;
-	private String videoLocation;
-	private JDialog dialog;
+	private String _videoLocation;
 
 	//Constant value for progress bar
 	//it is now scaled so it updates alot
@@ -63,13 +59,13 @@ public class VideoPanel extends JPanel {
 	private JButton _fullScreen;
 	private EmbeddedMediaPlayer _mediaPlayerFull;
 	private FullScreenPlayer _fullScreenPlayer;
-
+	private  AudioTab _audioTab;
 
 
 	public VideoPanel(MainGui parent){
 		this._parent = parent;
 		this.setMinimumSize(new Dimension(900, 500));
-		this.setLayout(new MigLayout("", "push[center]push", "[][][][][]"));
+		this.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][]"));
 		createControls();
 		registerListeners();
 
@@ -87,7 +83,7 @@ public class VideoPanel extends JPanel {
 
 
 		//just setting up the timer and stopping it so it doesnt run
-		timer = new Timer(300, new ActionListener() {
+		_timer = new Timer(300, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//checks if the file is at the end and resets it
@@ -102,9 +98,10 @@ public class VideoPanel extends JPanel {
 				}
 			}
 		});
-		timer.stop();
+		_timer.stop();
 
 		this.add(mediaCanvas, "cell 0 0,growx");
+			
 	}
 
 	private void createControls() {
@@ -148,11 +145,13 @@ public class VideoPanel extends JPanel {
 		this.add(_playButton, "cell 0 3");
 		this.add(_fastForwardButton, "cell 0 3");
 
-		_muteToggle = new JButton("mute");
+		_muteToggle = new JButton();
+		_muteToggle.setToolTipText("mute/unmute");
 		add(_muteToggle, "cell 0 3");
 
-		_fullScreen = new JButton("Full Screen");
+		_fullScreen = new JButton();
 		_fullScreen.setToolTipText("Toggles Full Screen");
+		_fullScreen.setIcon(new ImageIcon(("icons/fullscreen.png")));
 		_fullScreen.addActionListener(new ActionListener() {
 			private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;
 			@Override
@@ -162,7 +161,7 @@ public class VideoPanel extends JPanel {
 				//			full.play();
 				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
 					//check if there has been an input file selected
-					if (videoLocation == null){
+					if (_videoLocation == null){
 						errorPlaybackFile();
 					}else{
 						//start media from beginning and set play button to pause logo
@@ -178,7 +177,7 @@ public class VideoPanel extends JPanel {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						timer.start();
+						_timer.start();
 						fullScreenToggle();
 					}
 					//check if video is paused
@@ -275,7 +274,7 @@ public class VideoPanel extends JPanel {
 				//check if video hasn't started at all
 				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
 					//check if there has been an input file selected
-					if (videoLocation == null){
+					if (_videoLocation == null){
 						errorPlaybackFile();
 					}else{
 						//start media from beginning and set play button to pause logo
@@ -290,7 +289,7 @@ public class VideoPanel extends JPanel {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						timer.start();
+						_timer.start();
 					}
 					//check if video is paused
 				}else if (!mediaPlayer.isPlaying()){
@@ -353,23 +352,28 @@ public class VideoPanel extends JPanel {
 			}
 		});
 
-
+		_muteToggle.setIcon(new ImageIcon(("icons/unmute.png")));
 		_muteToggle.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.mute();
+				if (mediaPlayer.isMute()){
+					_muteToggle.setIcon(new ImageIcon(("icons/unmute.png")));
+				}else{
+					_muteToggle.setIcon(new ImageIcon(("icons/mute.png")));
+				}
 			}
 		});
 	}
 
 	private void pause(){
 		mediaPlayer.pause();
-		timer.stop();
+		_timer.stop();
 		_playButton.setIcon(new ImageIcon(("icons/play.png")));
 	}
 	public void play(){
 		mediaPlayer.start();
-		timer.start();
+		_timer.start();
 		_playButton.setIcon(new ImageIcon(("icons/pause.png")));
 	}
 
@@ -404,9 +408,9 @@ public class VideoPanel extends JPanel {
 	 */
 
 	public void resetPlayer(){
-		timer.restart();
-		timer.stop();
-		mediaPlayer.prepareMedia(videoLocation);
+		_timer.restart();
+		_timer.stop();
+		mediaPlayer.prepareMedia(_videoLocation);
 		_playButton.setIcon(new ImageIcon(("icons/play.png")));
 		_progressSlider.setValue(0);
 		_timeLabel.setText("00:00:00");
@@ -418,7 +422,7 @@ public class VideoPanel extends JPanel {
 	 */
 	public void setMedia(String mediaLocation){
 		//changes videolocation, prepares the video to be played, resets timer and progressSlider
-		videoLocation = mediaLocation;
+		_videoLocation = mediaLocation;
 		mediaPlayer.prepareMedia(mediaLocation);
 		resetPlayer();
 		mediaPlayer.start();
@@ -454,7 +458,7 @@ public class VideoPanel extends JPanel {
 		updatePosition(time);
 		updateTime(time);
 	}
-	
+
 	public void StopPlay(long time) {
 		play();
 		mediaPlayer.setTime(time);
@@ -467,5 +471,4 @@ public class VideoPanel extends JPanel {
 		return mediaPlayer.getTime();
 	}
 
-
-}
+	}
