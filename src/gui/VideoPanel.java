@@ -14,15 +14,17 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
+import javax.swing.UIDefaults;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import controller.FullScreenPlayer;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.caprica.vlcj.binding.LibVlcConst;
@@ -157,6 +159,40 @@ public class VideoPanel extends JPanel {
 				//			FullScreenMultiMediaTest full = new FullScreenMultiMediaTest(_parent);
 				//			full.setMedia(videoLocation);
 				//			full.play();
+				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
+					//check if there has been an input file selected
+					if (videoLocation == null){
+						errorPlaybackFile();
+					}else{
+						//start media from beginning and set play button to pause logo
+						_progressSlider.setValue(0);
+						mediaPlayer.play();
+						mediaPlayer.stop();
+						//_playButton.setIcon(new ImageIcon(("icons/pause.png")));
+						//have to sleep cause vlcj sucks and won't allow
+						//getting length until video has played for a small amount of time
+						try {
+							Thread.sleep(400);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						timer.start();
+					}
+					//check if video is paused
+				}else if (!mediaPlayer.isPlaying()){
+					pause();
+					//pause video otherwise
+				}else{
+					pause();
+					if(_fastForwardButton.isSelected()){
+						skipper.cancel(true);
+						enableSkips();
+					}else if (_rewindButton.isSelected()){
+						skipper.cancel(true);
+						enableSkips();
+					}
+				}
 				fullScreenToggle();
 
 			}
@@ -168,8 +204,11 @@ public class VideoPanel extends JPanel {
 	}
 
 	protected void fullScreenToggle() {
-		init();
-
+		//init();
+		
+		String mrlString = mediaPlayer.mrl();
+		System.out.println(mrlString);
+		FullScreenPlayer fullScreenPlayerTest = new FullScreenPlayer(mrlString, this);
 	}
 	
 	protected void stopSkipping(){
@@ -405,64 +444,16 @@ public class VideoPanel extends JPanel {
 		_rewindButton.setSelected(false);
 	}
 
-	//shit
-	protected void init() {  
-		this.dialog = new JDialog(this._parent.getFrame(), "FullScreen", true);  
-		this.dialog.setResizable(false);  
-		this.dialog.getContentPane().add(createPane());  
-		this.dialog.pack();  	
-		Dimension Size = Toolkit.getDefaultToolkit().getScreenSize();  
-		this.dialog.setSize(new Double((Size.getWidth()) - (dialog.getWidth())).intValue(), new Double((Size.getHeight()) - (dialog.getHeight())).intValue());  
-		this.dialog.setLocation(new Double((Size.getWidth()/2) - (dialog.getWidth()/2)).intValue(), new Double((Size.getHeight()/2) - (dialog.getHeight()/2)).intValue());  
-		show();
-		resetPlayerFull(_mediaPlayerFull);
-		_mediaPlayerFull.start();
-	}  
-
-	protected Container createPane() {  
-		JPanel fullScreen = new JPanel(); 
-		fullScreen.setBackground(Color.BLACK);
-		fullScreen.setLayout(new MigLayout("", "[]", "[][][][][]"));
-		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
-
-		// Setup canvas for player to go on
-
-
-		Canvas mediaCanvasFull = new Canvas();
-		mediaCanvasFull.setPreferredSize(new Dimension(800,300));
-		_mediaPlayerFull = mediaPlayerFactory.newEmbeddedMediaPlayer();
-		_mediaPlayerFull.setVideoSurface(mediaPlayerFactory.newVideoSurface(mediaCanvasFull));
-
-		fullScreen.add(mediaCanvasFull, "cell 0 0,growx");
-		
-		//fullScreen.add(mediaCanvasFull);
-		
-		//setMediaFull(mediaPlayerFull);
-		return fullScreen;  
-
-	}  
-
-	public void show() {  
-		if (this.dialog == null) {  
-			init();  
-		}  
-		this.dialog.setVisible(true);  
-	}  
-
-	protected void close() {  
-		this.dialog.dispose();  
-		this.dialog.setVisible(false);  
-	}  
 	
-	public void setMediaFull(EmbeddedMediaPlayer player){
-		player.prepareMedia(videoLocation);
-		resetPlayerFull(player);
-		player.start();
-		player.stop();
-	}
 
-	private void resetPlayerFull(EmbeddedMediaPlayer player) {
-		player.prepareMedia(videoLocation);
+	public void ContinuePlay(long time) {
+	//	mediaPlayer.setTime(time);
+		mediaPlayer.setPosition(time/maxTime);
+		updatePosition(time);
+//		setSliderBasedPosition();
+		updateTime(time);
+		play();
+		
 	}
 
 

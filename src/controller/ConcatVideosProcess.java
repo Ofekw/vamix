@@ -22,7 +22,6 @@ public class ConcatVideosProcess extends testAbPro {
 		ShellProcess.command("rm -f "+binLoc+"1.mpeg");
 		ShellProcess.command("rm -f "+binLoc+"2.mpeg");
 		ShellProcess.command("rm -f "+binLoc+"3.mpeg");
-		System.out.println("GETTING HERE");
 		super.setCommand(makeCommand(_tab.getSaveloc()));
 	}
 	protected void doDone() {
