@@ -108,9 +108,13 @@ public class MainGui {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		EditPanel.add(tabbedPane);
 
-		_audio = new AudioTab(_videoPanel);
+	
 		_text = new TextTab(_videoPanel, this);
+		
 		_video = new VideoTab(_videoPanel,_audio);
+		_audio = new AudioTab(_videoPanel, _video);
+		_video = new VideoTab(_videoPanel, _audio);
+		
 		tabbedPane.addTab("Media", null, _video, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
 		tabbedPane.addTab("Text", null, _text, null);
@@ -148,6 +152,7 @@ public class MainGui {
 					if (!result.endsWith(".txt")){
 						result+=".txt";
 					}
+					_audio.save(result);
 					_text.save(result);
 				}
 			}

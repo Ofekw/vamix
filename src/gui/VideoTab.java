@@ -25,13 +25,13 @@ public class VideoTab extends Tab {
 	private Component horizontalStrut;
 	private AudioTab _audio ;
 
-		public VideoTab(VideoPanel panel, AudioTab audio) {
-			super(panel);
-			this._audio = audio;
-		}
+	public VideoTab(VideoPanel panel, AudioTab audio) {
+		super(panel);
+		this._audio = audio;
+	}
 
 	protected void initialise() {
-		
+
 		Download download = new Download(this);
 		this.setPreferredSize(new Dimension(1000, 180));
 
@@ -102,11 +102,11 @@ public class VideoTab extends Tab {
 				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-		public String getVideoLoc() {
-			return _txtVideoLoc.getText();
-		}
-		
-		public JTextField getVideoLocField() {
-			return _txtVideoLoc;
-		}
+	public String getVideoLoc() {
+		return _txtVideoLoc.getText();
+	}
+
+	public JTextField getVideoLocField() {
+		return _txtVideoLoc;
+	}
 }
