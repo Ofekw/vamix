@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 
+import controller.CheckFile;
+
 public class VideoTab extends Tab {
 	/**
 	 * 
@@ -101,8 +103,11 @@ public class VideoTab extends Tab {
 						 */
 						_videoPanel.setMedia(_txtVideoLoc.getText());
 						_videoPanel.enableSlider();
-						_audio.enableExtractButtons();
-						_audio.setMediaLoc(_txtVideoLoc.getText());
+						CheckFile check = new CheckFile(false);
+						if(!check.checkFileType(selectedFile.getAbsolutePath())){
+							_audio.enableExtractButtons();
+							_audio.setMediaLoc(_txtVideoLoc.getText());
+						}
 					}
 				}
 			}
