@@ -146,11 +146,11 @@ public class VideoPanel extends JPanel {
 		this.add(_fastForwardButton, "cell 0 3");
 
 		_muteToggle = new JButton();
-		_muteToggle.setToolTipText("mute/unmute");
+		_muteToggle.setToolTipText("Mute/Unmute");
 		add(_muteToggle, "cell 0 3");
 
 		_fullScreen = new JButton();
-		_fullScreen.setToolTipText("Toggles Full Screen");
+		_fullScreen.setToolTipText("Toggles fullscreen");
 		_fullScreen.setIcon(new ImageIcon(("icons/fullscreen.png")));
 		_fullScreen.addActionListener(new ActionListener() {
 			private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;

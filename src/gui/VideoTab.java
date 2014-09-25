@@ -12,6 +12,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.JSeparator;
 
 public class VideoTab extends Tab {
 	/**
@@ -24,6 +25,10 @@ public class VideoTab extends Tab {
 	private Box horizontalBox;
 	private Component horizontalStrut;
 	private AudioTab _audio ;
+	private Box horizontalBox_1;
+	private Component verticalStrut;
+	private JSeparator separator;
+	private Component verticalStrut_1;
 
 		public VideoTab(VideoPanel panel, AudioTab audio) {
 			super(panel);
@@ -31,8 +36,6 @@ public class VideoTab extends Tab {
 		}
 
 	protected void initialise() {
-		
-		Download download = new Download(this);
 		this.setPreferredSize(new Dimension(1000, 180));
 
 		verticalBox = Box.createVerticalBox();
@@ -42,19 +45,38 @@ public class VideoTab extends Tab {
 		horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 
-		JLabel lblVideoFile = new JLabel("Playback Media:");
+		JLabel lblVideoFile = new JLabel("Target/Playback Media:");
 		horizontalBox.add(lblVideoFile);
 
 		horizontalStrut = Box.createHorizontalStrut(20);
 		horizontalBox.add(horizontalStrut);
 
 		_txtVideoLoc = new JTextField();
+		_txtVideoLoc.setToolTipText("Location of playback/edit media");
 		horizontalBox.add(_txtVideoLoc);
 		_txtVideoLoc.setPreferredSize(new Dimension(5,10));
 
 		_btnBrowse = new JButton("Browse");
 		horizontalBox.add(_btnBrowse);
-		verticalBox.add(download);
+		
+		verticalStrut = Box.createVerticalStrut(20);
+		verticalStrut.setPreferredSize(new Dimension(0, 5));
+		verticalBox.add(verticalStrut);
+		
+		separator = new JSeparator();
+		verticalBox.add(separator);
+		
+		verticalStrut_1 = Box.createVerticalStrut(20);
+		verticalStrut_1.setPreferredSize(new Dimension(0, 5));
+		verticalBox.add(verticalStrut_1);
+		
+		horizontalBox_1 = Box.createHorizontalBox();
+		verticalBox.add(horizontalBox_1);
+		
+		Download download = new Download(this);
+		download.setToolTipText("Media download");
+		download.setName("");
+		horizontalBox_1.add(download);
 		_btnBrowse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

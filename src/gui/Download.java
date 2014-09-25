@@ -61,11 +61,12 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		horizontalBox.add(lblMpUrl);
 
 		Component rigidArea = Box.createRigidArea(new Dimension(50, 20));
+		rigidArea.setPreferredSize(new Dimension(105, 20));
 		horizontalBox.add(rigidArea);
 
 		_textField = new JTextField();
 		horizontalBox.add(_textField);
-		_textField.setColumns(49);
+		_textField.setColumns(45);
 
 		_btnDownload = new JButton("Download");
 		horizontalBox.add(_btnDownload);
