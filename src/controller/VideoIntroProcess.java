@@ -43,7 +43,7 @@ public class VideoIntroProcess extends testAbPro {
 		
 		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
 				+System.getProperty("file.separator");
-		return "avconv -i " + binLoc + "background.mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
+		return "avconv -i " + binLoc + "background.mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
 				+ "\"" + " "+binLoc+"tempIntro.mp4";
 	}
 	

@@ -37,12 +37,16 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
+
+import sun.font.FontScaler;
 import model.CharsOnlyLimitFilter;
 import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.VideoIntroProcess;
 import controller.VideoOutroProcess;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class TextTab extends Tab {
 	private JTextField _textFieldIntro;
@@ -51,14 +55,14 @@ public class TextTab extends Tab {
 	private JSpinner _fontSize;
 	private JComboBox<String> fontColour;
 	private JComboBox<String> _fontType;
-	private Color _colourSelect = Color.BLACK;
+	private Color _colourSelect = Color.BLUE;
 	private JButton _btnColourSelect;
 	private MainGui _main;
 	private String _saveLoc;
 	private JProgressBar _progressBar;
 	private JButton _apply;
 	private int _processNumber;
-	
+
 	private SaveLoadState saveLoad;
 
 	public TextTab(VideoPanel panel, MainGui main) {
@@ -81,15 +85,14 @@ public class TextTab extends Tab {
 		verticalBox.add(horizontalBox);
 
 		_txtPreview = new JTextPane();
+		_txtPreview.setToolTipText("This pane shows a preview of the text with formatting");
 		_txtPreview.setFont(new Font("Dialog", Font.PLAIN, 24));
 		_txtPreview.setEditable(false);
-		_txtPreview.setText("Text preview");
 
 		JLabel lblOpeningText = new JLabel("Opening Text:");
 		horizontalBox.add(lblOpeningText);
 
 		_textFieldIntro = new JTextField();
-
 		CharsOnlyLimitFilter charFilter = new CharsOnlyLimitFilter(999); // characters limited to 999 and no special chars
 
 
@@ -101,9 +104,6 @@ public class TextTab extends Tab {
 		_textFieldIntro.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-//			String text = _textFieldIntro.getText();
-//				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
-//				_txtPreview.selectAll();
 				if(!_textFieldIntro.getText().isEmpty()){
 					_apply.setEnabled(true);
 				}else if(_textFieldEnd.getText().isEmpty()){
@@ -111,6 +111,21 @@ public class TextTab extends Tab {
 				}
 			}
 		});
+		
+		_textFieldIntro.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				String text = _textFieldIntro.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
+		});
+
 		_textFieldIntro.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
@@ -127,21 +142,6 @@ public class TextTab extends Tab {
 		});     
 		horizontalBox.add(_textFieldIntro);
 		_textFieldIntro.setColumns(10);
-
-		JButton btnPreview = new JButton("Preview");
-		btnPreview.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				String text = _textFieldIntro.getText();
-				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
-				_txtPreview.selectAll();
-				if(!_textFieldIntro.getText().isEmpty()){
-					_apply.setEnabled(true);
-				}else if(_textFieldEnd.getText().isEmpty()){
-					_apply.setEnabled(false);
-				}
-			}
-		});
-		horizontalBox.add(btnPreview);
 
 		Component verticalStrut = Box.createVerticalStrut(10);
 		verticalBox.add(verticalStrut);
@@ -175,9 +175,6 @@ public class TextTab extends Tab {
 		_textFieldEnd.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-//				String text = _textFieldEnd.getText();
-//				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
-//				_txtPreview.selectAll();
 				if(!_textFieldEnd.getText().isEmpty()){
 					_apply.setEnabled(true);
 				}else if(_textFieldIntro.getText().isEmpty()){
@@ -185,12 +182,10 @@ public class TextTab extends Tab {
 				}
 			}
 		});
-		horizontalBox_1.add(_textFieldEnd);
-		_textFieldEnd.setColumns(10);
-
-		JButton button = new JButton("Preview");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		
+		_textFieldEnd.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
 				String text = _textFieldEnd.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
@@ -201,7 +196,9 @@ public class TextTab extends Tab {
 				}
 			}
 		});
-		horizontalBox_1.add(button);
+		horizontalBox_1.add(_textFieldEnd);
+		_textFieldEnd.setColumns(10);
+
 
 		Component verticalStrut_1 = Box.createVerticalStrut(10);
 		verticalBox.add(verticalStrut_1);
@@ -228,6 +225,11 @@ public class TextTab extends Tab {
 		horizontalBox_2.add(rigidArea);
 
 		_btnColourSelect = new JButton("Colour Select");
+		_btnColourSelect.setForeground(Color.BLUE);
+		_btnColourSelect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		_btnColourSelect.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -236,8 +238,6 @@ public class TextTab extends Tab {
 			}
 		});
 		horizontalBox_2.add(_btnColourSelect);
-		//horizontalBox_2.add(fontColour);
-
 		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox_2.add(rigidArea_1);
 
@@ -249,19 +249,12 @@ public class TextTab extends Tab {
 
 		_fontType.setMaximumSize(new Dimension(40, 32767));
 		//Can't use enviroment varialbes as it's impossible to get font location which is needed for drawtext
-//		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//		String []fontFamilies = ge.getAvailableFontFamilyNames();
+		//		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		//		String []fontFamilies = ge.getAvailableFontFamilyNames();
 
-		_fontType.setModel(new DefaultComboBoxModel(new String[] {"Ubuntu","DejaVu Sans", "FreeSans", "Liberation Serif", "NanumGothic"}));
+		_fontType.setModel(new DefaultComboBoxModel(new String[] {"DejaVu Sans", "Ubuntu", "FreeSans", "Liberation Serif", "NanumGothic"}));
 		_fontType.setToolTipText("Font Type");
 
-		//		fontType.addMouseListener(new MouseAdapter() {
-		//			@Override
-		//			public void mousePressed(MouseEvent arg0) {
-		//				String text = txtPreview.getText();
-		//				SetPreview(txtPreview, text, getUserColour(), (int)fontSize.getValue(), getUserFont());
-		//			}
-		//		});
 
 		_fontType.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
@@ -318,7 +311,7 @@ public class TextTab extends Tab {
 
 	private void createColourChooser() {
 
-		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.WHITE);
+		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.BLUE);
 		System.out.println("The selected color was:" + _colourSelect);
 
 		String text = _txtPreview.getText();
@@ -348,29 +341,27 @@ public class TextTab extends Tab {
 		String fontString = _fontType.getSelectedItem().toString();
 		return fontString;
 	}
-	
-private String getUserFontLoc(){
-	int fontSelected = _fontType.getSelectedIndex();
-	String fontLoc;
-	switch (fontSelected) {
-	case -1:  fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
-    break;
-	case 0:  fontLoc = "January";
-	break;
-	case 1:  fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
-	break;
-	case 2:  fontLoc = "February";
-	break;
-	case 3:  fontLoc = "March";
-	break;
-	case 4:  fontLoc = "April";
-	break;
-	default: fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
-	break;
+
+	public String getUserFontLoc(){
+		String fontSelected = _fontType.getSelectedItem().toString();
+		String fontLoc;
+		switch (fontSelected) {
+		case "DejaVu Sans":  fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
+		break;
+		case "Ubuntu":  fontLoc = "/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-RI.ttf";
+		break;
+		case "FreeSans":  fontLoc = "/usr/share/fonts/truetype/freefont/FreeSans.ttf";
+		break;
+		case "Liberation Serif":  fontLoc = "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf";
+		break;
+		case "NanumGothic":  fontLoc = "/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf";
+		break;
+		default: fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
+		break;
+		}
+		System.out.println(fontLoc);
+		return fontLoc;
 	}
-	System.out.println(fontLoc);
-	return fontLoc;
-}
 
 	private Color getUserColour() {
 		return _colourSelect;
@@ -379,14 +370,14 @@ private String getUserFontLoc(){
 	private void createProcess() {
 		_processNumber = 0;
 		if(!_textFieldIntro.getText().isEmpty()){
-			VideoIntroProcess process1 = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldIntro.getText(), _colourSelect);
+			VideoIntroProcess process1 = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFontLoc(), _textFieldIntro.getText(), _colourSelect);
 			process1.execute();
 			_processNumber = 1;
 
 		}
 
 		if(!_textFieldEnd.getText().isEmpty()){
-			VideoOutroProcess process2 = new VideoOutroProcess(this, (int)_fontSize.getValue(), getUserFont(), _textFieldEnd.getText(), _colourSelect);
+			VideoOutroProcess process2 = new VideoOutroProcess(this, (int)_fontSize.getValue(), getUserFontLoc(), _textFieldEnd.getText(), _colourSelect);
 			process2.execute();
 			_processNumber = 2;
 		}
@@ -507,13 +498,13 @@ private String getUserFontLoc(){
 	public int getProcessNumber(){
 		return _processNumber;
 	}
-	
+
 	public void save(String saveFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
 				fontColour, _fontType, saveFileName);
 		saveLoad.save();
 	}
-	
+
 	public void load(String loadFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
 				fontColour, _fontType, loadFileName);
