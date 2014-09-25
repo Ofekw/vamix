@@ -1,16 +1,11 @@
 package controller;
-
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -49,21 +44,21 @@ public class SaveLoadState {
 	public SaveLoadState(JTextField video, JSpinner startHours, JSpinner startMinutes, JSpinner startSeconds,
 			JSpinner durationHours, JSpinner durationMinutes, JSpinner durationSeconds, JTextField inputAudio
 			, String saveFileName){
-		
+
 		_video = video;
 		_inputAudio = inputAudio;
 		_startHours = startHours;
 		_startMinutes = startMinutes;
 		_startSeconds = startSeconds;
-		
+
 		_durationHours = durationHours;
 		_durationMinutes = durationMinutes;
 		_durationSeconds = durationSeconds;
-		
+
 		saveFormat = format(_video.getText(), _inputAudio.getText(), _startHours.getValue().toString(),
-		_startMinutes.getValue().toString(), _startSeconds.getValue().toString(), _durationHours.getValue().toString(),
-		_durationMinutes.getValue().toString(), _durationSeconds.getValue().toString());
-		
+				_startMinutes.getValue().toString(), _startSeconds.getValue().toString(), _durationHours.getValue().toString(),
+				_durationMinutes.getValue().toString(), _durationSeconds.getValue().toString());
+
 		SaveFile = new File(SAVE+saveFileName);
 	}
 
@@ -101,45 +96,47 @@ public class SaveLoadState {
 		}
 	}
 
-	public void load(){
+	public void load(boolean loadingText){
 		String [] textSettings = null;
 		String [] audioSettings = null;
 		try {
 			List<String> lines = Files.readAllLines(SaveFile.toPath(), Charset.defaultCharset());
-			audioSettings = lines.remove(0).split(":");
-			textSettings = lines.remove(0).split(":");
+			audioSettings = lines.get(0).split(":");
+			textSettings = lines.get(1).split(":");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		_intro.setText(textSettings[0]);
-		_end.setText(textSettings[1]);
-		_preview.setText(textSettings[2]);
-		_fontSize.setValue(Integer.parseInt(textSettings[3]));
-		if (textSettings[4].equals("null")){
-			_fontColour = null;
+		if (loadingText){
+			_intro.setText(textSettings[0]);
+			_end.setText(textSettings[1]);
+			_preview.setText(textSettings[2]);
+			_fontSize.setValue(Integer.parseInt(textSettings[3]));
+			if (textSettings[4].equals("null")){
+				_fontColour = null;
+			}else{
+				_fontColour.setSelectedItem(textSettings[4]);
+			}
+			_fontType.setSelectedItem(textSettings[5]);
 		}else{
-			_fontColour.setSelectedItem(textSettings[4]);
+			_video.setText(audioSettings[0]);
+			_inputAudio.setText(audioSettings[1]);
+			_startHours.setValue(Integer.parseInt(audioSettings[2]));
+			_startMinutes.setValue(Integer.parseInt(audioSettings[3]));
+			_startSeconds.setValue(Integer.parseInt(audioSettings[4]));
+
+			_durationHours.setValue(Integer.parseInt(audioSettings[5]));
+			_durationMinutes.setValue(Integer.parseInt(audioSettings[6]));
+			_durationSeconds.setValue(Integer.parseInt(audioSettings[7]));
 		}
-		_fontType.setSelectedItem(textSettings[5]);
-		
-		_video.setText(audioSettings[0]);
-		_inputAudio.setText(audioSettings[1]);
-		_startHours.setValue(Integer.parseInt(audioSettings[2]));
-		_startMinutes.setValue(Integer.parseInt(audioSettings[3]));
-		_startSeconds.setValue(Integer.parseInt(audioSettings[4]));
-		
-		_durationHours.setValue(Integer.parseInt(audioSettings[5]));
-		_durationMinutes.setValue(Integer.parseInt(audioSettings[6]));
-		_durationSeconds.setValue(Integer.parseInt(audioSettings[7]));
 	}
 
 	private String format(String video, String inputAudio, String startHours, String startMinutes, String startSeconds,
 			String durationHours, String durationMinutes, String durationSeconds){
-		
-		return video +":"+inputAudio+":"+startHours+":"+startMinutes+":"+startSeconds+":"+durationHours+":"+durationMinutes
+
+		return video+":"+inputAudio+":"+startHours+":"+startMinutes+":"+startSeconds+":"+durationHours+":"+durationMinutes
 				+":"+durationSeconds;
 	}
-	
+
 	private String format(String intro, String end, String preview, 
 			String fontSize, String fontColour, String fontType){
 		return intro+":"+end+":"+preview+":"+fontSize+":"+fontColour+":"+fontType;		

@@ -111,9 +111,12 @@ public class MainGui {
 	
 		_text = new TextTab(_videoPanel, this);
 		
+		//java is being weird and not intialising the fields right
+		//had to double up the constructors
 		_video = new VideoTab(_videoPanel,_audio);
 		_audio = new AudioTab(_videoPanel, _video);
 		_video = new VideoTab(_videoPanel, _audio);
+		_audio = new AudioTab(_videoPanel, _video);
 		
 		tabbedPane.addTab("Media", null, _video, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
@@ -179,6 +182,7 @@ public class MainGui {
                 int returnVal = chooser.showOpenDialog(menuBar);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                 	_text.load(chooser.getSelectedFile().getName());
+                	_audio.load(chooser.getSelectedFile().getName());
                 }
 			}
 		});

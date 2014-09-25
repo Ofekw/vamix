@@ -499,16 +499,18 @@ public class AudioTab extends Tab {
 	}
 
 	public void save(String saveFile){
-//		JTextField video;
-//		if (_tab == null){
-//			video = null;
-//		}else{
-//			video = _tab.getVideoLocField();
-//		}
 		saveLoad = new SaveLoadState(_tab.getVideoLocField(), _startHours,
 				_startMinutes, _startSeconds, _durationHours,
 				_durationMinutes, _durationSeconds, _inputAudio, 
 				saveFile);
 		saveLoad.save();
+	}
+	
+	public void load(String saveFile){
+		saveLoad = new SaveLoadState(_tab.getVideoLocField(), _startHours,
+				_startMinutes, _startSeconds, _durationHours,
+				_durationMinutes, _durationSeconds, _inputAudio, 
+				saveFile);
+		saveLoad.load(false);
 	}
 }
