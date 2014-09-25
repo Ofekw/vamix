@@ -247,7 +247,7 @@ public class AudioTab extends Tab {
 			}
 		};
 
-		fileChooser.setDialogTitle("Specify where to save audio");
+		fileChooser.setDialogTitle("Specify new video file name");
 
 		int userSelection = fileChooser.showSaveDialog(this);
 		File fileToSave = null;
@@ -336,7 +336,7 @@ public class AudioTab extends Tab {
 			}
 		};
 
-		fileChooser.setDialogTitle("Specify where to save audio");
+		fileChooser.setDialogTitle("Specify new audio file name");
 
 		int userSelection = fileChooser.showSaveDialog(this);
 		File fileToSave = null;
@@ -512,5 +512,10 @@ public class AudioTab extends Tab {
 				_durationMinutes, _durationSeconds, _inputAudio, 
 				saveFile);
 		saveLoad.load(false);
+	}
+
+	
+	public void setVideoTab(VideoTab video) {
+		_tab = video;
 	}
 }

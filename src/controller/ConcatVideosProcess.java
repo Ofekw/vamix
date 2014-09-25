@@ -46,7 +46,7 @@ public class ConcatVideosProcess extends testAbPro {
 	}
 
 	protected void doProcess(String line){
-		System.out.println(line);
+//		System.out.println(line);
 
 	}
 

@@ -3,14 +3,15 @@ package gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Insets;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -29,7 +30,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.AbstractDocument;
@@ -43,16 +43,13 @@ import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.VideoIntroProcess;
 import controller.VideoOutroProcess;
-import java.awt.Font;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
+@SuppressWarnings("serial")
 public class TextTab extends Tab {
 	private JTextField _textFieldIntro;
 	private JTextField _textFieldEnd;
 	private JTextPane _txtPreview;
 	private JSpinner _fontSize;
-	private JComboBox<String> fontColour;
 	private JComboBox<String> _fontType;
 	private Color _colourSelect = Color.BLUE;
 	private JButton _btnColourSelect;
@@ -243,7 +240,7 @@ public class TextTab extends Tab {
 		JLabel lblFontType = new JLabel("Font Type: ");
 		horizontalBox_2.add(lblFontType);
 
-		_fontType = new JComboBox();
+		_fontType = new JComboBox<String>();
 
 
 		_fontType.setMaximumSize(new Dimension(40, 32767));
@@ -251,7 +248,7 @@ public class TextTab extends Tab {
 		//		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		//		String []fontFamilies = ge.getAvailableFontFamilyNames();
 
-		_fontType.setModel(new DefaultComboBoxModel(new String[] {"DejaVu Sans", "Ubuntu", "FreeSans", "Liberation Serif", "NanumGothic"}));
+		_fontType.setModel(new DefaultComboBoxModel<String>(new String[] {"DejaVu Sans", "Ubuntu", "FreeSans", "Liberation Serif", "NanumGothic"}));
 		_fontType.setToolTipText("Font Type");
 
 
@@ -263,7 +260,6 @@ public class TextTab extends Tab {
 		});
 
 		horizontalBox_2.add(_fontType);
-		EmptyBorder eb = new EmptyBorder(new Insets(10, 10, 10, 10));
 
 		_apply = new JButton("Apply");
 		_apply.setEnabled(false);
@@ -271,7 +267,6 @@ public class TextTab extends Tab {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(_apply.isEnabled()){
-					System.out.println(getMain().getVideo().getVideoLoc());
 					if (!_main.getVideo().getVideoLoc().isEmpty()){
 						SaveLocAndTextProcess();	
 					}else {
@@ -311,7 +306,6 @@ public class TextTab extends Tab {
 	private void createColourChooser() {
 
 		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.BLUE);
-		System.out.println("The selected color was:" + _colourSelect);
 
 		String text = _txtPreview.getText();
 		SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());
@@ -358,7 +352,6 @@ public class TextTab extends Tab {
 		default: fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
 		break;
 		}
-		System.out.println(fontLoc);
 		return fontLoc;
 	}
 
@@ -498,16 +491,29 @@ public class TextTab extends Tab {
 		return _processNumber;
 	}
 
+	/**
+	 * Saves the current text settings to a vamix save file
+	 * @param saveFileName: Path to save file
+	 */
 	public void save(String saveFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
-				fontColour, _fontType, saveFileName);
+				_colourSelect, _fontType, saveFileName);
 		saveLoad.save();
 	}
 
+	/**
+	 * Loads the settings from the file specified
+	 * @param loadFileName: Path to Vamix save file to be loaded
+	 */
 	public void load(String loadFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
-				fontColour, _fontType, loadFileName);
-		saveLoad.load(true);
+				_colourSelect, _fontType, loadFileName);
+		int colour = saveLoad.load(true);
+		if (colour != 0){
+			_colourSelect = new Color(colour);
+		}
+		SetPreview(_txtPreview, _textFieldIntro.getText(), getUserColour(), (int)_fontSize.getValue(), getUserFont());
+		_btnColourSelect.setForeground(getUserColour());
 	}
 
 }

@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.Desktop;
 import java.awt.EventQueue;
-import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +45,7 @@ public class MainGui {
 
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
+				//Check for vlc in home directory
 				RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
 				);
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
@@ -95,7 +95,6 @@ public class MainGui {
 
 		_videoPanel = new VideoPanel(this);
 		horizontalBox.add(_videoPanel);
-		//videoPanel.setBackground(Color.BLACK);
 
 		Box horizontalBox_1 = Box.createHorizontalBox();
 		frame.getContentPane().add(horizontalBox_1);
@@ -112,10 +111,12 @@ public class MainGui {
 
 		//java is being weird and not intialising the fields right
 		//had to double up the constructors
+		_audio = new AudioTab(_videoPanel, _video);
 		_video = new VideoTab(_videoPanel,_audio);
-		_audio = new AudioTab(_videoPanel, _video);
-		_video = new VideoTab(_videoPanel, _audio);
-		_audio = new AudioTab(_videoPanel, _video);
+		_audio.setVideoTab(_video);
+
+//		_video = new VideoTab(_videoPanel, _audio);
+//		_audio = new AudioTab(_videoPanel, _video);
 
 		tabbedPane.addTab("Media", null, _video, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
@@ -140,6 +141,8 @@ public class MainGui {
 		});
 		menuBar.add(mainMenu);
 		menuBar.add(help);
+		
+		//Add save shortcut
 		JMenuItem save = new JMenuItem("Save Project",KeyEvent.VK_1);
 		save.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_S, ActionEvent.CTRL_MASK));
@@ -177,6 +180,7 @@ public class MainGui {
 
 		mainMenu.add(save);
 
+		//add load shortcut
 		JMenuItem load = new JMenuItem("Load Project",KeyEvent.VK_2);
 		load.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_O, ActionEvent.CTRL_MASK));
@@ -210,6 +214,8 @@ public class MainGui {
 		});
 		mainMenu.add(load);
 
+		
+		//add quit shortcut
 		JMenuItem quit = new JMenuItem("Quit Project",KeyEvent.VK_3);
 		quit.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
@@ -220,6 +226,7 @@ public class MainGui {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				MainGui.this.getFrame().dispose();
+				System.exit(0);
 			}
 		});
 

@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -35,7 +36,6 @@ public class VideoPanel extends JPanel {
 
 	private EmbeddedMediaPlayer mediaPlayer = null;
 	private JSlider _progressSlider;
-	private MainGui _parent;
 
 	private JLabel _timeLabel;
 
@@ -63,11 +63,12 @@ public class VideoPanel extends JPanel {
 
 
 	public VideoPanel(MainGui parent){
-		this._parent = parent;
 		this.setMinimumSize(new Dimension(900, 500));
 		this.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][]"));
 		createControls();
 		registerListeners();
+		
+		this.setBorder(BorderFactory.createTitledBorder(""));
 
 		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
 
@@ -76,7 +77,7 @@ public class VideoPanel extends JPanel {
 
 		Canvas mediaCanvas = new Canvas();
 		//	mediaCanvas.setBackground(Color.black);
-		mediaCanvas.setPreferredSize(new Dimension(800,300));
+		mediaCanvas.setPreferredSize(new Dimension(parent.getFrame().getWidth()-100,300));
 
 		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
 		mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(mediaCanvas));
@@ -100,7 +101,7 @@ public class VideoPanel extends JPanel {
 		});
 		_timer.stop();
 
-		this.add(mediaCanvas, "cell 0 0,growx");
+		this.add(mediaCanvas, "cell 0 0,growx, span");
 			
 	}
 
@@ -212,6 +213,9 @@ public class VideoPanel extends JPanel {
 		_fullScreenPlayer = new FullScreenPlayer(mrlString, this);
 	}
 
+	/**
+	 * Cancels fast forward/rewind
+	 */
 	protected void stopSkipping(){
 		skipper.cancel(true);
 		_fastForwardButton.setSelected(false);
@@ -219,13 +223,9 @@ public class VideoPanel extends JPanel {
 		pause();
 	}
 
-	private void filePathInvalid() {
-		JOptionPane.showMessageDialog(this, "Please select a media file",
-				"Location Error", JOptionPane.ERROR_MESSAGE);
-	}
-
-
-
+	/**
+	 * Registers listeners to all buttons
+	 */
 	private void registerListeners() {
 
 		_progressSlider.addMouseListener(new MouseAdapter(){
@@ -253,9 +253,13 @@ public class VideoPanel extends JPanel {
 		_stopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				 // Stop media and update progressbar and time labels to 0
 				mediaPlayer.stop();
 				_playButton.setIcon(new ImageIcon(("icons/play.png")));
+				updateTime(0);
+				updatePosition(0);
 
+				//Cancel skip buttons if selected
 				if(_fastForwardButton.isSelected()){
 					skipper.cancel(true);
 					_fastForwardButton.setSelected(false);
@@ -366,18 +370,26 @@ public class VideoPanel extends JPanel {
 		});
 	}
 
+	/**
+	 * Pause the currently playing media file
+	 */
 	private void pause(){
 		mediaPlayer.pause();
 		_timer.stop();
 		_playButton.setIcon(new ImageIcon(("icons/play.png")));
 	}
+	/**
+	 * resume play of media file
+	 */
 	public void play(){
 		mediaPlayer.start();
 		_timer.start();
 		_playButton.setIcon(new ImageIcon(("icons/pause.png")));
 	}
 
-
+	/**
+	 * Error message for invalid media files
+	 */
 	private void errorPlaybackFile() {
 		JOptionPane.showMessageDialog(this, "No valid media file selected",
 				"Location Error", JOptionPane.ERROR_MESSAGE);

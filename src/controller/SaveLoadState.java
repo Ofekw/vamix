@@ -1,4 +1,5 @@
 package controller;
+import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -26,7 +27,7 @@ public class SaveLoadState {
 	private JTextField _end;
 	private JTextPane _preview;
 	private JSpinner _fontSize;
-	private JComboBox<String> _fontColour;
+	private Color _fontColour;
 	private JComboBox<String> _fontType; 
 
 	private JSpinner _startHours;
@@ -65,15 +66,9 @@ public class SaveLoadState {
 	}
 
 	public SaveLoadState(JTextField intro, JTextField end, JTextPane preview, 
-			JSpinner fontSize, JComboBox<String> fontColour, JComboBox<String> fontType, 
+			JSpinner fontSize, Color fontColour, JComboBox<String> fontType, 
 			String saveFileName){
 
-		String colour;
-		if(fontColour == null){
-			colour = null;
-		}else{
-			colour = fontColour.getSelectedItem().toString();
-		}
 		_intro = intro;
 		_end = end;
 		_preview = preview;
@@ -82,7 +77,7 @@ public class SaveLoadState {
 		_fontType = fontType;
 
 		saveFormat = format(intro.getText(), end.getText(), preview.getText(), 
-				fontSize.getValue().toString(), colour,
+				fontSize.getValue().toString(), _fontColour.getRGB()+"",
 				fontType.getSelectedItem().toString());
 		SaveFile = new File(SAVE+saveFileName);
 	}
@@ -98,13 +93,13 @@ public class SaveLoadState {
 		}
 	}
 
-	public void load(boolean loadingText){
+	public int load(boolean loadingText){
 		String [] textSettings = null;
 		String [] audioSettings = null;
 		try {
 			List<String> lines = Files.readAllLines(SaveFile.toPath(), Charset.defaultCharset());
 			if (!lines.get(0).equals(SAVEMESSAGE)){
-				return;
+				return 0;
 			}else{
 			audioSettings = lines.get(1).split(":");
 			textSettings = lines.get(2).split(":");
@@ -117,12 +112,8 @@ public class SaveLoadState {
 			_end.setText(textSettings[1]);
 			_preview.setText(textSettings[2]);
 			_fontSize.setValue(Integer.parseInt(textSettings[3]));
-			if (textSettings[4].equals("null")){
-				_fontColour = null;
-			}else{
-				_fontColour.setSelectedItem(textSettings[4]);
-			}
 			_fontType.setSelectedItem(textSettings[5]);
+			return Integer.parseInt(textSettings[4]);
 		}else{
 			_video.setText(audioSettings[0]);
 			_inputAudio.setText(audioSettings[1]);
@@ -133,6 +124,7 @@ public class SaveLoadState {
 			_durationHours.setValue(Integer.parseInt(audioSettings[5]));
 			_durationMinutes.setValue(Integer.parseInt(audioSettings[6]));
 			_durationSeconds.setValue(Integer.parseInt(audioSettings[7]));
+			return 0;
 		}
 	}
 

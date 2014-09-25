@@ -2,7 +2,6 @@ package controller;
 
 import java.awt.Color;
 
-import gui.AudioTab;
 import gui.TextTab;
 
 import javax.swing.JOptionPane;
@@ -36,8 +35,6 @@ public class VideoOutroProcess extends testAbPro {
 	}
 
 	protected void doProcess(String line){
-		System.out.println(line);
-
 	}
 
 	private String makeCommand(int textSize, String font, String text, Color colour, String loc){
