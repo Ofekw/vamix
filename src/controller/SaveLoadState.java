@@ -19,6 +19,8 @@ public class SaveLoadState {
 	public static final String SEPERATOR = File.separator;
 	public static final File VAMIX = new File(HOME+SEPERATOR+".vamix");
 	public static final String SAVE = new String(HOME+SEPERATOR+".vamix"+SEPERATOR);
+	
+	private final String SAVEMESSAGE = "Vamix Save File";
 	private final File SaveFile;
 	private JTextField _intro;
 	private JTextField _end;
@@ -101,8 +103,12 @@ public class SaveLoadState {
 		String [] audioSettings = null;
 		try {
 			List<String> lines = Files.readAllLines(SaveFile.toPath(), Charset.defaultCharset());
-			audioSettings = lines.get(0).split(":");
-			textSettings = lines.get(1).split(":");
+			if (!lines.get(0).equals(SAVEMESSAGE)){
+				return;
+			}else{
+			audioSettings = lines.get(1).split(":");
+			textSettings = lines.get(2).split(":");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -149,6 +155,9 @@ public class SaveLoadState {
 		if (!SaveFile.exists()){
 			try {
 				SaveFile.createNewFile();
+				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(SaveFile, true)));
+				out.write(SAVEMESSAGE+"\n");
+				out.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

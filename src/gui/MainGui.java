@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Desktop;
 import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,10 +45,10 @@ public class MainGui {
 	private VideoPanel _videoPanel;
 
 	public static void main(String[] args){
-				NativeLibrary.addSearchPath(
-		                RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
-		            );
-		            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+		NativeLibrary.addSearchPath(
+				RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
+				);
+		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 			if ("GTK+".equals(info.getName())) {
 				try {
@@ -185,6 +186,9 @@ public class MainGui {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				//				FileDialog fd = new FileDialog(frame, "Load Save file", FileDialog.LOAD);
+				//				fd.setDirectory(SaveLoadState.VAMIX.toString());
+				//				fd.setVisible(true);
 				JFileChooser chooser = new JFileChooser(new File(SaveLoadState.VAMIX.toString())); 
 				chooser.setFileView(new FileView() {
 					@Override
@@ -194,8 +198,13 @@ public class MainGui {
 				});
 				int returnVal = chooser.showOpenDialog(menuBar);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					_text.load(chooser.getSelectedFile().getName());
-					_audio.load(chooser.getSelectedFile().getName());
+					File file = new File(chooser.getSelectedFile().toString());
+					if (file.isFile()){
+						_text.load(chooser.getSelectedFile().getName());
+						_audio.load(chooser.getSelectedFile().getName());
+					}else{
+						JOptionPane.showMessageDialog(menuBar, "File is not a valid save file!");
+					}
 				}
 			}
 		});
