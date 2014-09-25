@@ -112,7 +112,7 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setMinimum(0);
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
-//		_progressSlider.setToolTipText("Position");
+		//		_progressSlider.setToolTipText("Position");
 		_progressSlider.setEnabled(false);
 
 		_rewindButton = new JToggleButton();
@@ -168,7 +168,6 @@ public class VideoPanel extends JPanel {
 						_progressSlider.setValue(0);
 						mediaPlayer.play();
 						mediaPlayer.stop();
-						//_playButton.setIcon(new ImageIcon(("icons/pause.png")));
 						//have to sleep cause vlcj sucks and won't allow
 						//getting length until video has played for a small amount of time
 						try {
@@ -205,12 +204,12 @@ public class VideoPanel extends JPanel {
 
 	protected void fullScreenToggle() {
 		//init();
-		
+
 		String mrlString = mediaPlayer.mrl();
 		System.out.println(mrlString);
 		FullScreenPlayer fullScreenPlayerTest = new FullScreenPlayer(mrlString, this);
 	}
-	
+
 	protected void stopSkipping(){
 		skipper.cancel(true);
 		_fastForwardButton.setSelected(false);
@@ -444,16 +443,21 @@ public class VideoPanel extends JPanel {
 		_rewindButton.setSelected(false);
 	}
 
-	
+
 
 	public void ContinuePlay(long time) {
-	//	mediaPlayer.setTime(time);
-		mediaPlayer.setPosition(time/maxTime);
-		updatePosition(time);
-//		setSliderBasedPosition();
-		updateTime(time);
 		play();
-		
+		mediaPlayer.setTime(time);
+		//	mediaPlayer.setPosition(time/maxTime);
+		updatePosition(time);
+		//		setSliderBasedPosition();
+		updateTime(time);
+
+
+	}
+
+	public long getTime(){
+		return mediaPlayer.getTime();
 	}
 
 
