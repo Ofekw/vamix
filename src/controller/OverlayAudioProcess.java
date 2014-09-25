@@ -6,8 +6,11 @@ import gui.AudioTab;
 
 public class OverlayAudioProcess extends testAbPro {
 
-	private final String temp1 = "sound.mp3";
-	private final String temp2 = "mergedSound.mp3";
+	private final String loc = System.getProperty("user.dir");
+	private final String binLoc = loc+System.getProperty("file.separator")+
+			"tempMedia"+System.getProperty("file.seperator");
+	private final String temp1 = binLoc+"sound.mp3";
+	private final String temp2 = binLoc+"mergedSound.mp3";
 	private AudioTab _tab;
 
 	//avconv -i sample.avi sound.mp3 ;
