@@ -14,7 +14,7 @@ public class VideoOutroProcess extends testAbPro {
 
 	public VideoOutroProcess(TextTab tab,int textSize, String font, String text, Color colour){
 		String loc = System.getProperty("user.dir");
-		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+"tempMedia"+System.getProperty("file.separator")+"tempOutro.mp4");
+		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+".tempMedia"+System.getProperty("file.separator")+"tempOutro.mp4");
 		super.setCommand(makeCommand(textSize, font, text, colour, loc));
 		_tab = tab;
 	}
@@ -42,7 +42,7 @@ public class VideoOutroProcess extends testAbPro {
 
 	private String makeCommand(int textSize, String font, String text, Color colour, String loc){
 
-		String binLoc = loc+System.getProperty("file.separator")+"tempMedia"
+		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
 				+System.getProperty("file.separator");
 		return "avconv -i " + binLoc + "background.mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
 				+ "\"" + " "+binLoc+"tempOutro.mp4";

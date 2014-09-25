@@ -62,6 +62,7 @@ public class VideoPanel extends JPanel {
 	private SkipWorker skipper;
 	private JButton _fullScreen;
 	private EmbeddedMediaPlayer _mediaPlayerFull;
+	private FullScreenPlayer _fullScreenPlayer;
 
 
 
@@ -167,7 +168,8 @@ public class VideoPanel extends JPanel {
 						//start media from beginning and set play button to pause logo
 						_progressSlider.setValue(0);
 						mediaPlayer.play();
-						mediaPlayer.stop();
+						//mediaPlayer.stop();
+						pause();
 						//have to sleep cause vlcj sucks and won't allow
 						//getting length until video has played for a small amount of time
 						try {
@@ -177,10 +179,12 @@ public class VideoPanel extends JPanel {
 							e1.printStackTrace();
 						}
 						timer.start();
+						fullScreenToggle();
 					}
 					//check if video is paused
 				}else if (!mediaPlayer.isPlaying()){
 					pause();
+					fullScreenToggle();
 					//pause video otherwise
 				}else{
 					pause();
@@ -191,8 +195,8 @@ public class VideoPanel extends JPanel {
 						skipper.cancel(true);
 						enableSkips();
 					}
+					fullScreenToggle();
 				}
-				fullScreenToggle();
 
 			}
 		});
@@ -206,8 +210,7 @@ public class VideoPanel extends JPanel {
 		//init();
 
 		String mrlString = mediaPlayer.mrl();
-		System.out.println(mrlString);
-		FullScreenPlayer fullScreenPlayerTest = new FullScreenPlayer(mrlString, this);
+		_fullScreenPlayer = new FullScreenPlayer(mrlString, this);
 	}
 
 	protected void stopSkipping(){
@@ -448,12 +451,16 @@ public class VideoPanel extends JPanel {
 	public void ContinuePlay(long time) {
 		play();
 		mediaPlayer.setTime(time);
-		//	mediaPlayer.setPosition(time/maxTime);
 		updatePosition(time);
-		//		setSliderBasedPosition();
 		updateTime(time);
-
-
+	}
+	
+	public void StopPlay(long time) {
+		play();
+		mediaPlayer.setTime(time);
+		updatePosition(time);
+		updateTime(time);
+		pause();
 	}
 
 	public long getTime(){

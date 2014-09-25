@@ -17,7 +17,7 @@ public class ConcatVideosProcess extends testAbPro {
 
 		_tab = tab;
 		String loc = System.getProperty("user.dir");
-		String binLoc = loc+System.getProperty("file.separator")+"tempMedia"
+		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
 				+System.getProperty("file.separator");
 		ShellProcess.command("rm -f "+binLoc+"1.mpeg");
 		ShellProcess.command("rm -f "+binLoc+"2.mpeg");
@@ -52,7 +52,7 @@ public class ConcatVideosProcess extends testAbPro {
 
 	private String makeCommand(String saveLoc){
 		String loc = System.getProperty("user.dir");
-		String binLoc = loc+System.getProperty("file.separator")+"tempMedia"
+		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
 				+System.getProperty("file.separator");
 		
 		if (!_tab.userText()[0].isEmpty() && !_tab.userText()[1].isEmpty()){

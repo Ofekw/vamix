@@ -57,6 +57,9 @@ public class FullScreenPlayer {
 		// Put a Thread.sleep(500) here if you get a fatal JVM crash
 
 		mediaPlayer.playMedia(args);
+		if (_panel.getTime()>0){
+			mediaPlayer.setTime(_panel.getTime());
+		}
 		f.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -65,10 +68,9 @@ public class FullScreenPlayer {
 					_time = mediaPlayer.getTime();
 					//Key pressed is the Escape key. Exit fullscreen
 					if (!mediaPlayer.isPlaying()){
-						
+						_panel.StopPlay(_time);
 					}else{//if playing
 						_panel.ContinuePlay(_time);
-						System.out.println(_time);
 					}
 					mediaPlayer.stop();
 					f.dispose();

@@ -128,7 +128,7 @@ public class TextTab extends Tab {
 		horizontalBox.add(_textFieldIntro);
 		_textFieldIntro.setColumns(10);
 
-		JButton btnPreview = new JButton("Apply");
+		JButton btnPreview = new JButton("Preview");
 		btnPreview.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String text = _textFieldIntro.getText();
@@ -188,7 +188,7 @@ public class TextTab extends Tab {
 		horizontalBox_1.add(_textFieldEnd);
 		_textFieldEnd.setColumns(10);
 
-		JButton button = new JButton("Apply");
+		JButton button = new JButton("Preview");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String text = _textFieldEnd.getText();
@@ -227,26 +227,6 @@ public class TextTab extends Tab {
 		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox_2.add(rigidArea);
 
-		JLabel lblNewLabel = new JLabel("Font Colour: ");
-		//horizontalBox_2.add(lblNewLabel);
-
-		//		fontColour = new JComboBox();
-		//		fontColour.setToolTipText("Font Colour");
-		//		fontColour.setMaximumSize(new Dimension(25, 32767));
-		//		Color[] colours = {
-		//                Color.RED,
-		//                Color.BLUE,
-		//                Color.DARK_GRAY,
-		//                Color.PINK,
-		//                Color.BLACK,
-		//                Color.MAGENTA,
-		//                Color.YELLOW,
-		//                Color.ORANGE
-		//              };
-		//		fontColour.setModel(new DefaultComboBoxModel(colours));
-
-		//horizontalBox_2.add(colorChooser);
-
 		_btnColourSelect = new JButton("Colour Select");
 		_btnColourSelect.addMouseListener(new MouseAdapter() {
 			@Override
@@ -268,10 +248,11 @@ public class TextTab extends Tab {
 
 
 		_fontType.setMaximumSize(new Dimension(40, 32767));
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		String []fontFamilies = ge.getAvailableFontFamilyNames();
+		//Can't use enviroment varialbes as it's impossible to get font location which is needed for drawtext
+//		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//		String []fontFamilies = ge.getAvailableFontFamilyNames();
 
-		_fontType.setModel(new DefaultComboBoxModel(fontFamilies));
+		_fontType.setModel(new DefaultComboBoxModel(new String[] {"Ubuntu","DejaVu Sans", "FreeSans", "Liberation Serif", "NanumGothic"}));
 		_fontType.setToolTipText("Font Type");
 
 		//		fontType.addMouseListener(new MouseAdapter() {
@@ -292,7 +273,7 @@ public class TextTab extends Tab {
 		horizontalBox_2.add(_fontType);
 		EmptyBorder eb = new EmptyBorder(new Insets(10, 10, 10, 10));
 
-		_apply = new JButton("Convert");
+		_apply = new JButton("Apply");
 		_apply.setEnabled(false);
 		_apply.addMouseListener(new MouseAdapter() {
 			@Override
@@ -365,20 +346,31 @@ public class TextTab extends Tab {
 	private String getUserFont() {
 
 		String fontString = _fontType.getSelectedItem().toString();
-		/*Font f = new Font(fontString, 0, 10);
-
-		Font2D f2d = FontManager.findFont2D(f.getFontName(), f.getStyle(),      
-		               FontManager.LOGICAL_FALLBACK).handle.font2D;
-
-		Field platName = PhysicalFont.class.getDeclaredField("platName");
-		platName.setAccessible(true);
-		String fontPath = (String)platName.get(f2d);
-		platName.setAccessible(false);
-
-		// that's it..
-		System.out.println(fontPath);*/
 		return fontString;
 	}
+	
+private String getUserFontLoc(){
+	int fontSelected = _fontType.getSelectedIndex();
+	String fontLoc;
+	switch (fontSelected) {
+	case -1:  fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
+    break;
+	case 0:  fontLoc = "January";
+	break;
+	case 1:  fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
+	break;
+	case 2:  fontLoc = "February";
+	break;
+	case 3:  fontLoc = "March";
+	break;
+	case 4:  fontLoc = "April";
+	break;
+	default: fontLoc = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
+	break;
+	}
+	System.out.println(fontLoc);
+	return fontLoc;
+}
 
 	private Color getUserColour() {
 		return _colourSelect;
