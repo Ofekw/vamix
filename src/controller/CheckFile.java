@@ -33,7 +33,7 @@ public class CheckFile {
 			String line = new String();
 			while((line = stdoutBuffered.readLine()) != null){
 				if (checkVideo){
-					if(line.contains("video")){
+					if(line.contains("Media") || line.contains("video")){
 						return true;
 					}else{
 						return false;
