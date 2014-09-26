@@ -193,9 +193,6 @@ public class MainGui {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//				FileDialog fd = new FileDialog(frame, "Load Save file", FileDialog.LOAD);
-				//				fd.setDirectory(SaveLoadState.VAMIX.toString());
-				//				fd.setVisible(true);
 				JFileChooser chooser = new JFileChooser(new File(SaveLoadState.VAMIX.toString())); 
 				chooser.setFileView(new FileView() {
 					@Override

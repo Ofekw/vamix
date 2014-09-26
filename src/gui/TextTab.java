@@ -39,6 +39,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 import model.CharsOnlyLimitFilter;
+import controller.CheckFile;
 import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.VideoIntroProcess;
@@ -115,6 +116,7 @@ public class TextTab extends Tab {
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
 				if(!_textFieldIntro.getText().isEmpty()){
+					
 					_apply.setEnabled(true);
 				}else if(_textFieldEnd.getText().isEmpty()){
 					_apply.setEnabled(false);
@@ -267,7 +269,8 @@ public class TextTab extends Tab {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(_apply.isEnabled()){
-					if (!_main.getVideo().getVideoLoc().isEmpty()){
+					if (!_main.getVideo().getVideoLoc().isEmpty() &&
+							new CheckFile(true).checkFileType(_main.getVideo().getVideoLoc())){
 						SaveLocAndTextProcess();	
 					}else {
 						noMediaSelected();
@@ -376,7 +379,7 @@ public class TextTab extends Tab {
 	}
 
 	private void noMediaSelected() {
-		JOptionPane.showMessageDialog(this, "No media selected in the Media tab to edit",
+		JOptionPane.showMessageDialog(this, "Invalid media selected in the Media tab",
 				"Media Error", JOptionPane.ERROR_MESSAGE);
 	}
 

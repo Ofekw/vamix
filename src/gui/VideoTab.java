@@ -32,10 +32,10 @@ public class VideoTab extends Tab {
 	private JSeparator separator;
 	private Component verticalStrut_1;
 
-		public VideoTab(VideoPanel panel, AudioTab audio) {
-			super(panel);
-			this._audio = audio;
-		}
+	public VideoTab(VideoPanel panel, AudioTab audio) {
+		super(panel);
+		this._audio = audio;
+	}
 
 	protected void initialise() {
 		this.setPreferredSize(new Dimension(1000, 180));
@@ -60,21 +60,21 @@ public class VideoTab extends Tab {
 
 		_btnBrowse = new JButton("Browse");
 		horizontalBox.add(_btnBrowse);
-		
+
 		verticalStrut = Box.createVerticalStrut(20);
 		verticalStrut.setPreferredSize(new Dimension(0, 5));
 		verticalBox.add(verticalStrut);
-		
+
 		separator = new JSeparator();
 		verticalBox.add(separator);
-		
+
 		verticalStrut_1 = Box.createVerticalStrut(20);
 		verticalStrut_1.setPreferredSize(new Dimension(0, 5));
 		verticalBox.add(verticalStrut_1);
-		
+
 		horizontalBox_1 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_1);
-		
+
 		Download download = new Download(this);
 		download.setToolTipText("Media download");
 		download.setName("");
@@ -101,12 +101,19 @@ public class VideoTab extends Tab {
 						/**
 						 * need to add valid files checks here
 						 */
-						_videoPanel.setMedia(_txtVideoLoc.getText());
-						_videoPanel.enableSlider();
-						CheckFile check = new CheckFile(false);
-						if(!check.checkFileType(selectedFile.getAbsolutePath())){
-							_audio.enableExtractButtons();
-							_audio.setMediaLoc(_txtVideoLoc.getText());
+						if (new CheckFile(true).checkFileType(_txtVideoLoc.getText()) ||
+								new CheckFile(false).checkFileType(_txtVideoLoc.getText())){
+							_videoPanel.setMedia(_txtVideoLoc.getText());
+							_videoPanel.enableSlider();
+							CheckFile check = new CheckFile(false);
+							if(!check.checkFileType(selectedFile.getAbsolutePath())){
+								_audio.enableExtractButtons();
+								_audio.setMediaLoc(_txtVideoLoc.getText());
+							}
+						}else{
+							_txtVideoLoc.setText("");
+							JOptionPane.showMessageDialog(VideoTab.this, "Invalid Media File!",
+									"File Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				}
@@ -129,11 +136,11 @@ public class VideoTab extends Tab {
 				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-		public String getVideoLoc() {
-			return _txtVideoLoc.getText();
-		}
-		
-		public JTextField getVideoLocField() {
-			return _txtVideoLoc;
-		}
+	public String getVideoLoc() {
+		return _txtVideoLoc.getText();
+	}
+
+	public JTextField getVideoLocField() {
+		return _txtVideoLoc;
+	}
 }
