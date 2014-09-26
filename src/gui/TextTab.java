@@ -110,6 +110,9 @@ public class TextTab extends Tab {
 		_textFieldIntro.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
+				String text = _textFieldIntro.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
 				if(!_textFieldIntro.getText().isEmpty()){
 					_apply.setEnabled(true);
 				}else if(_textFieldEnd.getText().isEmpty()){
@@ -129,7 +132,6 @@ public class TextTab extends Tab {
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
 				if(!_textFieldIntro.getText().isEmpty()){
-					
 					_apply.setEnabled(true);
 				}else if(_textFieldEnd.getText().isEmpty()){
 					_apply.setEnabled(false);
@@ -186,6 +188,9 @@ public class TextTab extends Tab {
 		_textFieldEnd.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
+				String text = _textFieldEnd.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
 				if(!_textFieldEnd.getText().isEmpty()){
 					_apply.setEnabled(true);
 				}else if(_textFieldIntro.getText().isEmpty()){
