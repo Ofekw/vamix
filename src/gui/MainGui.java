@@ -133,7 +133,7 @@ public class MainGui {
 		help.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				File htmlFile = new File("site/index.html");
+				File htmlFile = new File("readme.html");
 				try {
 					Desktop.getDesktop().browse(htmlFile.toURI());
 				} catch (IOException e) {
