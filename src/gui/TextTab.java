@@ -44,9 +44,18 @@ import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.VideoIntroProcess;
 import controller.VideoOutroProcess;
-
+/**
+ * Tab for audio manipulation
+ * @author Ofek Wittenberg
+ *
+ */
 @SuppressWarnings("serial")
 public class TextTab extends Tab {
+	/*
+	 * This tab is used to add opening and closing text scenes to the selected video file
+	 * future implementation can include setting a specific time frame for intro/outro, having seperate
+	 * formating for the start and ending and being able to change the background of the intro/outro
+	 */
 	private JTextField _textFieldIntro;
 	private JTextField _textFieldEnd;
 	private JTextPane _txtPreview;
@@ -90,7 +99,7 @@ public class TextTab extends Tab {
 		horizontalBox.add(lblOpeningText);
 
 		_textFieldIntro = new JTextField();
-		CharsOnlyLimitFilter charFilter = new CharsOnlyLimitFilter(999); // characters limited to 999 and no special chars
+		CharsOnlyLimitFilter charFilter = new CharsOnlyLimitFilter(200); // characters limited to 200 and no special chars this is about 40 words. A limit of 40 words is set so everything fits in the frame even with a large font
 
 
 		((AbstractDocument) _textFieldIntro.getDocument()).setDocumentFilter(charFilter);
@@ -108,6 +117,10 @@ public class TextTab extends Tab {
 				}
 			}
 		});
+		
+		/*
+		 * key listners added to update textpane as users type
+		 */
 		
 		_textFieldIntro.addKeyListener(new KeyAdapter() {
 			@Override
@@ -307,6 +320,9 @@ public class TextTab extends Tab {
 	}
 
 	private void createColourChooser() {
+		/*
+		 * An interactive file chooser to set colour of text with fancy colour wheel
+		 */
 
 		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.BLUE);
 
@@ -318,6 +334,9 @@ public class TextTab extends Tab {
 
 
 	private void SetPreview(JTextPane tp, String msg, Color c, int fontSize, String font) {
+		/*
+		 * Method used to update the preview field
+		 */
 		StyleContext sc = StyleContext.getDefaultStyleContext();
 		AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
 		aset=sc.addAttribute(aset, StyleConstants.FontSize, fontSize);
@@ -390,7 +409,7 @@ public class TextTab extends Tab {
 
 				File f = getSelectedFile();
 				/*
-				 * Makes sure the filename ends with extension .mp3 when checking for overwrite
+				 * Makes sure the filename ends with extension .mp4 when checking for overwrite
 				 */
 
 				if (!f.getAbsolutePath()

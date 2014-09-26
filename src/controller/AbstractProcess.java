@@ -8,11 +8,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
-/**
- * 
- * @author patrick
- *
- */
+
 public abstract class AbstractProcess{
 
 	protected ProcessBuilder _pb;
