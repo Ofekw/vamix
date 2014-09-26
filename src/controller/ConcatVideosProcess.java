@@ -46,11 +46,17 @@ public class ConcatVideosProcess extends AbstractProcess {
 	}
 
 	protected void doProcess(String line){
-//		System.out.println(line);
+	//	System.out.println(line);
 
 	}
 
 	private String makeCommand(String saveLoc){
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String loc = System.getProperty("user.dir");
 		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
 				+System.getProperty("file.separator");

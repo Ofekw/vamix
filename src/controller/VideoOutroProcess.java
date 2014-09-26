@@ -35,6 +35,7 @@ public class VideoOutroProcess extends AbstractProcess {
 	}
 
 	protected void doProcess(String line){
+		//System.out.println(line);
 	}
 
 	private String makeCommand(int textSize, String font, String text, Color colour, String loc){
