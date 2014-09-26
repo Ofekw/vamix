@@ -1,3 +1,45 @@
+commit 61eea464a3b3821f1c099827c39f698fcde956ab
+Author: Ofek <ofekwit@gmail.com>
+Date:   Fri Sep 26 15:16:48 2014 +1200
+
+    more html fixes and css edits
+
+commit 4cc13812d9cef2cbe4d8564b7dcdbe31913da1d9
+Author: Ofek <ofekwit@gmail.com>
+Date:   Fri Sep 26 14:48:47 2014 +1200
+
+    html and css edits
+
+commit 408098ea78bbade67a569b0a2d8e438bf5018f64
+Author: Ofek <ofekwit@gmail.com>
+Date:   Fri Sep 26 14:07:52 2014 +1200
+
+    Added comments and gitlog:
+
+commit 4cc408b3d86b2a1bd2772fbfa87b57689c6ba7bb
+Author: Ofek <ofekwit@gmail.com>
+Date:   Fri Sep 26 14:07:35 2014 +1200
+
+    Added comments and gitlog:
+
+commit 59de84563b5d1147b64eccc8e3ddae29c4a1510b
+Author: Patrick <pat.stuart1994@gmail.com>
+Date:   Fri Sep 26 13:58:29 2014 +1200
+
+    Added web files
+
+commit 7082e86e31cfadb12065f6a0209bdd9c6d8fabe7
+Author: Patrick <pat.stuart1994@gmail.com>
+Date:   Fri Sep 26 13:57:54 2014 +1200
+
+    Moved folders
+
+commit 8b587021518f0b8687ee6c1847b9def96df353fc
+Author: Patrick <pat.stuart1994@gmail.com>
+Date:   Fri Sep 26 13:52:00 2014 +1200
+
+    Altered readme website
+
 commit 6942eab0e25e81a7ad50072e96b05d9986bb4777
 Author: Patrick <pat.stuart1994@gmail.com>
 Date:   Fri Sep 26 13:38:28 2014 +1200
