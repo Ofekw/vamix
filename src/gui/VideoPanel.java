@@ -4,6 +4,8 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -64,11 +66,11 @@ public class VideoPanel extends JPanel {
 
 
 	public VideoPanel(MainGui parent){
-		this.setMinimumSize(new Dimension(900, 500));
+		this.setMinimumSize(new Dimension(parent.getFrame().getWidth()-50, parent.getFrame().getHeight()-300));
 		this.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][]"));
 		createControls();
 		registerListeners();
-		
+
 		this.setBorder(BorderFactory.createTitledBorder(""));
 
 		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
@@ -78,7 +80,7 @@ public class VideoPanel extends JPanel {
 
 		Canvas mediaCanvas = new Canvas();
 		//	mediaCanvas.setBackground(Color.black);
-		mediaCanvas.setPreferredSize(new Dimension(parent.getFrame().getWidth()-100,300));
+		mediaCanvas.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
 
 		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
 		mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(mediaCanvas));
@@ -103,7 +105,7 @@ public class VideoPanel extends JPanel {
 		_timer.stop();
 
 		this.add(mediaCanvas, "cell 0 0,growx, span");
-			
+
 	}
 
 	private void createControls() {
@@ -254,7 +256,7 @@ public class VideoPanel extends JPanel {
 		_stopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				 // Stop media and update progressbar and time labels to 0
+				// Stop media and update progressbar and time labels to 0
 				mediaPlayer.stop();
 				_playButton.setIcon(new ImageIcon(("icons/play.png")));
 				updateTime(0);
@@ -276,40 +278,7 @@ public class VideoPanel extends JPanel {
 		_playButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//check if video hasn't started at all
-				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
-					//check if there has been an input file selected
-					if (_videoLocation == null){
-						errorPlaybackFile();
-					}else{
-						//start media from beginning and set play button to pause logo
-						_progressSlider.setValue(0);
-						mediaPlayer.play();
-						_playButton.setIcon(new ImageIcon(("icons/pause.png")));
-						//have to sleep cause vlcj sucks and won't allow
-						//getting length until video has played for a small amount of time
-						try {
-							Thread.sleep(400);
-						} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						_timer.start();
-					}
-					//check if video is paused
-				}else if (!mediaPlayer.isPlaying()){
-					play();
-					//pause video otherwise
-				}else{
-					pause();
-					if(_fastForwardButton.isSelected()){
-						skipper.cancel(true);
-						enableSkips();
-					}else if (_rewindButton.isSelected()){
-						skipper.cancel(true);
-						enableSkips();
-					}
-				}
+				playListener();
 			}
 		});
 
@@ -484,4 +453,41 @@ public class VideoPanel extends JPanel {
 		return mediaPlayer.getTime();
 	}
 
+	private void playListener(){
+		//check if video hasn't started at all
+		if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
+			//check if there has been an input file selected
+			if (_videoLocation == null){
+				errorPlaybackFile();
+			}else{
+				//start media from beginning and set play button to pause logo
+				_progressSlider.setValue(0);
+				mediaPlayer.play();
+				_playButton.setIcon(new ImageIcon(("icons/pause.png")));
+				//have to sleep cause vlcj sucks and won't allow
+				//getting length until video has played for a small amount of time
+				try {
+					Thread.sleep(400);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				_timer.start();
+			}
+			//check if video is paused
+		}else if (!mediaPlayer.isPlaying()){
+			play();
+			//pause video otherwise
+		}else{
+			pause();
+			if(_fastForwardButton.isSelected()){
+				skipper.cancel(true);
+				enableSkips();
+			}else if (_rewindButton.isSelected()){
+				skipper.cancel(true);
+				enableSkips();
+			}
+		}
 	}
+}
+

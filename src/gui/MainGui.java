@@ -1,8 +1,10 @@
 package gui;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -83,7 +85,8 @@ public class MainGui {
 		frame.setResizable(false);
 		ImageIcon img = new ImageIcon("V.png");
 		frame.setIconImage(img.getImage());
-		frame.setBounds(0, 0, 1040, 720);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setBounds(10, 10, (int)screen.getWidth()-100, (int)screen.getHeight()-75);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
