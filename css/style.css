@@ -234,8 +234,17 @@ border-color: #334960 transparent transparent transparent;
 	border-color: #32ac97 transparent transparent transparent;
 
 }
+#page9:after {
+	border-color: #32ac97 transparent transparent transparent;
+
+}
 
 #page5:after {
+	border-color: #7f4c76 transparent transparent transparent;
+
+}
+
+#page8:after {
 	border-color: #7f4c76 transparent transparent transparent;
 
 }
@@ -314,6 +323,18 @@ header.page4 .hover {
 	background-color: #b288ab;
 }
 
+#page9 {
+	background-color: #7f4c76;
+}
+
+header.page9{
+	background-color: #7f4c76;
+}
+
+header.page9 .hover {
+	background-color: #b288ab;
+}
+
 #page5 {
 	background-color: #3f9fc9;
 }
@@ -323,6 +344,18 @@ header.page5{
 }
 
 header.page5 .hover {
+	background-color: #37637f;
+}
+
+#page8 {
+	background-color: #3f9fc9;
+}
+
+header.page8{
+	background-color: #3f9fc9;
+}
+
+header.page8 .hover {
 	background-color: #37637f;
 }
 
@@ -471,8 +504,15 @@ header.page5 .hover {
 	padding-top: 231px;
 	padding-bottom: 186px;
 }
+#page9 {
+	padding-top: 231px;
+	padding-bottom: 186px;
+}
 
 #page4  h3 {
+	margin-bottom: 108px;
+}
+#page9  h3 {
 	margin-bottom: 108px;
 }
 
@@ -506,6 +546,15 @@ header.page5 .hover {
 }
 
 #page5 .slogan {
+	margin-bottom: 110px;
+}
+
+#page8 {
+	padding-top: 230px;
+	padding-bottom: 190px;
+}
+
+#page8 .slogan {
 	margin-bottom: 110px;
 }
 /****Map***/
