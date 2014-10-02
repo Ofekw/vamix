@@ -24,9 +24,9 @@ public class ReplaceAudioProcess extends AbstractProcess {
 	 */
 	public ReplaceAudioProcess(String inputVideo, String inputAudio, String outputVideo,
 			AudioTab tab, boolean removeAudio){
+		_removeAudio = removeAudio;
 		super.setCommand(makeCommand(inputVideo, inputAudio, outputVideo));
 		_tab = tab;
-		_removeAudio = removeAudio;
 	}
 
 	protected void doDone() {
