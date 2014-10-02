@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -9,9 +10,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -63,9 +66,34 @@ public class VideoPanel extends JPanel {
 	private EmbeddedMediaPlayer _mediaPlayerFull;
 	private FullScreenPlayer _fullScreenPlayer;
 	private  AudioTab _audioTab;
-
+	
+	private Icon play;
+	private Icon stop;
+	private Icon fastForward;
+	private Icon rewind;
+	private Icon pause;
+	private Icon fullScreen;
+	private Icon unmute;
+	private Icon mute;
 
 	public VideoPanel(MainGui parent){
+		
+		play = new ImageIcon(getClass().getResource("/icons/play.png"));
+		unmute = new ImageIcon(getClass().getResource("/icons/unmute.png"));
+		mute = new ImageIcon(getClass().getResource("/icons/mute.png"));
+		fullScreen = new ImageIcon(getClass().getResource("/icons/fullscreen.png"));
+		fastForward = new ImageIcon(getClass().getResource("/icons/fastforward.png"));
+		pause = new ImageIcon(getClass().getResource("/icons/pause.png"));
+		rewind = new ImageIcon(getClass().getResource("/icons/rewind.png"));
+		stop = new ImageIcon(getClass().getResource("/icons/stop.png"));
+
+
+
+
+
+		
+		
+		
 		this.setMinimumSize(new Dimension(parent.getFrame().getWidth()-50, parent.getFrame().getHeight()-300));
 		this.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][]"));
 		createControls();
@@ -114,23 +142,22 @@ public class VideoPanel extends JPanel {
 		_progressSlider.setMinimum(0);
 		_progressSlider.setMaximum(maxTime);
 		_progressSlider.setValue(0);
-		//		_progressSlider.setToolTipText("Position");
 		_progressSlider.setEnabled(false);
 
 		_rewindButton = new JToggleButton();
-		_rewindButton.setIcon(new ImageIcon(("icons/rewind.png")));
+		_rewindButton.setIcon(rewind);
 		_rewindButton.setToolTipText("Skip back");
 
 		_stopButton = new JButton();
-		_stopButton.setIcon(new ImageIcon(("icons/stop.png")));
+		_stopButton.setIcon(stop);
 		_stopButton.setToolTipText("Stop");
 
 		_playButton = new JButton();
-		_playButton.setIcon(new ImageIcon(("icons/play.png")));
+		_playButton.setIcon(play);
 		_playButton.setToolTipText("Play");
 
 		_fastForwardButton = new JToggleButton();
-		_fastForwardButton.setIcon(new ImageIcon(("icons/fastforward.png")));
+		_fastForwardButton.setIcon(fastForward);
 		_fastForwardButton.setToolTipText("Skip forward");
 
 		//Creating audio manipulation controls
@@ -155,7 +182,7 @@ public class VideoPanel extends JPanel {
 
 		_fullScreen = new JButton();
 		_fullScreen.setToolTipText("Toggles fullscreen");
-		_fullScreen.setIcon(new ImageIcon(("icons/fullscreen.png")));
+		_fullScreen.setIcon(fullScreen);
 		_fullScreen.addActionListener(new ActionListener() {
 			private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;
 			@Override
@@ -258,7 +285,7 @@ public class VideoPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// Stop media and update progressbar and time labels to 0
 				mediaPlayer.stop();
-				_playButton.setIcon(new ImageIcon(("icons/play.png")));
+				_playButton.setIcon(play);
 				updateTime(0);
 				updatePosition(0);
 
@@ -326,15 +353,15 @@ public class VideoPanel extends JPanel {
 			}
 		});
 
-		_muteToggle.setIcon(new ImageIcon(("icons/unmute.png")));
+		_muteToggle.setIcon(unmute);
 		_muteToggle.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mediaPlayer.mute();
 				if (mediaPlayer.isMute()){
-					_muteToggle.setIcon(new ImageIcon(("icons/unmute.png")));
+					_muteToggle.setIcon(unmute);
 				}else{
-					_muteToggle.setIcon(new ImageIcon(("icons/mute.png")));
+					_muteToggle.setIcon(mute);
 				}
 			}
 		});
@@ -346,7 +373,7 @@ public class VideoPanel extends JPanel {
 	private void pause(){
 		mediaPlayer.pause();
 		_timer.stop();
-		_playButton.setIcon(new ImageIcon(("icons/play.png")));
+		_playButton.setIcon(play);
 	}
 	/**
 	 * resume play of media file
@@ -354,7 +381,7 @@ public class VideoPanel extends JPanel {
 	public void play(){
 		mediaPlayer.start();
 		_timer.start();
-		_playButton.setIcon(new ImageIcon(("icons/pause.png")));
+		_playButton.setIcon(pause);
 	}
 
 	/**
@@ -393,7 +420,7 @@ public class VideoPanel extends JPanel {
 		_timer.restart();
 		_timer.stop();
 		mediaPlayer.prepareMedia(_videoLocation);
-		_playButton.setIcon(new ImageIcon(("icons/play.png")));
+		_playButton.setIcon(play);
 		_progressSlider.setValue(0);
 		_timeLabel.setText("00:00:00");
 	}
@@ -463,7 +490,7 @@ public class VideoPanel extends JPanel {
 				//start media from beginning and set play button to pause logo
 				_progressSlider.setValue(0);
 				mediaPlayer.play();
-				_playButton.setIcon(new ImageIcon(("icons/pause.png")));
+				_playButton.setIcon(pause);
 				//have to sleep cause vlcj sucks and won't allow
 				//getting length until video has played for a small amount of time
 				try {
