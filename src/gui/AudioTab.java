@@ -45,7 +45,7 @@ public class AudioTab extends Tab {
 	private JTextField _inputAudio;
 	private JButton _inputAudioSelect;
 	
-	private MediaTab _tab;
+	private VideoTab _tab;
 
 	private SaveLoadState saveLoad;
 
@@ -68,7 +68,7 @@ public class AudioTab extends Tab {
 
 
 
-	public AudioTab(VideoPanel panel, MediaTab tab){
+	public AudioTab(VideoPanel panel, VideoTab tab){
 		super(panel);
 		_tab = tab;
 	}
@@ -535,7 +535,7 @@ public class AudioTab extends Tab {
 	}
 
 	
-	public void setVideoTab(MediaTab video) {
+	public void setVideoTab(VideoTab video) {
 		_tab = video;
 	}
 }

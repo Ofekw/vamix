@@ -7,13 +7,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
-import javax.swing.JRadioButton;
 
 import net.miginfocom.swing.MigLayout;
 import controller.CheckFile;
@@ -33,43 +30,17 @@ public class FilterTab extends Tab {
 
 	public FilterTab(VideoPanel panel, MainGui main){
 		super(panel);
-		this.setPreferredSize(new Dimension(1046, 150));
-		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][73.00][90.00][83.00][][][][]", "[][][][][][][][][][][][][][][]"));
+		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]", "[][][][]"));
 		
 		
 		_main = main;
-		
-		JLabel lblChooseVideoFilter = new JLabel("Choose Video Filter:");
-		add(lblChooseVideoFilter, "cell 1 1");
-		
-		JRadioButton rdbtnBlur = new JRadioButton("Blur");
-		add(rdbtnBlur, "cell 4 1");
-		
-		JRadioButton rdbtnFlipHorizontally = new JRadioButton("Flip Horizontally");
-		add(rdbtnFlipHorizontally, "cell 6 1");
-		
-		JRadioButton rdbtnFlipVertically = new JRadioButton("Flip Vertically");
-		add(rdbtnFlipVertically, "cell 8 1");
-		
-		JRadioButton rdbtnBorder = new JRadioButton("Border");
-		add(rdbtnBorder, "cell 10 1");
-		
-		JRadioButton rdbtnMono = new JRadioButton("Mono");
-		add(rdbtnMono, "cell 12 1");
-		ButtonGroup filters = new ButtonGroup();
-		
-		filters.add(rdbtnBlur);
-		filters.add(rdbtnBorder);
-		filters.add(rdbtnFlipHorizontally);
-		filters.add(rdbtnFlipVertically);
-		filters.add(rdbtnMono);
-		
-		
-		_progressBar = new JProgressBar();
-		add(_progressBar, "cell 1 13 40 1,growx");
 		_apply = new JButton("Apply");
-		add(_apply, "cell 41 13");
-		
+		add(_apply, "cell 29 3");
+	}
+
+	@Override
+	protected void initialise() {
+		this.setPreferredSize(new Dimension(1000, 130));
 		_apply.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -88,30 +59,6 @@ public class FilterTab extends Tab {
 				}
 			}
 		});
-		initialise();
-	}
-
-	@Override
-	protected void initialise() {
-//		this.setPreferredSize(new Dimension(1000, 130));
-//		_apply.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent arg0) {
-//			}
-//		});
-//		_apply.setEnabled(false);
-//		_apply.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mousePressed(MouseEvent arg0) {
-//				if(_apply.isEnabled()){
-//					if (!_main.getVideo().getVideoLoc().isEmpty() &&
-//							new CheckFile(true).checkFileType(_main.getVideo().getVideoLoc())){
-//						SaveLocAndTextProcess();	
-//					}else {
-//						noMediaSelected();
-//					}
-//				}
-//			}
-//		});
 		
 		
 		
@@ -185,11 +132,6 @@ public class FilterTab extends Tab {
 	}
 
 	private void disableButtons() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	private void enableButtons() {
 		// TODO Auto-generated method stub
 		
 	}
