@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -77,7 +78,8 @@ public class VideoPanel extends JPanel {
 	private Icon mute;
 
 	public VideoPanel(MainGui parent){
-		
+		setOpaque(false);
+		//setBackground(new Color(0,0,0,00));
 		play = new ImageIcon(getClass().getResource("/icons/play.png"));
 		unmute = new ImageIcon(getClass().getResource("/icons/unmute.png"));
 		mute = new ImageIcon(getClass().getResource("/icons/mute.png"));
@@ -107,11 +109,12 @@ public class VideoPanel extends JPanel {
 
 
 		Canvas mediaCanvas = new Canvas();
-		//	mediaCanvas.setBackground(Color.black);
+			mediaCanvas.setBackground(Color.black);
 		mediaCanvas.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
 
 		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
 		mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(mediaCanvas));
+		
 
 
 		//just setting up the timer and stopping it so it doesnt run
@@ -120,6 +123,7 @@ public class VideoPanel extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				//checks if the file is at the end and resets it
 				//fixs the player crashing
+
 				if (!mediaPlayer.isPlayable()){
 					resetPlayer();
 					_progressSlider.setValue(maxTime);
