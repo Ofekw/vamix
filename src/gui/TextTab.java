@@ -296,6 +296,7 @@ public class TextTab extends Tab {
 				}
 			}
 		});
+		
 
 		_progressBar = new JProgressBar();
 		horizontalBox_2.add(_progressBar);
