@@ -53,6 +53,7 @@ public class MainGui {
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
 				//Check for vlc in home directory
+				//ui
 				RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
 				);
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
