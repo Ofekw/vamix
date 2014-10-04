@@ -282,6 +282,10 @@ public class TextTab extends Tab {
 		horizontalBox_2.add(_fontType);
 
 		_apply = new JButton("Apply");
+		_apply.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		_apply.setEnabled(false);
 		_apply.addMouseListener(new MouseAdapter() {
 			@Override
@@ -296,6 +300,10 @@ public class TextTab extends Tab {
 				}
 			}
 		});
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Background 1", "Background 2", "Background 3", "Background 4", "Background 5"}));
+		horizontalBox_2.add(comboBox);
 
 		_progressBar = new JProgressBar();
 		horizontalBox_2.add(_progressBar);
