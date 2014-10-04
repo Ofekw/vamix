@@ -44,7 +44,7 @@ import javax.swing.JSplitPane;
 public class MainGui {
 
 	private JFrame frame;
-	private MediaTab _video;
+	private MediaTab _media;
 	private AudioTab _audio;
 	private TextTab _text;
 	private VideoPanel _videoPanel;
@@ -126,15 +126,15 @@ public class MainGui {
 
 		//java is being weird and not intialising the fields right
 		//had to double up the constructors
-		_audio = new AudioTab(_videoPanel, _video);
-		_video = new MediaTab(_videoPanel,_audio);
-		_audio.setVideoTab(_video);
+		_audio = new AudioTab(_videoPanel, _media);
+		_media = new MediaTab(_videoPanel,this);
+		_audio.setVideoTab(_media);
 		_filterTab = new FilterTab(_videoPanel, this);
 
 //		_video = new VideoTab(_videoPanel, _audio);
 //		_audio = new AudioTab(_videoPanel, _video);
 
-		tabbedPane.addTab("Media", null, _video, null);
+		tabbedPane.addTab("Media", null, _media, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
 		tabbedPane.addTab("Text", null, _text, null);
 		
@@ -251,12 +251,20 @@ public class MainGui {
 	}
 
 	public MediaTab getVideo() {
-		return _video;
+		return _media;
 	}
 	public VideoPanel getPlayer() {
 		return _videoPanel;
 	}
 
+	public FilterTab getFilters() {
+		return _filterTab;
+	}
+	
+	public AudioTab getAudio() {
+		return _audio;
+	}
+	
 	public JFrame getFrame(){
 		return frame;
 	}

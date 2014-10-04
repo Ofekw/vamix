@@ -26,15 +26,15 @@ public class MediaTab extends Tab {
 	private Box verticalBox;
 	private Box horizontalBox;
 	private Component horizontalStrut;
-	private AudioTab _audio ;
+	private MainGui _main ;
 	private Box horizontalBox_1;
 	private Component verticalStrut;
 	private JSeparator separator;
 	private Component verticalStrut_1;
 
-	public MediaTab(VideoPanel panel, AudioTab audio) {
+	public MediaTab(VideoPanel panel, MainGui main) {
 		super(panel);
-		this._audio = audio;
+		this._main = main;
 	}
 
 	protected void initialise() {
@@ -107,8 +107,10 @@ public class MediaTab extends Tab {
 							_videoPanel.enableSlider();
 							CheckFile check = new CheckFile(false);
 							if(!check.checkFileType(selectedFile.getAbsolutePath())){
-								_audio.enableExtractButtons();
-								_audio.setMediaLoc(_txtVideoLoc.getText());
+								_main.getAudio().enableExtractButtons();
+								_main.getAudio().setMediaLoc(_txtVideoLoc.getText());
+								_main.getFilters().enableButtons();
+								
 							}
 						}else{
 							_txtVideoLoc.setText("");

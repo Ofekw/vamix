@@ -179,7 +179,6 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		Box horizontalBox_2 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_2);
 		_progressBar = new JProgressBar();
-		_progressBar.setStringPainted(true);
 		horizontalBox_2.add(_progressBar);
 
 		Box horizontalBox_4 = Box.createHorizontalBox();

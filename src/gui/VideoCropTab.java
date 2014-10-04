@@ -19,6 +19,9 @@ import net.miginfocom.swing.MigLayout;
 import controller.CheckFile;
 import controller.FilterProcess;
 import controller.ShellProcess;
+import controller.VideoCropProcess;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 @SuppressWarnings("serial")
 /**
@@ -26,87 +29,54 @@ import controller.ShellProcess;
  * @author Ofek Wittenberg
  *
  */
-public class FilterTab extends Tab {
+public class VideoCropTab extends Tab {
 	private MainGui _main;
 	private JButton _apply;
 	private String _saveLoc;
 	private JProgressBar _progressBar;
 	private ButtonGroup _filters;
 	private JRadioButton _rdbtnNone;
-	private JRadioButton _rdbtnBorder;
-	private JRadioButton _rdbtnFlipHorizontally;
-	private JRadioButton _rdbtnFlipVertically;
-	private JRadioButton _rdbtnMono;
-	private JRadioButton _rdbtnBlur;
 	private String _selection = "blur";
+	private JLabel lblEnterEndTime;
+	private JSpinner spinner_1;
+	private JSpinner spinner_2;
+	private JSpinner spinner;
 
-	public FilterTab(VideoPanel panel, MainGui main){
+	public VideoCropTab(VideoPanel panel, MainGui main){
 		super(panel);
 		this.setPreferredSize(new Dimension(1046, 150));
-		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][73.00][90.00][83.00][][][][]", "[][][][][][][][][][][][][][][]"));
+		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][73.00][90.00][83.00][][][][]", "[][][][][][][][][][][][][][][][]"));
 
 
 		_main = main;
 		_filters = new ButtonGroup();
 
-		JLabel lblChooseVideoFilter = new JLabel("Choose Video Filter:");
+		JLabel lblChooseVideoFilter = new JLabel("Enter start time (HH:MM:SS):");
 		add(lblChooseVideoFilter, "cell 1 1");
 
 		_rdbtnNone = new JRadioButton("None");
-//		add(_rdbtnNone, "cell 5 1");
 		
-		_rdbtnBlur = new JRadioButton("Blur");
-		_rdbtnBlur.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				_selection="blur";
-			}
-		});
-		add(_rdbtnBlur, "flowx,cell 7 1");
-		_rdbtnBlur.setSelected(true);
-		_filters.add(_rdbtnBlur);
-
-		_rdbtnFlipVertically = new JRadioButton("Flip Vertically");
-		_rdbtnFlipVertically.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				_selection="flipV";
-			}
-		});
-		add(_rdbtnFlipVertically, "cell 9 1");
+		spinner = new JSpinner();
+		spinner.setToolTipText("hours");
+		add(spinner, "cell 3 1");
 		
-				_rdbtnFlipHorizontally = new JRadioButton("Flip Horizontally");
-				_rdbtnFlipHorizontally.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						_selection="flipH";
-					}
-				});
-				add(_rdbtnFlipHorizontally, "flowx,cell 11 1");
-				_filters.add(_rdbtnFlipHorizontally);
+		spinner_1 = new JSpinner();
+		spinner_1.setToolTipText("hours");
+		add(spinner_1, "cell 6 1");
 		
-		_rdbtnMono = new JRadioButton("Mono");
-		_rdbtnMono.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				_selection="mono";
-			}
-		});
-		add(_rdbtnMono, "cell 13 1");
-		_filters.add(_rdbtnFlipVertically);
-		_filters.add(_rdbtnMono);
+		spinner_2 = new JSpinner();
+		spinner_2.setToolTipText("hours");
+		add(spinner_2, "cell 8 1");
 		
-				_rdbtnBorder = new JRadioButton("Border");
-				_rdbtnBorder.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						_selection="border";
-					}
-				});
-				add(_rdbtnBorder, "cell 15 1");
-				_filters.add(_rdbtnBorder);
+		lblEnterEndTime = new JLabel("Enter end time (HH:MM:SS):");
+		add(lblEnterEndTime, "cell 1 4");
 		
 
 
 		_progressBar = new JProgressBar();
-		add(_progressBar, "cell 1 13 46 1,growx");
+		add(_progressBar, "cell 1 14 52 1,growx");
 		_apply = new JButton("Apply");
-		add(_apply, "cell 47 13");
+		add(_apply, "cell 53 14");
 
 		_apply.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -225,7 +195,7 @@ public class FilterTab extends Tab {
 	}
 
 	private void createProcess() {
-		FilterProcess process = new FilterProcess(this);
+		VideoCropProcess process = new VideoCropProcess(this);
 		process.execute();
 	}
 

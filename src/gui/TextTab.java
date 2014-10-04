@@ -515,6 +515,7 @@ public class TextTab extends Tab {
 
 	public void progressReset(){
 		_progressBar.setValue(0);
+		_progressBar.setIndeterminate(false);
 	}
 
 	public String[] userText(){
