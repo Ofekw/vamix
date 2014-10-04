@@ -16,7 +16,7 @@ import javax.swing.JSeparator;
 
 import controller.CheckFile;
 
-public class MediaTab extends Tab {
+public class VideoTab extends Tab {
 	/**
 	 * 
 	 */
@@ -32,7 +32,7 @@ public class MediaTab extends Tab {
 	private JSeparator separator;
 	private Component verticalStrut_1;
 
-	public MediaTab(VideoPanel panel, AudioTab audio) {
+	public VideoTab(VideoPanel panel, AudioTab audio) {
 		super(panel);
 		this._audio = audio;
 	}
@@ -112,7 +112,7 @@ public class MediaTab extends Tab {
 							}
 						}else{
 							_txtVideoLoc.setText("");
-							JOptionPane.showMessageDialog(MediaTab.this, "Invalid Media File!",
+							JOptionPane.showMessageDialog(VideoTab.this, "Invalid Media File!",
 									"File Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}

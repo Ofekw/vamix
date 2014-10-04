@@ -4,7 +4,6 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +17,6 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -30,7 +28,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileView;
 
-import sun.awt.geom.AreaOp.AddOp;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
@@ -44,7 +41,7 @@ import javax.swing.JSplitPane;
 public class MainGui {
 
 	private JFrame frame;
-	private MediaTab _video;
+	private VideoTab _video;
 	private AudioTab _audio;
 	private TextTab _text;
 	private VideoPanel _videoPanel;
@@ -87,8 +84,6 @@ public class MainGui {
 
 	private void initialize() {
 		frame = new JFrame();
-		frame.setContentPane(new JLabel(new ImageIcon("background.png")));
-		
 		frame.setResizable(false);
 		ImageIcon img = new ImageIcon("V.png");
 		frame.setIconImage(img.getImage());
@@ -114,10 +109,6 @@ public class MainGui {
 		horizontalBox_1.add(EditPanel);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-//		tabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI(){
-//			protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndoex){}
-//		});
-		EditPanel.setOpaque(false);
 		EditPanel.add(tabbedPane);
 
 
@@ -126,9 +117,9 @@ public class MainGui {
 		//java is being weird and not intialising the fields right
 		//had to double up the constructors
 		_audio = new AudioTab(_videoPanel, _video);
-		_video = new MediaTab(_videoPanel,_audio);
+		_video = new VideoTab(_videoPanel,_audio);
 		_audio.setVideoTab(_video);
-		_filterTab = new FilterTab(_videoPanel, this);
+		_filterTab = new FilterTab(_videoPanel, _video);
 
 //		_video = new VideoTab(_videoPanel, _audio);
 //		_audio = new AudioTab(_videoPanel, _video);
@@ -246,10 +237,9 @@ public class MainGui {
 
 		mainMenu.add(quit);
 
-
 	}
 
-	public MediaTab getVideo() {
+	public VideoTab getVideo() {
 		return _video;
 	}
 	public VideoPanel getPlayer() {
