@@ -36,7 +36,6 @@ import com.sun.jna.NativeLibrary;
 
 import controller.SaveLoadState;
 import controller.ShellProcess;
-import javax.swing.JSplitPane;
 
 public class MainGui {
 
@@ -45,7 +44,6 @@ public class MainGui {
 	private AudioTab _audio;
 	private TextTab _text;
 	private VideoPanel _videoPanel;
-	private FilterTab _filterTab;
 
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
@@ -88,7 +86,7 @@ public class MainGui {
 		ImageIcon img = new ImageIcon("V.png");
 		frame.setIconImage(img.getImage());
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setBounds(10, 10, 1200, 750);
+		frame.setBounds(10, 10, (int)screen.getWidth()-100, (int)screen.getHeight()-75);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
@@ -119,7 +117,6 @@ public class MainGui {
 		_audio = new AudioTab(_videoPanel, _video);
 		_video = new VideoTab(_videoPanel,_audio);
 		_audio.setVideoTab(_video);
-		_filterTab = new FilterTab(_videoPanel, _video);
 
 //		_video = new VideoTab(_videoPanel, _audio);
 //		_audio = new AudioTab(_videoPanel, _video);
@@ -127,8 +124,6 @@ public class MainGui {
 		tabbedPane.addTab("Media", null, _video, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
 		tabbedPane.addTab("Text", null, _text, null);
-		
-		tabbedPane.addTab("Filters", null, _filterTab, null);
 
 		final JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);

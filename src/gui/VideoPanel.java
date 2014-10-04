@@ -175,62 +175,62 @@ public class VideoPanel extends JPanel {
 		this.add(_stopButton, "cell 0 3");
 		this.add(_playButton, "cell 0 3");
 		this.add(_fastForwardButton, "cell 0 3");
-		
-				_fullScreen = new JButton();
-				_fullScreen.setToolTipText("Toggles fullscreen");
-				_fullScreen.setIcon(fullScreen);
-				_fullScreen.addActionListener(new ActionListener() {
-					private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						//			FullScreenMultiMediaTest full = new FullScreenMultiMediaTest(_parent);
-						//			full.setMedia(videoLocation);
-						//			full.play();
-						if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
-							//check if there has been an input file selected
-							if (_videoLocation == null){
-								errorPlaybackFile();
-							}else{
-								//start media from beginning and set play button to pause logo
-								_progressSlider.setValue(0);
-								mediaPlayer.play();
-								//mediaPlayer.stop();
-								pause();
-								//have to sleep cause vlcj sucks and won't allow
-								//getting length until video has played for a small amount of time
-								try {
-									Thread.sleep(400);
-								} catch (InterruptedException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								_timer.start();
-								fullScreenToggle();
-							}
-							//check if video is paused
-						}else if (!mediaPlayer.isPlaying()){
-							pause();
-							fullScreenToggle();
-							//pause video otherwise
-						}else{
-							pause();
-							if(_fastForwardButton.isSelected()){
-								skipper.cancel(true);
-								enableSkips();
-							}else if (_rewindButton.isSelected()){
-								skipper.cancel(true);
-								enableSkips();
-							}
-							fullScreenToggle();
-						}
-
-					}
-				});
-				add(_fullScreen, "cell 0 3");
 
 		_muteToggle = new JButton();
 		_muteToggle.setToolTipText("Mute/Unmute");
 		add(_muteToggle, "cell 0 3");
+
+		_fullScreen = new JButton();
+		_fullScreen.setToolTipText("Toggles fullscreen");
+		_fullScreen.setIcon(fullScreen);
+		_fullScreen.addActionListener(new ActionListener() {
+			private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//			FullScreenMultiMediaTest full = new FullScreenMultiMediaTest(_parent);
+				//			full.setMedia(videoLocation);
+				//			full.play();
+				if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
+					//check if there has been an input file selected
+					if (_videoLocation == null){
+						errorPlaybackFile();
+					}else{
+						//start media from beginning and set play button to pause logo
+						_progressSlider.setValue(0);
+						mediaPlayer.play();
+						//mediaPlayer.stop();
+						pause();
+						//have to sleep cause vlcj sucks and won't allow
+						//getting length until video has played for a small amount of time
+						try {
+							Thread.sleep(400);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						_timer.start();
+						fullScreenToggle();
+					}
+					//check if video is paused
+				}else if (!mediaPlayer.isPlaying()){
+					pause();
+					fullScreenToggle();
+					//pause video otherwise
+				}else{
+					pause();
+					if(_fastForwardButton.isSelected()){
+						skipper.cancel(true);
+						enableSkips();
+					}else if (_rewindButton.isSelected()){
+						skipper.cancel(true);
+						enableSkips();
+					}
+					fullScreenToggle();
+				}
+
+			}
+		});
+		add(_fullScreen, "cell 0 3");
 		this.add(_volumeSlider, "cell 0 3");
 
 		skipper = new SkipWorker(mediaPlayer, true, VideoPanel.this);
