@@ -168,6 +168,7 @@ public class MainGui {
 				"Save current project settings");
 		save.addActionListener(new ActionListener() {
 
+			// This calls all the save functions in all the tabs and places data in a text file
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				while (true){
@@ -190,6 +191,7 @@ public class MainGui {
 						}
 						_audio.save(result);
 						_text.save(result);
+						_filterTab.save(result);
 						return;
 					}
 				}
@@ -205,7 +207,7 @@ public class MainGui {
 		load.getAccessibleContext().setAccessibleDescription(
 				"Load project settings");
 		load.addActionListener(new ActionListener() {
-
+//this calls all the load functions in the tabs and sets data from the text save file
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser chooser = new JFileChooser(new File(SaveLoadState.VAMIX.toString())); 
@@ -221,6 +223,7 @@ public class MainGui {
 					if (file.isFile()){
 						_text.load(chooser.getSelectedFile().getName());
 						_audio.load(chooser.getSelectedFile().getName());
+						_filterTab.load(chooser.getSelectedFile().getName());
 					}else{
 						JOptionPane.showMessageDialog(menuBar, "File is not a valid save file!");
 					}

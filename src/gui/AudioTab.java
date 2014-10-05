@@ -531,7 +531,7 @@ public class AudioTab extends Tab {
 				_startMinutes, _startSeconds, _durationHours,
 				_durationMinutes, _durationSeconds, _inputAudio, 
 				saveFile);
-		saveLoad.load(false);
+		saveLoad.load("audio");
 	}
 
 	

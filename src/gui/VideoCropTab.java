@@ -41,11 +41,14 @@ public class VideoCropTab extends Tab {
 	private JSpinner spinner_1;
 	private JSpinner spinner_2;
 	private JSpinner spinner;
+	private JSpinner spinner_3;
+	private JSpinner spinner_4;
+	private JSpinner spinner_5;
 
 	public VideoCropTab(VideoPanel panel, MainGui main){
 		super(panel);
 		this.setPreferredSize(new Dimension(1046, 150));
-		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][73.00][90.00][83.00][][][][]", "[][][][][][][][][][][][][][][][]"));
+		setLayout(new MigLayout("", "[][][][100px,grow][][][100px][][100][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][73.00][90.00][83.00][][][][]", "[][][][][][][][][][][][][][][][]"));
 
 
 		_main = main;
@@ -58,18 +61,30 @@ public class VideoCropTab extends Tab {
 		
 		spinner = new JSpinner();
 		spinner.setToolTipText("hours");
-		add(spinner, "cell 3 1");
+		add(spinner, "cell 3 1,growx");
 		
 		spinner_1 = new JSpinner();
-		spinner_1.setToolTipText("hours");
-		add(spinner_1, "cell 6 1");
+		spinner_1.setToolTipText("minutes");
+		add(spinner_1, "cell 6 1,alignx center");
 		
 		spinner_2 = new JSpinner();
-		spinner_2.setToolTipText("hours");
-		add(spinner_2, "cell 8 1");
+		spinner_2.setToolTipText("seconds");
+		add(spinner_2, "cell 8 1,alignx center");
 		
 		lblEnterEndTime = new JLabel("Enter end time (HH:MM:SS):");
 		add(lblEnterEndTime, "cell 1 4");
+		
+		spinner_5 = new JSpinner();
+		spinner_5.setToolTipText("hours");
+		add(spinner_5, "cell 3 4,growx");
+		
+		spinner_4 = new JSpinner();
+		spinner_4.setToolTipText("minutes");
+		add(spinner_4, "cell 6 4,alignx center");
+		
+		spinner_3 = new JSpinner();
+		spinner_3.setToolTipText("seconds");
+		add(spinner_3, "cell 8 4,alignx center");
 		
 
 

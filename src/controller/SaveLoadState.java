@@ -14,9 +14,12 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
+import com.sun.net.httpserver.Filter;
+
 /**
  * Class for saving and loading settings
  * @author Patrick Poole
+ * modified by Ofek
  *
  */
 public class SaveLoadState {
@@ -48,6 +51,7 @@ public class SaveLoadState {
 
 
 	private String saveFormat;
+	private String _filter;
 
 	/**
 	 * Constructor for creating object for saving/loading audio settings
@@ -60,6 +64,7 @@ public class SaveLoadState {
 	 * @param durationSeconds
 	 * @param inputAudio
 	 * @param saveFileName
+	 * 
 	 */
 	public SaveLoadState(JTextField video, JSpinner startHours, JSpinner startMinutes, JSpinner startSeconds,
 			JSpinner durationHours, JSpinner durationMinutes, JSpinner durationSeconds, JTextField inputAudio
@@ -108,6 +113,17 @@ public class SaveLoadState {
 				fontType.getSelectedItem().toString());
 		SaveFile = new File(SAVE+saveFileName);
 	}
+	
+	/**
+	 * Constructor for saving/loading filters settings
+	 * @param filter
+	 **/
+
+	public SaveLoadState(String filter, String saveFileName){
+		_filter = filter;
+		saveFormat = filter;
+		SaveFile = new File(SAVE+saveFileName);
+	}
 
 	/**
 	 * Saves settings to file
@@ -128,9 +144,10 @@ public class SaveLoadState {
 	 * @param loadingText: True if loading text settings, false if loading audio settings
 	 * @return: RGB Color or 0 if not applicable
 	 */
-	public int load(boolean loadingText){
+	public int load(String option){
 		String [] textSettings = null;
 		String [] audioSettings = null;
+		String [] filterSettings = null;
 		try {
 			List<String> lines = Files.readAllLines(SaveFile.toPath(), Charset.defaultCharset());
 			if (!lines.get(0).equals(SAVEMESSAGE)){
@@ -138,18 +155,19 @@ public class SaveLoadState {
 			}else{
 			audioSettings = lines.get(1).split(":");
 			textSettings = lines.get(2).split(":");
+			filterSettings = lines.get(3).split(":");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (loadingText){
+		if (option == "text"){
 			_intro.setText(textSettings[0]);
 			_end.setText(textSettings[1]);
 			_preview.setText(textSettings[2]);
 			_fontSize.setValue(Integer.parseInt(textSettings[3]));
 			_fontType.setSelectedItem(textSettings[5]);
 			return Integer.parseInt(textSettings[4]);
-		}else{
+		}else if(option == "audio"){
 			_video.setText(audioSettings[0]);
 			_inputAudio.setText(audioSettings[1]);
 			_startHours.setValue(Integer.parseInt(audioSettings[2]));
@@ -160,7 +178,10 @@ public class SaveLoadState {
 			_durationMinutes.setValue(Integer.parseInt(audioSettings[6]));
 			_durationSeconds.setValue(Integer.parseInt(audioSettings[7]));
 			return 0;
+		}else if(option == "filter"){
+			_filter = filterSettings[0];
 		}
+		return 0;
 	}
 
 	/**
@@ -214,6 +235,10 @@ public class SaveLoadState {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public String getFilter() {
+		return _filter;
 	}
 
 }

@@ -325,8 +325,6 @@ public class TextTab extends Tab {
 		horizontalBox_3.add(_txtPreview);
 
 		JScrollPane scrollBar = new JScrollPane(_txtPreview);
-		//scrollBar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR);
-		//scrollBar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollBar.setViewportView(_txtPreview);
 		horizontalBox_3.add(scrollBar);
 
@@ -544,7 +542,7 @@ public class TextTab extends Tab {
 	public void load(String loadFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
 				_colourSelect, _fontType, loadFileName);
-		int colour = saveLoad.load(true);
+		int colour = saveLoad.load("text");
 		if (colour != 0){
 			_colourSelect = new Color(colour);
 		}

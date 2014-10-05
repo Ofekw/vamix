@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ import javax.swing.JRadioButton;
 import net.miginfocom.swing.MigLayout;
 import controller.CheckFile;
 import controller.FilterProcess;
+import controller.SaveLoadState;
 import controller.ShellProcess;
 
 @SuppressWarnings("serial")
@@ -39,6 +41,8 @@ public class FilterTab extends Tab {
 	private JRadioButton _rdbtnMono;
 	private JRadioButton _rdbtnBlur;
 	private String _selection = "blur";
+	
+	private SaveLoadState saveLoad;
 
 	public FilterTab(VideoPanel panel, MainGui main){
 		super(panel);
@@ -205,7 +209,7 @@ public class FilterTab extends Tab {
 	}
 
 	private void disableButtons() {
-		// TODO Auto-generated method stub
+		_apply.setEnabled(false);
 
 	}
 
@@ -217,11 +221,13 @@ public class FilterTab extends Tab {
 	public void progressReset(){
 		_progressBar.setValue(0);
 		_progressBar.setIndeterminate(false);
+		enableButtons();
 	}
 
 	public void progressDone(){
 		_progressBar.setValue(100);
 		_progressBar.setIndeterminate(false);
+		enableButtons();
 	}
 
 	private void createProcess() {
@@ -246,4 +252,49 @@ private void noMediaSelected() {
 	JOptionPane.showMessageDialog(this, "Invalid media selected in the Media tab",
 			"Media Error", JOptionPane.ERROR_MESSAGE);
 }
+
+/**
+ * Saves the current text settings to a vamix save file
+ * @param saveFileName: Path to save file
+ */
+public void save(String saveFileName){
+	saveLoad = new SaveLoadState(getFilterSelection(), saveFileName);
+	saveLoad.save();
+}
+
+/**
+ * Loads the settings from the file specified
+ * @param loadFileName: Path to Vamix save file to be loaded
+ */
+public void load(String loadFileName){
+	saveLoad = new SaveLoadState(getFilterSelection(), loadFileName);
+	int filter = saveLoad.load("filter");
+	if (filter == 0){
+		_selection = saveLoad.getFilter();
+		System.out.println(saveLoad.getFilter());
+	}
+//	deselectAll();
+	if ( _selection.equals("blur")) {
+		_rdbtnBlur.doClick();
+	} else if (_selection.equals("border")) {
+		_rdbtnBorder.doClick();
+	} else if (_selection.equals("flipH")) {
+		_rdbtnFlipHorizontally.doClick();
+	} else if (_selection.equals("flipV")) {
+		_rdbtnFlipVertically.doClick();
+	} else if (_selection.equals("mono")) {
+		_rdbtnNone.doClick();
+}
+	repaint();
+}
+
+private void deselectAll() {
+	_rdbtnBlur.setSelected(false);
+	_rdbtnBorder.setSelected(false);
+	_rdbtnFlipHorizontally.setSelected(false);
+	_rdbtnFlipVertically.setSelected(false);
+	_rdbtnMono.setSelected(false);
+	_rdbtnNone.setSelected(false);
+}
+
 }
