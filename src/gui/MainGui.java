@@ -49,6 +49,7 @@ public class MainGui {
 	private TextTab _text;
 	private VideoPanel _videoPanel;
 	private FilterTab _filterTab;
+	private VideoCropTab _videoCrop;
 
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
@@ -94,7 +95,7 @@ public class MainGui {
 		ImageIcon img = new ImageIcon("V.png");
 		frame.setIconImage(img.getImage());
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setBounds(10, 10, 1200, 750);
+		frame.setBounds(10, 10, 1200, 720);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
@@ -121,27 +122,23 @@ public class MainGui {
 		EditPanel.setOpaque(false);
 		EditPanel.add(tabbedPane);
 
-
+//creating all the tabs
 		_text = new TextTab(_videoPanel, this);
-
-		//java is being weird and not intialising the fields right
-		//had to double up the constructors
 		_audio = new AudioTab(_videoPanel, _media);
 		_media = new MediaTab(_videoPanel,this);
 		_audio.setVideoTab(_media);
 		_filterTab = new FilterTab(_videoPanel, this);
+		_videoCrop = new VideoCropTab(_videoPanel, this); 
 
-//		_video = new VideoTab(_videoPanel, _audio);
-//		_audio = new AudioTab(_videoPanel, _video);
 
 		tabbedPane.addTab("Media", null, _media, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
 		tabbedPane.addTab("Text", null, _text, null);
-		
 		tabbedPane.addTab("Filters", null, _filterTab, null);
+		tabbedPane.addTab("Video Crop", null, _videoCrop, null);
 
 		final JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		frame.getRootPane().setJMenuBar(menuBar);
 
 		JMenu mainMenu = new JMenu("Project");
 		JMenu help = new JMenu("Help");

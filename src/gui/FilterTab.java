@@ -47,7 +47,7 @@ public class FilterTab extends Tab {
 	public FilterTab(VideoPanel panel, MainGui main){
 		super(panel);
 		this.setPreferredSize(new Dimension(1046, 150));
-		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][73.00][90.00][83.00][][][][]", "[][][][][][][][][][][][][][][]"));
+		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][73.00][90.00][83.00][][][][]", "[][][][][][][][][][][][][][][][]"));
 
 
 		_main = main;
@@ -108,15 +108,15 @@ public class FilterTab extends Tab {
 
 
 		_progressBar = new JProgressBar();
-		add(_progressBar, "cell 1 13 46 1,growx");
+		add(_progressBar, "cell 1 15 46 1,growx");
 		_apply = new JButton("Apply");
-		add(_apply, "cell 47 13");
-
-		_apply.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		_apply.setEnabled(false);
+		add(_apply, "cell 47 15");
+		
+				_apply.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+					}
+				});
+				_apply.setEnabled(false);
 		_apply.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {

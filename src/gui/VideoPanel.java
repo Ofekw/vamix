@@ -106,9 +106,11 @@ public class VideoPanel extends JPanel {
 
 		// Setup canvas for player to go on
 
-
+		JPanel playerBackground = new JPanel();
+		//playerBackground.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
+		playerBackground.setBackground(Color.BLACK);
 		Canvas mediaCanvas = new Canvas();
-		mediaCanvas.setBackground(Color.black);
+		//mediaCanvas.setBackground(Color.black);
 		mediaCanvas.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
 
 		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
@@ -132,8 +134,8 @@ public class VideoPanel extends JPanel {
 			}
 		});
 		_timer.stop();
-
-		this.add(mediaCanvas, "cell 0 0 7 1,growx");
+		this.add(playerBackground,"cell 0 0 7 1,growx");
+		playerBackground.add(mediaCanvas);
 
 	}
 

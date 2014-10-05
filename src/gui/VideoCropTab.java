@@ -60,38 +60,44 @@ public class VideoCropTab extends Tab {
 		_rdbtnNone = new JRadioButton("None");
 		
 		spinner = new JSpinner();
+		spinner.setModel(new SpinnerNumberModel(0, 0, 99, 1));
 		spinner.setToolTipText("hours");
 		add(spinner, "cell 3 1,growx");
 		
 		spinner_1 = new JSpinner();
+		spinner_1.setModel(new SpinnerNumberModel(0, 0, 99, 1));
 		spinner_1.setToolTipText("minutes");
-		add(spinner_1, "cell 6 1,alignx center");
+		add(spinner_1, "cell 6 1,growx");
 		
 		spinner_2 = new JSpinner();
+		spinner_2.setModel(new SpinnerNumberModel(0, 0, 99, 1));
 		spinner_2.setToolTipText("seconds");
-		add(spinner_2, "cell 8 1,alignx center");
+		add(spinner_2, "cell 8 1,growx");
 		
 		lblEnterEndTime = new JLabel("Enter end time (HH:MM:SS):");
 		add(lblEnterEndTime, "cell 1 4");
 		
 		spinner_5 = new JSpinner();
+		spinner_5.setModel(new SpinnerNumberModel(0, 0, 99, 1));
 		spinner_5.setToolTipText("hours");
 		add(spinner_5, "cell 3 4,growx");
 		
 		spinner_4 = new JSpinner();
+		spinner_4.setModel(new SpinnerNumberModel(0, 0, 99, 1));
 		spinner_4.setToolTipText("minutes");
-		add(spinner_4, "cell 6 4,alignx center");
+		add(spinner_4, "cell 6 4,growx");
 		
 		spinner_3 = new JSpinner();
+		spinner_3.setModel(new SpinnerNumberModel(0, 0, 99, 1));
 		spinner_3.setToolTipText("seconds");
-		add(spinner_3, "cell 8 4,alignx center");
+		add(spinner_3, "cell 8 4,growx");
 		
 
 
 		_progressBar = new JProgressBar();
-		add(_progressBar, "cell 1 14 52 1,growx");
+		add(_progressBar, "cell 1 10 52 1,growx");
 		_apply = new JButton("Apply");
-		add(_apply, "cell 53 14");
+		add(_apply, "cell 53 10");
 
 		_apply.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
