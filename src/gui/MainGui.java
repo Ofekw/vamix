@@ -89,10 +89,11 @@ public class MainGui {
 
 	private void initialize() {
 		frame = new JFrame();
-		frame.setContentPane(new JLabel(new ImageIcon("background.png")));
+		frame.setContentPane(new JLabel(new ImageIcon(getClass().getResource("/icons/"+"background.png"))));
 		
 		frame.setResizable(false);
-		ImageIcon img = new ImageIcon("V.png");
+		frame.setTitle("Video Audio Mixer");
+		ImageIcon img = new ImageIcon(getClass().getResource("/icons/"+"V.png"));
 		frame.setIconImage(img.getImage());
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setBounds(10, 10, 1200, 720);

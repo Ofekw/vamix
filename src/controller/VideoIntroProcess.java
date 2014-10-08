@@ -11,10 +11,10 @@ public class VideoIntroProcess extends AbstractProcess {
 	
 	private TextTab _tab;
 
-	public VideoIntroProcess(TextTab tab,int textSize, String font, String text, Color colour){
+	public VideoIntroProcess(TextTab tab,int textSize, String font, String text, Color colour, String background){
 		String loc = System.getProperty("user.dir");
 		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+".tempMedia"+System.getProperty("file.separator")+"tempIntro.mp4");
-		super.setCommand(makeCommand(textSize, font, text, colour, loc));
+		super.setCommand(makeCommand(textSize, font, text, colour, loc, background));
 		_tab = tab;
 }
 	protected void doDone() {
@@ -38,11 +38,11 @@ public class VideoIntroProcess extends AbstractProcess {
 		//System.out.println(line);
 	}
 	
-	private String makeCommand(int textSize, String font, String text, Color colour, String loc){
+	private String makeCommand(int textSize, String font, String text, Color colour, String loc, String background){
 		
 		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
 				+System.getProperty("file.separator");
-		return "avconv -i " + binLoc + "background.mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
+		return "avconv -i " + binLoc +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
 				+ "\"" + " "+binLoc+"tempIntro.mp4";
 	}
 	
