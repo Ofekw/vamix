@@ -15,10 +15,10 @@ public class VideoCropProcess extends AbstractProcess {
 
 	private VideoCropTab _tab;
 
-	public VideoCropProcess(VideoCropTab videoCropTab){
+	public VideoCropProcess(VideoCropTab videoCropTab, String startHr, String startMin, String startSec, String endHr, String endMin, String endSec){
 
 		_tab = videoCropTab;
-		super.setCommand(makeCommand(_tab.getSaveloc()));
+		super.setCommand(makeCommand(_tab.getSaveloc(), startHr, startMin, startSec, endHr, endMin, endSec));
 	}
 	protected void doDone() {
 		if (get() == 0) {
@@ -48,20 +48,8 @@ public class VideoCropProcess extends AbstractProcess {
 
 	}
 
-	private String makeCommand(String saveLoc){
-			String source = _tab.getFilterSelection();
-			if ( source == "blur") {
-				return "avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -strict experimental -vf " + "\"" + "boxblur=10:1:0:0:0:0"+ "\" " + saveLoc;
-			} else if (source == "border") {
-				return "avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -strict experimental -vf " + "\"" + "drawbox=0:0:00:00:red"+ "\" " + saveLoc;
-			} else if (source == "flipH") {
-				return "avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -strict experimental -vf " + "\"" + "hflip"+ "\" " + saveLoc;
-			} else if (source == "flipV") {
-				return "avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -strict experimental -vf " + "\"" + "vflip"+ "\" " + saveLoc;
-			} else if (source == "mono") {
-				return "avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -strict experimental -vf " + "\"" + "format=monow, pixdesctest"+ "\" " + saveLoc;
-		}
-			return null;
+	private String makeCommand(String saveLoc, String startHr, String startMin, String startSec, String endHr, String endMin, String endSec){
+		return "avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -ss "+startHr+":"+startMin+":"+startSec+" -t "+endHr+":"+endMin+":"+endSec+" -codec copy "+saveLoc;
 	
 	}
 

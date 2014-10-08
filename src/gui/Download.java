@@ -49,7 +49,7 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		/**
 		 * Initializes the download pane.
 		 */
-		this.setPreferredSize(new Dimension(1000, 180));
+		this.setPreferredSize(new Dimension(1000, 250));
 
 		Box verticalBox = Box.createVerticalBox();
 		add(verticalBox);
@@ -60,8 +60,7 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		JLabel lblMpUrl = new JLabel("Media URL:");
 		horizontalBox.add(lblMpUrl);
 
-		Component rigidArea = Box.createRigidArea(new Dimension(50, 20));
-		rigidArea.setPreferredSize(new Dimension(105, 20));
+		Component rigidArea = Box.createRigidArea(new Dimension(75, 20));
 		horizontalBox.add(rigidArea);
 
 		_textField = new JTextField();

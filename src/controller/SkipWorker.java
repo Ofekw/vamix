@@ -16,7 +16,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
  */
 public class SkipWorker extends SwingWorker<Void, Integer> {
 
-	private static final int SKIP_TIME_MS = 1000;
+	private static final int SKIP_TIME_MS = 500;
 	private EmbeddedMediaPlayer _player;
 	private boolean _fastForward;
 	private VideoPanel _panel;

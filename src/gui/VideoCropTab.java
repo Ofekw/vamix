@@ -52,7 +52,6 @@ public class VideoCropTab extends Tab {
 
 
 		_main = main;
-		_filters = new ButtonGroup();
 
 		JLabel lblChooseVideoFilter = new JLabel("Enter start time (HH:MM:SS):");
 		add(lblChooseVideoFilter, "cell 1 1");
@@ -216,7 +215,7 @@ public class VideoCropTab extends Tab {
 	}
 
 	private void createProcess() {
-		VideoCropProcess process = new VideoCropProcess(this);
+		VideoCropProcess process = new VideoCropProcess(this, spinner.getValue().toString(), spinner_1.getValue().toString(),spinner_2.getValue().toString(),spinner_5.getValue().toString(),spinner_4.getValue().toString(),spinner_3.getValue().toString());
 		process.execute();
 	}
 

@@ -58,18 +58,25 @@ public class MainGui {
 				RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
 				);
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-			if ("GTK+".equals(info.getName())) {
-				try {
-					UIManager.setLookAndFeel(info.getClassName());
-					UIManager.put("Slider.paintValue", false);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					break;
-				}
+		
+		try {
+			UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+			} catch (Exception e) {
+			e.printStackTrace();
 			}
-		}
+		
+//		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+////			if ("GTK+".equals(info.getName())) {
+//				try {
+//					UIManager.setLookAndFeel(info.getClassName());
+//					UIManager.put("Slider.paintValue", false);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//					break;
+//				}
+////			}
+//		}
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -264,6 +271,10 @@ public class MainGui {
 	
 	public AudioTab getAudio() {
 		return _audio;
+	}
+	
+	public VideoCropTab getCrop(){
+		return _videoCrop;
 	}
 	
 	public JFrame getFrame(){
