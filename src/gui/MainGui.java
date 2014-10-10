@@ -56,11 +56,11 @@ public class MainGui {
 	private VideoPanel _videoPanel;
 	private FilterTab _filterTab;
 	private VideoCropTab _videoCrop;
-	public static final String HOME = System.getProperty("user.home"); 
-	public static final String SEPERATOR = File.separator; 
+	public static final String HOME = System.getProperty("user.home");
+	public static final String SEPERATOR = File.separator;
 	public static final File VAMIX = new File(HOME+SEPERATOR+"vamix");
-	public static final String BINLOC = new String("vamix.BIN.zip");
-	public static final File VAMIXBIN = new File(VAMIX+BINLOC);
+	public static final String ZIP = new String("vamix.BIN.zip");
+	private String[] _moveableFiles = {".tempMedia", "bat", "com", "css", "images", "js", "readme.html"} ;
 
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
@@ -107,20 +107,27 @@ public class MainGui {
 	}
 
 	private void setup() {
-		//		if (!VAMIX.exists()){ VAMIX.mkdir();
-		//		new File(VAMIXBIN.getAbsolutePath()).mkdir(); 
-		//		}
-		//		File file = null;
-		//		URL inputUrl = getClass().getResource(BINLOC);
-		//		File dest = new File("/home/ofek/vamix"+BINLOC);
-		//		try {
-		//			FileUtils.copyURLToFile(inputUrl, dest);
-		//		} catch (IOException e1) {
-		//			// TODO Auto-generated catch block
-		//			e1.printStackTrace();
-		//		}
-
-		//ShellProcess.command("unzip "+BINLOC+" -d "+VAMIX);
+		if (!VAMIX.exists()){
+			VAMIX.mkdir();
+		}
+		File location = null;
+		try {
+			location = new File(MainGui.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		String fileDirectory = location.getAbsolutePath().toString();
+		String baseDirectory = fileDirectory.substring(0,fileDirectory.lastIndexOf("/")+1);
+		if (location.getAbsoluteFile().toString().contains(".jar")){
+			for(String inputFile : _moveableFiles ){
+			ShellProcess.command("jar xf "+location.getAbsolutePath()+" "+inputFile);
+			ShellProcess.command("mv "+baseDirectory+inputFile+" "+VAMIX);
+			}
+		}else{
+			for (String inputFile : _moveableFiles){
+				ShellProcess.command("cp -r "+baseDirectory+"src/vamix.BIN/"+inputFile+" "+VAMIX);
+			}
+		}
 
 	}
 
@@ -183,11 +190,10 @@ public class MainGui {
 		help.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				File htmlFile = new File("readme.html");
+				File htmlFile = new File(VAMIX+SEPERATOR+"readme.html");
 				try {
 					Desktop.getDesktop().browse(htmlFile.toURI());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

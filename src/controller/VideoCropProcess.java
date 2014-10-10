@@ -31,7 +31,7 @@ public class VideoCropProcess extends AbstractProcess {
 		} else if (get() > 0) {
 			_tab.progressReset();
 			JOptionPane
-			.showMessageDialog(_tab,"Something went wrong with applying the filter. Please check input media file",
+			.showMessageDialog(_tab,"Something went wrong with croping. Please check input media file",
 					"Process Error", JOptionPane.ERROR_MESSAGE);
 			_tab.progressReset();
 		} else if (get() < 0){

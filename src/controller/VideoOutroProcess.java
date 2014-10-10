@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 public class VideoOutroProcess extends AbstractProcess {
 
 	private TextTab _tab;
-	public static final String tempOutroPath = MainGui.VAMIXBIN.getAbsolutePath()+".tempMedia"+MainGui.SEPERATOR;
+	public static final String tempOutroPath = MainGui.VAMIX.getAbsolutePath()+MainGui.SEPERATOR+".tempMedia"+MainGui.SEPERATOR;
 
 	public VideoOutroProcess(TextTab tab,int textSize, String font, String text, Color colour, String background){
 		String loc = System.getProperty("user.dir");
@@ -29,10 +29,12 @@ public class VideoOutroProcess extends AbstractProcess {
 			JOptionPane
 			.showMessageDialog(_tab,"Something went wrong with creating an outro. Please check input media file",
 					"Process Error", JOptionPane.ERROR_MESSAGE);
+			_tab.enableButtons();
 		} else if (get() < 0){
 			JOptionPane
 			.showMessageDialog(_tab,"Process cancelled",
 					"Process Error", JOptionPane.ERROR_MESSAGE);
+			_tab.enableButtons();
 		}
 	}
 
