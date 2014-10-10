@@ -13,6 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -41,6 +43,10 @@ import controller.SaveLoadState;
 import controller.ShellProcess;
 import javax.swing.JSplitPane;
 
+import org.apache.commons.io.FileUtils;
+
+import model.FileChooserModel;
+
 public class MainGui {
 
 	private JFrame frame;
@@ -50,6 +56,11 @@ public class MainGui {
 	private VideoPanel _videoPanel;
 	private FilterTab _filterTab;
 	private VideoCropTab _videoCrop;
+	public static final String HOME = System.getProperty("user.home"); 
+	public static final String SEPERATOR = File.separator; 
+	public static final File VAMIX = new File(HOME+SEPERATOR+"vamix");
+	public static final String BINLOC = new String("vamix.BIN.zip");
+	public static final File VAMIXBIN = new File(VAMIX+BINLOC);
 
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
@@ -58,25 +69,25 @@ public class MainGui {
 				RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
 				);
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-		
+
 		try {
 			UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-			} catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			}
-		
-//		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-////			if ("GTK+".equals(info.getName())) {
-//				try {
-//					UIManager.setLookAndFeel(info.getClassName());
-//					UIManager.put("Slider.paintValue", false);
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//					break;
-//				}
-////			}
-//		}
+		}
+
+		//		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		//			if ("GTK+".equals(info.getName())) {
+		//				try {
+		//					UIManager.setLookAndFeel(info.getClassName());
+		//					UIManager.put("Slider.paintValue", false);
+		//				} catch (Exception e) {
+		//					// TODO Auto-generated catch block
+		//					e.printStackTrace();
+		//					break;
+		//				}
+		//			}
+		//		}
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -91,13 +102,32 @@ public class MainGui {
 	}
 
 	public MainGui(){
+		setup();
 		initialize();
+	}
+
+	private void setup() {
+		//		if (!VAMIX.exists()){ VAMIX.mkdir();
+		//		new File(VAMIXBIN.getAbsolutePath()).mkdir(); 
+		//		}
+		//		File file = null;
+		//		URL inputUrl = getClass().getResource(BINLOC);
+		//		File dest = new File("/home/ofek/vamix"+BINLOC);
+		//		try {
+		//			FileUtils.copyURLToFile(inputUrl, dest);
+		//		} catch (IOException e1) {
+		//			// TODO Auto-generated catch block
+		//			e1.printStackTrace();
+		//		}
+
+		//ShellProcess.command("unzip "+BINLOC+" -d "+VAMIX);
+
 	}
 
 	private void initialize() {
 		frame = new JFrame();
 		frame.setContentPane(new JLabel(new ImageIcon(getClass().getResource("/icons/"+"background.png"))));
-		
+
 		frame.setResizable(false);
 		frame.setTitle("Video Audio Mixer");
 		ImageIcon img = new ImageIcon(getClass().getResource("/icons/"+"V.png"));
@@ -124,13 +154,13 @@ public class MainGui {
 		horizontalBox_1.add(EditPanel);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-//		tabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI(){
-//			protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndoex){}
-//		});
+		//		tabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI(){
+		//			protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndoex){}
+		//		});
 		EditPanel.setOpaque(false);
 		EditPanel.add(tabbedPane);
 
-//creating all the tabs
+		//creating all the tabs
 		_text = new TextTab(_videoPanel, this);
 		_audio = new AudioTab(_videoPanel, _media);
 		_media = new MediaTab(_videoPanel,this);
@@ -164,7 +194,7 @@ public class MainGui {
 		});
 		menuBar.add(mainMenu);
 		menuBar.add(help);
-		
+
 		//Add save shortcut
 		JMenuItem save = new JMenuItem("Save Project",KeyEvent.VK_1);
 		save.setAccelerator(KeyStroke.getKeyStroke(
@@ -197,6 +227,7 @@ public class MainGui {
 						_audio.save(result);
 						_text.save(result);
 						_filterTab.save(result);
+						_videoCrop.save(result);
 						return;
 					}
 				}
@@ -212,16 +243,21 @@ public class MainGui {
 		load.getAccessibleContext().setAccessibleDescription(
 				"Load project settings");
 		load.addActionListener(new ActionListener() {
-//this calls all the load functions in the tabs and sets data from the text save file
+			//this calls all the load functions in the tabs and sets data from the text save file
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser chooser = new JFileChooser(new File(SaveLoadState.VAMIX.toString())); 
+				JFileChooser chooser = new JFileChooser(new File(SaveLoadState.VAMIX.toString()));
+				chooser.addChoosableFileFilter(new FileChooserModel());
+				chooser.setFileHidingEnabled(false);
 				chooser.setFileView(new FileView() {
 					@Override
 					public Boolean isTraversable(File f) {
 						return (f.isDirectory() && f.getName().equals(SaveLoadState.VAMIX.toString())); 
 					}
+
+
 				});
+				//				chooser.setCurrentDirectory(new File (System.getProperty("user.home") + System.getProperty("line.separator")+ ".vamix"));
 				int returnVal = chooser.showOpenDialog(menuBar);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = new File(chooser.getSelectedFile().toString());
@@ -229,6 +265,7 @@ public class MainGui {
 						_text.load(chooser.getSelectedFile().getName());
 						_audio.load(chooser.getSelectedFile().getName());
 						_filterTab.load(chooser.getSelectedFile().getName());
+						_videoCrop.load(chooser.getSelectedFile().getName());
 					}else{
 						JOptionPane.showMessageDialog(menuBar, "File is not a valid save file!");
 					}
@@ -237,7 +274,7 @@ public class MainGui {
 		});
 		mainMenu.add(load);
 
-		
+
 		//add quit shortcut
 		JMenuItem quit = new JMenuItem("Quit Project",KeyEvent.VK_3);
 		quit.setAccelerator(KeyStroke.getKeyStroke(
@@ -268,16 +305,17 @@ public class MainGui {
 	public FilterTab getFilters() {
 		return _filterTab;
 	}
-	
+
 	public AudioTab getAudio() {
 		return _audio;
 	}
-	
+
 	public VideoCropTab getCrop(){
 		return _videoCrop;
 	}
-	
+
 	public JFrame getFrame(){
 		return frame;
 	}
+
 }

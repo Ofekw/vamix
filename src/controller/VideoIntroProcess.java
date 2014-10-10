@@ -1,19 +1,23 @@
 package controller;
 
+import gui.MainGui;
 import gui.TextTab;
 
 import java.awt.Color;
 
 import javax.swing.JOptionPane;
 
+import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
+
 
 public class VideoIntroProcess extends AbstractProcess {
 	
 	private TextTab _tab;
+	public static final String tempIntroPath = MainGui.VAMIXBIN.getAbsolutePath()+".tempMedia"+MainGui.SEPERATOR;
 
 	public VideoIntroProcess(TextTab tab,int textSize, String font, String text, Color colour, String background){
 		String loc = System.getProperty("user.dir");
-		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+".tempMedia"+System.getProperty("file.separator")+"tempIntro.mp4");
+		ShellProcess.command("rm -f "+tempIntroPath+"tempIntro.mp4");
 		super.setCommand(makeCommand(textSize, font, text, colour, loc, background));
 		_tab = tab;
 }
@@ -40,10 +44,8 @@ public class VideoIntroProcess extends AbstractProcess {
 	
 	private String makeCommand(int textSize, String font, String text, Color colour, String loc, String background){
 		
-		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
-				+System.getProperty("file.separator");
-		return "avconv -i " + binLoc +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
-				+ "\"" + " "+binLoc+"tempIntro.mp4";
+		return "avconv -i " + tempIntroPath +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
+				+ "\"" + " "+tempIntroPath+"tempIntro.mp4";
 	}
 	
 	public static String toHexString(Color c) {

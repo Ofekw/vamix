@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.Color;
 
+import gui.MainGui;
 import gui.TextTab;
 
 import javax.swing.JOptionPane;
@@ -10,10 +11,11 @@ import javax.swing.JOptionPane;
 public class VideoOutroProcess extends AbstractProcess {
 
 	private TextTab _tab;
+	public static final String tempOutroPath = MainGui.VAMIXBIN.getAbsolutePath()+".tempMedia"+MainGui.SEPERATOR;
 
 	public VideoOutroProcess(TextTab tab,int textSize, String font, String text, Color colour, String background){
 		String loc = System.getProperty("user.dir");
-		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+".tempMedia"+System.getProperty("file.separator")+"tempOutro.mp4");
+		ShellProcess.command("rm -f "+tempOutroPath+"tempOutro.mp4");
 		super.setCommand(makeCommand(textSize, font, text, colour, loc, background));
 		_tab = tab;
 	}
@@ -40,10 +42,8 @@ public class VideoOutroProcess extends AbstractProcess {
 
 	private String makeCommand(int textSize, String font, String text, Color colour, String loc, String background){
 
-		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
-				+System.getProperty("file.separator");
-		return "avconv -i " + binLoc +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
-				+ "\"" + " "+binLoc+"tempOutro.mp4";
+		return "avconv -i " + tempOutroPath +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
+				+ "\"" + " "+tempOutroPath+"tempOutro.mp4";
 	}
 
 	public static String toHexString(Color c) {

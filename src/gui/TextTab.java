@@ -566,7 +566,7 @@ public class TextTab extends Tab {
 	 */
 	public void save(String saveFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
-				_colourSelect, _fontType, saveFileName);
+				_colourSelect, _fontType,_backgroundSelect, saveFileName);
 		saveLoad.save();
 	}
 
@@ -576,7 +576,7 @@ public class TextTab extends Tab {
 	 */
 	public void load(String loadFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
-				_colourSelect, _fontType, loadFileName);
+				_colourSelect, _fontType, _backgroundSelect,loadFileName);
 		int colour = saveLoad.load("text");
 		if (colour != 0){
 			_colourSelect = new Color(colour);

@@ -14,14 +14,18 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 import controller.CheckFile;
 import controller.FilterProcess;
+import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.VideoCropProcess;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+
+import sun.invoke.empty.Empty;
 
 @SuppressWarnings("serial")
 /**
@@ -38,12 +42,13 @@ public class VideoCropTab extends Tab {
 	private JRadioButton _rdbtnNone;
 	private String _selection = "blur";
 	private JLabel lblEnterEndTime;
-	private JSpinner spinner_1;
-	private JSpinner spinner_2;
-	private JSpinner spinner;
-	private JSpinner spinner_3;
-	private JSpinner spinner_4;
-	private JSpinner spinner_5;
+	private JSpinner _startMin;
+	private JSpinner _startSec;
+	private JSpinner _startHour;
+	private JSpinner _endSec;
+	private JSpinner _endMin;
+	private JSpinner _endHr;
+	private SaveLoadState saveLoad;
 
 	public VideoCropTab(VideoPanel panel, MainGui main){
 		super(panel);
@@ -58,38 +63,38 @@ public class VideoCropTab extends Tab {
 
 		_rdbtnNone = new JRadioButton("None");
 		
-		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(0, 0, 99, 1));
-		spinner.setToolTipText("hours");
-		add(spinner, "cell 3 1,growx");
+		_startHour = new JSpinner();
+		_startHour.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_startHour.setToolTipText("hours");
+		add(_startHour, "cell 3 1,growx");
 		
-		spinner_1 = new JSpinner();
-		spinner_1.setModel(new SpinnerNumberModel(0, 0, 99, 1));
-		spinner_1.setToolTipText("minutes");
-		add(spinner_1, "cell 6 1,growx");
+		_startMin = new JSpinner();
+		_startMin.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_startMin.setToolTipText("minutes");
+		add(_startMin, "cell 6 1,growx");
 		
-		spinner_2 = new JSpinner();
-		spinner_2.setModel(new SpinnerNumberModel(0, 0, 99, 1));
-		spinner_2.setToolTipText("seconds");
-		add(spinner_2, "cell 8 1,growx");
+		_startSec = new JSpinner();
+		_startSec.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_startSec.setToolTipText("seconds");
+		add(_startSec, "cell 8 1,growx");
 		
-		lblEnterEndTime = new JLabel("Enter end time (HH:MM:SS):");
+		lblEnterEndTime = new JLabel("Duration (HH:MM:SS):");
 		add(lblEnterEndTime, "cell 1 4");
 		
-		spinner_5 = new JSpinner();
-		spinner_5.setModel(new SpinnerNumberModel(0, 0, 99, 1));
-		spinner_5.setToolTipText("hours");
-		add(spinner_5, "cell 3 4,growx");
+		_endHr = new JSpinner();
+		_endHr.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_endHr.setToolTipText("hours");
+		add(_endHr, "cell 3 4,growx");
 		
-		spinner_4 = new JSpinner();
-		spinner_4.setModel(new SpinnerNumberModel(0, 0, 99, 1));
-		spinner_4.setToolTipText("minutes");
-		add(spinner_4, "cell 6 4,growx");
+		_endMin = new JSpinner();
+		_endMin.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_endMin.setToolTipText("minutes");
+		add(_endMin, "cell 6 4,growx");
 		
-		spinner_3 = new JSpinner();
-		spinner_3.setModel(new SpinnerNumberModel(0, 0, 99, 1));
-		spinner_3.setToolTipText("seconds");
-		add(spinner_3, "cell 8 4,growx");
+		_endSec = new JSpinner();
+		_endSec.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_endSec.setToolTipText("seconds");
+		add(_endSec, "cell 8 4,growx");
 		
 
 
@@ -215,7 +220,7 @@ public class VideoCropTab extends Tab {
 	}
 
 	private void createProcess() {
-		VideoCropProcess process = new VideoCropProcess(this, spinner.getValue().toString(), spinner_1.getValue().toString(),spinner_2.getValue().toString(),spinner_5.getValue().toString(),spinner_4.getValue().toString(),spinner_3.getValue().toString());
+		VideoCropProcess process = new VideoCropProcess(this, _startHour.getValue().toString(), _startMin.getValue().toString(),_startSec.getValue().toString(),_endHr.getValue().toString(),_endMin.getValue().toString(),_endSec.getValue().toString());
 		process.execute();
 	}
 
@@ -235,5 +240,26 @@ public class VideoCropTab extends Tab {
 private void noMediaSelected() {
 	JOptionPane.showMessageDialog(this, "Invalid media selected in the Media tab",
 			"Media Error", JOptionPane.ERROR_MESSAGE);
+}
+
+public void save(String saveFile){
+	JTextField empty = new JTextField("");
+	saveLoad = new SaveLoadState(_startHour,
+			_startMin, _startSec, _endHr,
+			_endMin, _endSec, saveFile);
+	saveLoad.save();
+}
+
+/**
+ * Load video settings
+ * @param saveFile: Path to file to load
+ */
+public void load(String saveFile){
+	JTextField empty = new JTextField("");
+	saveLoad = new SaveLoadState(_startHour,
+			_startMin, _startSec, _endHr,
+			_endMin, _endSec, 
+			saveFile);
+	saveLoad.load("video");
 }
 }
