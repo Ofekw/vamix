@@ -25,8 +25,6 @@ import controller.VideoCropProcess;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import sun.invoke.empty.Empty;
-
 @SuppressWarnings("serial")
 /**
  * Tab for video manipulation and filters

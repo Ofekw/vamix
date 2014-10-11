@@ -14,8 +14,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
-import com.sun.net.httpserver.Filter;
-
 /**
  * Class for saving and loading settings
  * @author Patrick Poole

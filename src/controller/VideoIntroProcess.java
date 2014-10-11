@@ -7,7 +7,6 @@ import java.awt.Color;
 
 import javax.swing.JOptionPane;
 
-import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 
 
 public class VideoIntroProcess extends AbstractProcess {
