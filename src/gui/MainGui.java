@@ -38,6 +38,7 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
+import controller.FileMover;
 import controller.SaveLoadState;
 import controller.ShellProcess;
 import javax.swing.JSplitPane;
@@ -106,27 +107,8 @@ public class MainGui {
 	}
 
 	private void setup() {
-		if (!VAMIX.exists()){
-			VAMIX.mkdir();
-		}
-		File location = null;
-		try {
-			location = new File(MainGui.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		String fileDirectory = location.getAbsolutePath().toString();
-		String baseDirectory = fileDirectory.substring(0,fileDirectory.lastIndexOf("/")+1);
-		if (location.getAbsoluteFile().toString().contains(".jar")){
-			for(String inputFile : _moveableFiles ){
-			ShellProcess.command("jar xf "+location.getAbsolutePath()+" "+inputFile);
-			ShellProcess.command("mv "+baseDirectory+inputFile+" "+VAMIX);
-			}
-		}else{
-			for (String inputFile : _moveableFiles){
-				ShellProcess.command("cp -r "+baseDirectory+"src/vamix.BIN/"+inputFile+" "+VAMIX);
-			}
-		}
+		FileMover mover = new FileMover();
+		mover.execute();
 
 	}
 
