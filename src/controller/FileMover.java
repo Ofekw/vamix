@@ -34,9 +34,9 @@ public class FileMover extends AbstractProcess{
 		}else{
 			for (String inputFile : moveableFiles){
 				if (inputFile.equals("readme.html")){
-					command+="cp "+baseDirectory+"src/vamix.BIN/"+inputFile+" "+MainGui.VAMIX+" && ";
+					command+="cp "+baseDirectory+"src/"+inputFile+" "+MainGui.VAMIX+" && ";
 				}else{
-					command+="cp -r "+baseDirectory+"src/vamix.BIN/"+inputFile+" "+MainGui.VAMIX+" && ";
+					command+="cp -r "+baseDirectory+"src/"+inputFile+" "+MainGui.VAMIX+" && ";
 				}
 			}
 		}

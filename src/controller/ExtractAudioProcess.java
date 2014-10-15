@@ -62,7 +62,7 @@ public class ExtractAudioProcess extends AbstractProcess {
 
 	private String makeCommand(String input, String output, String start, String duration){
 		if(duration.equals("00:00:00")){
-			return "avconv -i "+input+ " " +"-an " +output;
+			return "avconv -i "+input+ " " +"-acodec copy " +output;
 		}else{
 			return "avconv -i "+input+ " -ss " +start + " -t " +duration + " "+output;
 		}

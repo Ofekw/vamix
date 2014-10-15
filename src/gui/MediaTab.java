@@ -117,4 +117,24 @@ public class MediaTab extends Tab {
 	public JTextField getVideoLocField() {
 		return _txtVideoLoc;
 	}
+	
+	public boolean checkMediaFile(File selectedFile){
+		if (new CheckFile(true).checkFileType(_txtVideoLoc.getText()) ||
+				new CheckFile(false).checkFileType(_txtVideoLoc.getText())){
+			_videoPanel.setMedia(_txtVideoLoc.getText());
+			_videoPanel.enableSlider();
+			CheckFile check = new CheckFile(false);
+			if(!check.checkFileType(selectedFile.getAbsolutePath())){
+				_main.getAudio().enableExtractButtons();
+				_main.getAudio().setMediaLoc(_txtVideoLoc.getText());
+				return true;
+			}
+			return true;
+		}else{
+			_txtVideoLoc.setText("");
+			JOptionPane.showMessageDialog(MediaTab.this, "Invalid Media File!",
+					"File Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+	}
 }

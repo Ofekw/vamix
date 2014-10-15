@@ -4,7 +4,6 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,8 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -41,14 +38,16 @@ import com.sun.jna.NativeLibrary;
 import controller.FileMover;
 import controller.SaveLoadState;
 import controller.ShellProcess;
-import javax.swing.JSplitPane;
-
-import org.apache.commons.io.FileUtils;
 
 import model.FileChooserModel;
 
 public class MainGui {
-
+	/**
+	 * Main Frame for vamix
+	 *  worked on collaboratively with Patrick Poole as part of 206 assignment 3.
+	 * @author Patrick Poole and Ofek Wittenburg
+	 *
+	 */
 	private JFrame frame;
 	private MediaTab _media;
 	private AudioTab _audio;
@@ -76,18 +75,18 @@ public class MainGui {
 			e.printStackTrace();
 		}
 
-		//		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		//			if ("GTK+".equals(info.getName())) {
-		//				try {
-		//					UIManager.setLookAndFeel(info.getClassName());
-		//					UIManager.put("Slider.paintValue", false);
-		//				} catch (Exception e) {
-		//					// TODO Auto-generated catch block
-		//					e.printStackTrace();
-		//					break;
-		//				}
-		//			}
-		//		}
+//				for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//					if ("GTK+".equals(info.getName())) {
+//						try {
+//							UIManager.setLookAndFeel(info.getClassName());
+//							UIManager.put("Slider.paintValue", false);
+//						} catch (Exception e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//							break;
+//						}
+//					}
+//				}
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -113,6 +112,7 @@ public class MainGui {
 	}
 
 	private void initialize() {
+		
 		frame = new JFrame();
 		frame.setContentPane(new JLabel(new ImageIcon(getClass().getResource("/icons/"+"background.png"))));
 
@@ -138,13 +138,10 @@ public class MainGui {
 		frame.getContentPane().add(horizontalBox_1);
 
 		JPanel EditPanel = new JPanel();
-		//EditPanel.setPreferredSize(new Dimension(1000, 150));
+
 		horizontalBox_1.add(EditPanel);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		//		tabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI(){
-		//			protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndoex){}
-		//		});
 		EditPanel.setOpaque(false);
 		EditPanel.add(tabbedPane);
 
@@ -253,6 +250,9 @@ public class MainGui {
 						_audio.load(chooser.getSelectedFile().getName());
 						_filterTab.load(chooser.getSelectedFile().getName());
 						_videoCrop.load(chooser.getSelectedFile().getName());
+						if (!_media.getVideoLoc().equals("")){
+							_media.checkMediaFile(new File(_media.getVideoLoc()));
+						}
 					}else{
 						JOptionPane.showMessageDialog(menuBar, "File is not a valid save file!");
 					}
@@ -284,6 +284,10 @@ public class MainGui {
 
 	public MediaTab getVideo() {
 		return _media;
+	}
+	
+	public TextTab getTextTab() {
+		return _text;
 	}
 	public VideoPanel getPlayer() {
 		return _videoPanel;
