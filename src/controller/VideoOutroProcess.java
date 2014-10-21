@@ -47,7 +47,8 @@ public class VideoOutroProcess extends AbstractProcess {
 		return "avconv -i " + tempOutroPath +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
 				+ "\"" + " "+tempOutroPath+"tempOutro.mp4";
 	}
-
+	
+	//copied from http://stackoverflow.com/questions/3607858/how-to-convert-a-rgb-color-value-to-an-hexadecimal-value-in-java
 	public static String toHexString(Color c) {
 		StringBuilder sb = new StringBuilder("#");
 

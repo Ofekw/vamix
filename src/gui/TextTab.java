@@ -124,6 +124,17 @@ public class TextTab extends Tab {
 					_apply.setEnabled(false);
 				}
 			}
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				String text = _textFieldIntro.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
 		});
 		
 		/*
@@ -167,7 +178,7 @@ public class TextTab extends Tab {
 		Box horizontalBox_1 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_1);
 
-		JLabel lblClosingText = new JLabel("Closing Text:   ");
+		JLabel lblClosingText = new JLabel("Closing Text:  ");
 		horizontalBox_1.add(lblClosingText);
 
 		_textFieldEnd = new JTextField();
@@ -193,6 +204,17 @@ public class TextTab extends Tab {
 		_textFieldEnd.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
+				String text = _textFieldEnd.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
+			@Override
+			public void focusGained(FocusEvent e) {
 				String text = _textFieldEnd.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();

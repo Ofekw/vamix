@@ -60,6 +60,8 @@ public class MainGui {
 	public static final File VAMIX = new File(HOME+SEPERATOR+"vamix");
 	public static final String ZIP = new String("vamix.BIN.zip");
 	private String[] _moveableFiles = {".tempMedia", "bat", "com", "css", "images", "js", "readme.html"} ;
+	private SubTitles _subtitle;
+	private DownloadTab _download;
 
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
@@ -151,14 +153,18 @@ public class MainGui {
 		_media = new MediaTab(_videoPanel,this);
 		_audio.setVideoTab(_media);
 		_filterTab = new FilterTab(_videoPanel, this);
-		_videoCrop = new VideoCropTab(_videoPanel, this); 
+		_videoCrop = new VideoCropTab(_videoPanel, this);
+		_subtitle = new SubTitles(_videoPanel, this);
+		_download = new DownloadTab(_videoPanel);
 
 
 		tabbedPane.addTab("Media", null, _media, null);
 		tabbedPane.addTab("Audio", null, _audio, null);
-		tabbedPane.addTab("Text", null, _text, null);
+		tabbedPane.addTab("Intro/Credits", null, _text, null);
 		tabbedPane.addTab("Filters", null, _filterTab, null);
 		tabbedPane.addTab("Video Crop", null, _videoCrop, null);
+		tabbedPane.addTab("Subtitles", null, _subtitle, null);
+		tabbedPane.addTab("Download", null, _download, null);
 
 		final JMenuBar menuBar = new JMenuBar();
 		frame.getRootPane().setJMenuBar(menuBar);
@@ -195,8 +201,8 @@ public class MainGui {
 					if ((result == null)){
 						return;
 					}else{
-						if (!result.endsWith(".txt")){
-							result+=".txt";
+						if (!result.endsWith(".vamix")){
+							result+=".vamix";
 						}
 						File saveFile = new File(SaveLoadState.VAMIX.toString()+SaveLoadState.SEPERATOR+result);
 						if (saveFile.exists()){
@@ -231,7 +237,7 @@ public class MainGui {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser chooser = new JFileChooser(new File(SaveLoadState.VAMIX.toString()));
-				chooser.addChoosableFileFilter(new FileChooserModel());
+				chooser.setFileFilter(new FileChooserModel());
 				chooser.setFileHidingEnabled(false);
 				chooser.setFileView(new FileView() {
 					@Override
@@ -307,6 +313,10 @@ public class MainGui {
 
 	public JFrame getFrame(){
 		return frame;
+	}
+	
+	public SubTitles getSubtitles(){
+		return _subtitle;
 	}
 
 }

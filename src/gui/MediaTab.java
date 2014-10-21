@@ -48,10 +48,7 @@ public class MediaTab extends Tab {
 						_btnBrowse = new JButton("Browse");
 						add(_btnBrowse, "cell 0 1");
 						
-						download = new Download((JPanel) null);
-						download.setToolTipText("Media download");
-						download.setName("");
-						add(download, "cell 0 3,grow");
+						
 		_btnBrowse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -82,6 +79,7 @@ public class MediaTab extends Tab {
 								_main.getAudio().setMediaLoc(_txtVideoLoc.getText());
 								_main.getFilters().enableButtons();
 								_main.getCrop().enableButtons();
+								_main.getSubtitles().enableButtons();
 								
 							}
 						}else{

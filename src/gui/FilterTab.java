@@ -271,7 +271,6 @@ public void load(String loadFileName){
 	int filter = saveLoad.load("filter");
 	if (filter == 0){
 		_selection = saveLoad.getFilter();
-		System.out.println(saveLoad.getFilter());
 	}
 //	deselectAll();
 	if ( _selection.equals("blur")) {
@@ -283,7 +282,7 @@ public void load(String loadFileName){
 	} else if (_selection.equals("flipV")) {
 		_rdbtnFlipVertically.doClick();
 	} else if (_selection.equals("mono")) {
-		_rdbtnNone.doClick();
+		_rdbtnMono.doClick();
 }
 	repaint();
 }

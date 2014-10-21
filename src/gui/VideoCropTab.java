@@ -67,12 +67,12 @@ public class VideoCropTab extends Tab {
 		add(_startHour, "cell 3 1,growx");
 		
 		_startMin = new JSpinner();
-		_startMin.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_startMin.setModel(new SpinnerNumberModel(0, 0, 59, 1));
 		_startMin.setToolTipText("minutes");
 		add(_startMin, "cell 6 1,growx");
 		
 		_startSec = new JSpinner();
-		_startSec.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_startSec.setModel(new SpinnerNumberModel(0, 0, 59, 1));
 		_startSec.setToolTipText("seconds");
 		add(_startSec, "cell 8 1,growx");
 		
@@ -85,12 +85,12 @@ public class VideoCropTab extends Tab {
 		add(_endHr, "cell 3 4,growx");
 		
 		_endMin = new JSpinner();
-		_endMin.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_endMin.setModel(new SpinnerNumberModel(0, 0, 59, 1));
 		_endMin.setToolTipText("minutes");
 		add(_endMin, "cell 6 4,growx");
 		
 		_endSec = new JSpinner();
-		_endSec.setModel(new SpinnerNumberModel(0, 0, 99, 1));
+		_endSec.setModel(new SpinnerNumberModel(0, 0, 59, 1));
 		_endSec.setToolTipText("seconds");
 		add(_endSec, "cell 8 4,growx");
 		
