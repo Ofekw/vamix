@@ -5,6 +5,10 @@ import javax.swing.JOptionPane;
 import gui.AudioTab;
 
 public class OverlayAudioProcess extends AbstractProcess {
+/**
+ * Process to overlay the video with selected audio
+ * @author patrick
+ */
 
 private final String loc = System.getProperty("user.dir");
 private final String binLoc = loc+System.getProperty("file.separator")+
@@ -21,7 +25,7 @@ _tab = tab;
 
 protected void doProcess(String line) {
 }
-
+//removes temp files once the process is done and shows appropriate success/error message
 protected void doDone() {
 ShellProcess
 .command("rm -f " + temp1);

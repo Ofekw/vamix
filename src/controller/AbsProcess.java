@@ -21,7 +21,8 @@ public abstract class AbsProcess extends SwingWorker<Integer, String> {
 
 	public void destroy() {
 		/**
-		 * The abstract framework on which processes are built off.
+		 * The abstract framework on which processes are built off. 
+		 * @deprecated this is replaced by AbstractProcess
 		 */
 
 		try {

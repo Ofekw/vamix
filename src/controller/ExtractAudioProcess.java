@@ -4,8 +4,9 @@ package controller;
 import javax.swing.JOptionPane;
 import gui.AudioTab;
 
-//avconv -i infile.avi -an -c:v copy outfile.avi 
-//Strips audio off video file
+/**
+ * Uses the file linux process to call extract the audio
+ */
 
 public class ExtractAudioProcess extends AbstractProcess {
 
@@ -19,7 +20,7 @@ public class ExtractAudioProcess extends AbstractProcess {
 		_tab = tab;
 		_duration = duration;
 	}
-
+//returns appropriate error messages or success for failed process
 	protected void doDone() {
 		_tab.extractFinished();
 		if (get() == 0) {
@@ -60,6 +61,7 @@ public class ExtractAudioProcess extends AbstractProcess {
 		}
 	}
 
+	//creates the avconv command for the audio process
 	private String makeCommand(String input, String output, String start, String duration){
 		if(duration.equals("00:00:00")){
 			return "avconv -i "+input+ " " +"-acodec copy " +output;

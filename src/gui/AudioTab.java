@@ -28,11 +28,11 @@ import controller.AbstractProcess;
 @SuppressWarnings("serial")
 /**
  * Tab for audio manipulation
- * @author Patrick Poole
+ * @author patrick
  *
  */
 public class AudioTab extends Tab {
-	/*
+	/**
 	 * This tab is used to extract the audio from the movie file, future implementation can include extracting specific time frame audio
 	 */
 	private JButton _extractAudio;
@@ -75,6 +75,7 @@ public class AudioTab extends Tab {
 
 	@Override
 	protected void initialise() {
+		//Sets up the main gui components for the AudioTab
 		this.setLayout(new MigLayout("", "[400px, grow][400px, grow]", "[300px, grow][200px,grow]"));
 
 		JPanel progressPanel = new JPanel(new MigLayout());
@@ -89,8 +90,7 @@ public class AudioTab extends Tab {
 
 		leftSide.setBorder(BorderFactory.createTitledBorder(""));
 		rightSide.setBorder(BorderFactory.createTitledBorder(""));
-		//		progressPanel.setBorder(BorderFactory.createBevelBorder(1));
-
+		//sets the labels and buttons
 		_startLabel = new JLabel("Enter start time (HH:MM:SS)");
 		_startHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
 		_startMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
@@ -164,6 +164,7 @@ public class AudioTab extends Tab {
 			}
 		});
 
+		//implements all the listeners 
 		_cancel.addActionListener(new ActionListener() {
 
 			@Override
@@ -369,6 +370,10 @@ public class AudioTab extends Tab {
 			disableAllButtons();
 		}
 	}
+	
+	/**
+	 * Method calls to enable/disable buttons
+	 */
 
 	public void enableExtractButtons() {
 		_extractAudio.setEnabled(true);

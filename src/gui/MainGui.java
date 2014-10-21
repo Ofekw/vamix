@@ -1,10 +1,8 @@
 package gui;
 
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -26,7 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileView;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
@@ -59,14 +56,17 @@ public class MainGui {
 	public static final String SEPERATOR = File.separator;
 	public static final File VAMIX = new File(HOME+SEPERATOR+"vamix");
 	public static final String ZIP = new String("vamix.BIN.zip");
+	@SuppressWarnings("unused")
 	private String[] _moveableFiles = {".tempMedia", "bat", "com", "css", "images", "js", "readme.html"} ;
 	private SubTitles _subtitle;
 	private DownloadTab _download;
-
+	/**
+	 * The main running starting point of the application, checks that vlc is installed, and starts setting the gui in a new ED thread
+	 * @param args
+	 * @author Ofek
+	 */
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
-				//Check for vlc in home directory
-				//ui
 				RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
 				);
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
@@ -77,18 +77,6 @@ public class MainGui {
 			e.printStackTrace();
 		}
 
-//				for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//					if ("GTK+".equals(info.getName())) {
-//						try {
-//							UIManager.setLookAndFeel(info.getClassName());
-//							UIManager.put("Slider.paintValue", false);
-//						} catch (Exception e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//							break;
-//						}
-//					}
-//				}
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -101,18 +89,24 @@ public class MainGui {
 			}
 		});
 	}
-
+	/**
+	 * calls the setup for the file mover (unpacks required jar files) and starts creating the gui
+	 */
 	public MainGui(){
 		setup();
 		initialize();
 	}
-
+	/**
+	 * File mover for (unpacking required jar / bin files)
+	 */
 	private void setup() {
 		FileMover mover = new FileMover();
 		mover.execute();
 
 	}
-
+	/**
+	 * Creates the main frame with all the tabs and the media player
+	 */
 	private void initialize() {
 		
 		frame = new JFrame();
@@ -122,7 +116,6 @@ public class MainGui {
 		frame.setTitle("Video Audio Mixer");
 		ImageIcon img = new ImageIcon(getClass().getResource("/icons/"+"V.png"));
 		frame.setIconImage(img.getImage());
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setBounds(10, 10, 1200, 720);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -168,7 +161,7 @@ public class MainGui {
 
 		final JMenuBar menuBar = new JMenuBar();
 		frame.getRootPane().setJMenuBar(menuBar);
-
+		//creates the menu bar
 		JMenu mainMenu = new JMenu("Project");
 		JMenu help = new JMenu("Help");
 		help.addMouseListener(new MouseAdapter() {
@@ -218,6 +211,7 @@ public class MainGui {
 						_text.save(result);
 						_filterTab.save(result);
 						_videoCrop.save(result);
+						_subtitle.save(result);
 						return;
 					}
 				}
@@ -247,7 +241,6 @@ public class MainGui {
 
 
 				});
-				//				chooser.setCurrentDirectory(new File (System.getProperty("user.home") + System.getProperty("line.separator")+ ".vamix"));
 				int returnVal = chooser.showOpenDialog(menuBar);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = new File(chooser.getSelectedFile().toString());
@@ -256,6 +249,7 @@ public class MainGui {
 						_audio.load(chooser.getSelectedFile().getName());
 						_filterTab.load(chooser.getSelectedFile().getName());
 						_videoCrop.load(chooser.getSelectedFile().getName());
+						_subtitle.load(chooser.getSelectedFile().getName());
 						if (!_media.getVideoLoc().equals("")){
 							_media.checkMediaFile(new File(_media.getVideoLoc()));
 						}
@@ -287,6 +281,11 @@ public class MainGui {
 
 
 	}
+	
+	/**
+	 * all the getters for the tab objects
+	 * @return
+	 */
 
 	public MediaTab getVideo() {
 		return _media;

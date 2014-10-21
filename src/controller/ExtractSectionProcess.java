@@ -6,13 +6,19 @@ import javax.swing.JOptionPane;
 
 public class ExtractSectionProcess extends AbstractProcess{
 	
+	/**
+	 * Uses the file linux process to call the audio extract process 
+	 * @param string file location
+	 * @author patrick
+	 */
+	
 	private AudioTab _tab;
 	
 	public ExtractSectionProcess(AudioTab tab, String inputFile, String startTime, String duration, String outputName){
 		super.setCommand(makeCommand(inputFile, startTime, duration, outputName));
 		_tab = tab;
 	}
-	
+	//returns appropriate success/error for the process
 	protected void doDone() {
 		_tab.extractFinished();
 		if (get() == 0) {

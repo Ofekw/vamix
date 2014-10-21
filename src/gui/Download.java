@@ -41,13 +41,14 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 	private JButton _btnPause;
 	private String _fileLoc;
 	private String _filePath;
-	private JPanel _parent;
-
+	/**
+	 * Tab for main media download functionality (from assignment 2)
+	 * @param jPanel
+	 */
 	public Download(JPanel jPanel) {
 		super(new FlowLayout(FlowLayout.LEFT));
-		this._parent = jPanel;
 		/**
-		 * Initializes the download pane.
+		 * Initializes the download pane and main gui.
 		 */
 		this.setPreferredSize(new Dimension(1020, 250));
 
@@ -56,7 +57,6 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
-		// _shell = new ShellProcess();
 		JLabel lblMpUrl = new JLabel("Media URL:");
 		horizontalBox.add(lblMpUrl);
 
@@ -78,6 +78,10 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		_btnCancel = new JButton("Cancel");
 		horizontalBox.add(_btnCancel);
 		_btnCancel.setEnabled(false);
+		
+		/**
+		 * Adds corresponding listeners
+		 */
 		_btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -138,8 +142,6 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 								 */
 								JFileChooser dirChooser = new JFileChooser();
 								dirChooser
-//								.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-//								dirChooser
 								.setDialogTitle("Select File Location");
 								int returnValue = dirChooser.showSaveDialog(Download.this);
 								if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -167,7 +169,9 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 				}
 			}
 		});
-
+		/**
+		 * Main struts for the layout
+		 */
 		Box horizontalBox_1 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_1);
 
@@ -191,14 +195,18 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		horizontalBox_3.add(horizontalGlue);
 
 	}
-
+	/**
+	 * toggles the buttons when downloading
+	 */
 	private void toggleButtonsDownload() {
 		_btnDownload.setEnabled(false);
 		_btnCancel.setEnabled(true);
 		_btnPause.setEnabled(true);
 		_textField.setEnabled(false);
 	}
-
+	/**
+	 * toggles the buttons everything is cancelled
+	 */
 	private void toggleButtonsCancelled() {
 		this.setCursor(Cursor.getDefaultCursor());
 		_btnDownload.setEnabled(true);
@@ -207,6 +215,9 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		_textField.setEnabled(true);
 	}
 
+	/**
+	 * Obtains file name from URL
+	 */
 	private void fileName(String url) {
 		_fileName = ShellProcess.command("basename " + url);
 		_fileName = _fileName.trim();
@@ -324,7 +335,9 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 			}
 		}
 	}
-
+	/**
+	 * Resets the shell process and toggles the buttons
+	 */
 	public void reset() {
 		this.setCursor(Cursor.getDefaultCursor());
 		_shell.destroy();
@@ -332,7 +345,10 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		toggleButtonsCancelled();
 
 	}
-
+/**
+ * getter for status label
+ * @return
+ */
 	public JLabel getStatusLabel() {
 		return _statusLabel;
 	}

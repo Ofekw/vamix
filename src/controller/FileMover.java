@@ -3,10 +3,6 @@ package controller;
 import gui.MainGui;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
 
 /**
  * Creates .vamix folder and moves all neccesarry files to .vamix folder from within jar file

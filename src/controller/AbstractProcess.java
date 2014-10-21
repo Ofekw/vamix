@@ -10,6 +10,11 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 
 public abstract class AbstractProcess{
+	/**
+	 * This framework for all processes/linux calls used in the application
+	 * setCommand must be called and related hookmethods such as doDone and progress must be overidden to add functionality
+	 * @author ofek
+	 */
 
 	protected ProcessBuilder _pb;
 	protected Process _process = null;

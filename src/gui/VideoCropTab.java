@@ -13,12 +13,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 import controller.CheckFile;
-import controller.FilterProcess;
 import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.VideoCropProcess;
@@ -36,8 +34,8 @@ public class VideoCropTab extends Tab {
 	private JButton _apply;
 	private String _saveLoc;
 	private JProgressBar _progressBar;
+	@SuppressWarnings("unused")
 	private ButtonGroup _filters;
-	private JRadioButton _rdbtnNone;
 	private String _selection = "blur";
 	private JLabel lblEnterEndTime;
 	private JSpinner _startMin;
@@ -59,7 +57,6 @@ public class VideoCropTab extends Tab {
 		JLabel lblChooseVideoFilter = new JLabel("Enter start time (HH:MM:SS):");
 		add(lblChooseVideoFilter, "cell 1 1");
 
-		_rdbtnNone = new JRadioButton("None");
 		
 		_startHour = new JSpinner();
 		_startHour.setModel(new SpinnerNumberModel(0, 0, 99, 1));

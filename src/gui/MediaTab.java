@@ -1,38 +1,36 @@
 package gui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.JSeparator;
 
 import controller.CheckFile;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.JPanel;
 
 public class MediaTab extends Tab {
 	/**
-	 * 
+	 * The main media tab for file selection. Used in editing and media play-back
+	 * @author Ofek Wittenberg
 	 */
 	private static final long serialVersionUID = -7118585127413410576L;
 	private JTextField _txtVideoLoc;
 	private JButton _btnBrowse;
 	private MainGui _main ;
-	private Download download;
 
 	public MediaTab(VideoPanel panel, MainGui main) {
 		super(panel);
 		this._main = main;
 	}
-
+	/**
+	 * Creates the UI for the tab
+	 */
 	protected void initialise() {
 		this.setPreferredSize(new Dimension(1000, 180));
 		setLayout(new MigLayout("", "[980px,grow]", "[][][][180px,grow]"));
@@ -56,7 +54,9 @@ public class MediaTab extends Tab {
 					fileBrowser();
 				}
 			}
-
+			/**
+			 * calls the file browser to obtain media player
+			 */
 			private void fileBrowser() {
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser
@@ -94,6 +94,9 @@ public class MediaTab extends Tab {
 
 	}
 
+	/**
+	 * simple file check method
+	 */
 	private boolean fileExists() {
 		File f = new File(_txtVideoLoc.getText());
 		if (f.exists()) {
@@ -102,20 +105,32 @@ public class MediaTab extends Tab {
 			return false;
 		}
 	}
-
+	/**
+	 * checks that the specified path is legitimate
+	 */
 	private void filePathInvalid() {
 		JOptionPane.showMessageDialog(this, "File path is invalid",
 				"Location Error", JOptionPane.ERROR_MESSAGE);
 	}
-
+	/**
+	 * returns the location of the valid media file
+	 * @return
+	 */
 	public String getVideoLoc() {
 		return _txtVideoLoc.getText();
 	}
-
+	/**
+	 * returns the full media location text tab object
+	 * @return
+	 */
 	public JTextField getVideoLocField() {
 		return _txtVideoLoc;
 	}
-	
+	/**
+	 * Checks that the media file is playable
+	 * @param selectedFile
+	 * @return boolean (and error message pop up)
+	 */
 	public boolean checkMediaFile(File selectedFile){
 		if (new CheckFile(true).checkFileType(_txtVideoLoc.getText()) ||
 				new CheckFile(false).checkFileType(_txtVideoLoc.getText())){

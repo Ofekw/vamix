@@ -19,7 +19,10 @@ public class DownloadProcess extends AbsProcess{
 
 
 	}
-
+	/**
+	 * Uses the file linux process to call the wget command and download media
+	 * @param string command
+	 */
 
 	public  void command(String cmd) {
 		/**

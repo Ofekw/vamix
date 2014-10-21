@@ -1,13 +1,15 @@
 package controller;
 
-import java.awt.Color;
-
-import gui.AudioTab;
 import gui.MainGui;
 import gui.TextTab;
 import gui.MediaTab;
 
 import javax.swing.JOptionPane;
+
+/**
+ * Video concatenating process to merge backgrounds for adding credits/intro text
+ * @param tab object
+ */
 
 
 public class ConcatVideosProcess extends AbstractProcess {
@@ -22,6 +24,7 @@ public class ConcatVideosProcess extends AbstractProcess {
 		ShellProcess.command("rm -f "+tempPath+"3.mpeg");
 		super.setCommand(makeCommand(_tab.getSaveloc()));
 	}
+	//returns appropriate error messages for failed process; 
 	protected void doDone() {
 		if (get() == 0) {
 			_tab.progressDone();
@@ -49,9 +52,9 @@ public class ConcatVideosProcess extends AbstractProcess {
 	}
 
 	private String makeCommand(String saveLoc){
-		//we need to enable a slight pause, in order to avoid concurrency errors when concatonating the media files
+		//we need to enable a slight pause, in order to avoid concurrency errors when concatenating the media files
 		this.setPause(true);
-		
+		//selects appropriate user selected background to write to
 		if (!_tab.userText()[0].isEmpty() && !_tab.userText()[1].isEmpty()){
 			return "avconv -i "+tempPath+"tempIntro.mp4 -qscale 1 "+tempPath
 					+"1.mpeg; avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -qscale 1 "+tempPath+"2.mpeg; avconv -i "+tempPath

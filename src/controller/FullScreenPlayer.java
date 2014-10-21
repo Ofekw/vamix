@@ -1,5 +1,4 @@
 package controller;
-import static uk.co.caprica.vlcj.player.Marquee.marquee;
 import gui.VideoPanel;
 
 import java.awt.BorderLayout;
@@ -14,14 +13,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import uk.co.caprica.vlcj.binding.internal.libvlc_marquee_position_e;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.DefaultFullScreenStrategy;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class FullScreenPlayer {
+	/**
+	 * Full screen player copied and modified from the VLCJ library
+	 * @param  video media player panel in the main gui
+	 */
 
 	public static void main(final String args, final VideoPanel panel) {
 
@@ -48,7 +48,7 @@ public class FullScreenPlayer {
 
 		final JFrame f = new JFrame();
 
-
+		//creates the full screen panel
 		f.setContentPane(p);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setSize(800, 600);
@@ -84,6 +84,7 @@ public class FullScreenPlayer {
 					mediaPlayer.stop();
 					f.dispose();
 				}else if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE){
+					@SuppressWarnings("unused")
 					Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 					//Key press is Enter, play/pause video
