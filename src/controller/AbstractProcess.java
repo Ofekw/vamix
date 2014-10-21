@@ -16,6 +16,7 @@ public abstract class AbstractProcess{
 	protected InputStream _stdout;
 	protected BufferedReader _stdoutBuffered;
 	protected int _status;
+	private boolean pause = false;
 
 	private ProcessWorker processWorker;
 
@@ -29,6 +30,9 @@ public abstract class AbstractProcess{
 
 		@Override
 		protected Integer doInBackground() throws Exception {
+			if (pause){
+				Thread.sleep(5000);
+			}
 			return runProcess(_cmd);
 		}
 
@@ -151,5 +155,9 @@ public abstract class AbstractProcess{
 	
 	public boolean isDone(){
 		return processWorker.isDone();
+	}
+	
+	public void setPause(boolean set) {
+		pause=set;
 	}
 }

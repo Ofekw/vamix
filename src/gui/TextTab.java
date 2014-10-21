@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -39,6 +40,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 import model.CharsOnlyLimitFilter;
+import model.PreviewPane;
 import controller.CheckFile;
 import controller.SaveLoadState;
 import controller.ShellProcess;
@@ -58,18 +60,20 @@ public class TextTab extends Tab {
 	 */
 	private JTextField _textFieldIntro;
 	private JTextField _textFieldEnd;
-	private JTextPane _txtPreview;
+	private PreviewPane _txtPreview;
 	private JSpinner _fontSize;
 	private JComboBox<String> _fontType;
-	private Color _colourSelect = Color.BLUE;
+	private Color _colourSelect = Color.RED;
 	private JButton _btnColourSelect;
 	private MainGui _main;
 	private String _saveLoc;
 	private JProgressBar _progressBar;
 	private JButton _apply;
 	private int _processNumber;
+	private String _background = "bg0";
 
 	private SaveLoadState saveLoad;
+	private JComboBox<String> _backgroundSelect;
 
 	public TextTab(VideoPanel panel, MainGui main) {
 
@@ -90,7 +94,8 @@ public class TextTab extends Tab {
 		Box horizontalBox = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox);
 
-		_txtPreview = new JTextPane();
+		_txtPreview = new PreviewPane();
+		
 		_txtPreview.setToolTipText("This pane shows a preview of the text with formatting");
 		_txtPreview.setFont(new Font("Dialog", Font.PLAIN, 24));
 		_txtPreview.setEditable(false);
@@ -110,6 +115,17 @@ public class TextTab extends Tab {
 		_textFieldIntro.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
+				String text = _textFieldIntro.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
+			@Override
+			public void focusGained(FocusEvent arg0) {
 				String text = _textFieldIntro.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
@@ -162,7 +178,7 @@ public class TextTab extends Tab {
 		Box horizontalBox_1 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_1);
 
-		JLabel lblClosingText = new JLabel("Closing Text:   ");
+		JLabel lblClosingText = new JLabel("Closing Text:  ");
 		horizontalBox_1.add(lblClosingText);
 
 		_textFieldEnd = new JTextField();
@@ -188,6 +204,17 @@ public class TextTab extends Tab {
 		_textFieldEnd.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
+				String text = _textFieldEnd.getText();
+				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
+				_txtPreview.selectAll();
+				if(!_textFieldEnd.getText().isEmpty()){
+					_apply.setEnabled(true);
+				}else if(_textFieldIntro.getText().isEmpty()){
+					_apply.setEnabled(false);
+				}
+			}
+			@Override
+			public void focusGained(FocusEvent e) {
 				String text = _textFieldEnd.getText();
 				SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());    
 				_txtPreview.selectAll();
@@ -241,7 +268,7 @@ public class TextTab extends Tab {
 		horizontalBox_2.add(rigidArea);
 
 		_btnColourSelect = new JButton("Colour Select");
-		_btnColourSelect.setForeground(Color.BLUE);
+		_btnColourSelect.setForeground(Color.RED);
 		_btnColourSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -297,6 +324,42 @@ public class TextTab extends Tab {
 			}
 		});
 		
+<<<<<<< HEAD
+=======
+		_txtPreview.repaintBackground("bg0");
+		_backgroundSelect = new JComboBox<String>();
+		_backgroundSelect.setModel(new DefaultComboBoxModel<String>(new String[] { "Background 1", "Background 2", "Background 3", "Background 4", "Background 5"}));
+		_backgroundSelect.setToolTipText("Background type");
+		horizontalBox_2.add(_backgroundSelect);
+		
+		_backgroundSelect.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				switch (_backgroundSelect.getSelectedIndex()) {
+				case 0: _txtPreview.repaintBackground("bg0");
+				_background="bg0";
+					
+					break;
+				case 1: _txtPreview.repaintBackground("bg1");
+				_background="bg1";
+					break;
+				case 2: _txtPreview.repaintBackground("bg2");
+				_background="bg2";
+					break;
+				case 3: _txtPreview.repaintBackground("bg3");
+				_background="bg3";
+					break;
+				case 4: _txtPreview.repaintBackground("bg4");
+				_background="bg4";
+					break;
+				default: _txtPreview.repaintBackground("bg0");
+				_background="bg0";
+					break;
+				}
+			}
+		});
+		
+
+>>>>>>> ofekdev
 
 		_progressBar = new JProgressBar();
 		horizontalBox_2.add(_progressBar);
@@ -318,8 +381,6 @@ public class TextTab extends Tab {
 		horizontalBox_3.add(_txtPreview);
 
 		JScrollPane scrollBar = new JScrollPane(_txtPreview);
-		//scrollBar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR);
-		//scrollBar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollBar.setViewportView(_txtPreview);
 		horizontalBox_3.add(scrollBar);
 
@@ -330,7 +391,7 @@ public class TextTab extends Tab {
 		 * An interactive file chooser to set colour of text with fancy colour wheel
 		 */
 
-		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.BLUE);
+		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.RED);
 
 		String text = _txtPreview.getText();
 		SetPreview(_txtPreview, text, getUserColour(), (int)_fontSize.getValue(), getUserFont());
@@ -390,14 +451,14 @@ public class TextTab extends Tab {
 	private void createProcess() {
 		_processNumber = 0;
 		if(!_textFieldIntro.getText().isEmpty()){
-			VideoIntroProcess process1 = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFontLoc(), _textFieldIntro.getText(), _colourSelect);
+			VideoIntroProcess process1 = new VideoIntroProcess(this, (int)_fontSize.getValue(), getUserFontLoc(), _textFieldIntro.getText(), _colourSelect, _background);
 			process1.execute();
 			_processNumber = 1;
 
 		}
 
 		if(!_textFieldEnd.getText().isEmpty()){
-			VideoOutroProcess process2 = new VideoOutroProcess(this, (int)_fontSize.getValue(), getUserFontLoc(), _textFieldEnd.getText(), _colourSelect);
+			VideoOutroProcess process2 = new VideoOutroProcess(this, (int)_fontSize.getValue(), getUserFontLoc(), _textFieldEnd.getText(), _colourSelect, _background);
 			process2.execute();
 			_processNumber = 2;
 		}
@@ -508,6 +569,7 @@ public class TextTab extends Tab {
 
 	public void progressReset(){
 		_progressBar.setValue(0);
+		_progressBar.setIndeterminate(false);
 	}
 
 	public String[] userText(){
@@ -525,7 +587,7 @@ public class TextTab extends Tab {
 	 */
 	public void save(String saveFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
-				_colourSelect, _fontType, saveFileName);
+				_colourSelect, _fontType,_backgroundSelect, saveFileName);
 		saveLoad.save();
 	}
 
@@ -535,8 +597,8 @@ public class TextTab extends Tab {
 	 */
 	public void load(String loadFileName){
 		saveLoad = new SaveLoadState(_textFieldIntro, _textFieldEnd, _txtPreview, _fontSize,
-				_colourSelect, _fontType, loadFileName);
-		int colour = saveLoad.load(true);
+				_colourSelect, _fontType, _backgroundSelect,loadFileName);
+		int colour = saveLoad.load("text");
 		if (colour != 0){
 			_colourSelect = new Color(colour);
 		}

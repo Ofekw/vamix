@@ -3,6 +3,7 @@ package controller;
 import java.awt.Color;
 
 import gui.AudioTab;
+import gui.MainGui;
 import gui.TextTab;
 import gui.VideoTab;
 
@@ -12,16 +13,13 @@ import javax.swing.JOptionPane;
 public class ConcatVideosProcess extends AbstractProcess {
 
 	private TextTab _tab;
-
+	public static final String tempPath = MainGui.VAMIX.getAbsolutePath()+MainGui.SEPERATOR+".tempMedia"+MainGui.SEPERATOR;
 	public ConcatVideosProcess(TextTab tab){
 
 		_tab = tab;
-		String loc = System.getProperty("user.dir");
-		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
-				+System.getProperty("file.separator");
-		ShellProcess.command("rm -f "+binLoc+"1.mpeg");
-		ShellProcess.command("rm -f "+binLoc+"2.mpeg");
-		ShellProcess.command("rm -f "+binLoc+"3.mpeg");
+		ShellProcess.command("rm -f "+tempPath+"1.mpeg");
+		ShellProcess.command("rm -f "+tempPath+"2.mpeg");
+		ShellProcess.command("rm -f "+tempPath+"3.mpeg");
 		super.setCommand(makeCommand(_tab.getSaveloc()));
 	}
 	protected void doDone() {
@@ -31,11 +29,11 @@ public class ConcatVideosProcess extends AbstractProcess {
 			videoTab.getVideoLocField().setText(_tab.getSaveloc());
 			_tab.getMain().getPlayer().setMedia(_tab.getSaveloc());
 			_tab.getMain().getPlayer().play();
-			
+		
 		} else if (get() > 0) {
 			_tab.progressReset();
 			JOptionPane
-			.showMessageDialog(_tab,"Something went wrong with creating an intro. Please check input media file",
+			.showMessageDialog(_tab,"Something went wrong with concating. Please check input media file",
 					"Process Error", JOptionPane.ERROR_MESSAGE);
 		} else if (get() < 0){
 			JOptionPane
@@ -46,34 +44,27 @@ public class ConcatVideosProcess extends AbstractProcess {
 	}
 
 	protected void doProcess(String line){
-	//	System.out.println(line);
+		//System.out.println(line);
 
 	}
 
 	private String makeCommand(String saveLoc){
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String loc = System.getProperty("user.dir");
-		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
-				+System.getProperty("file.separator");
+		//we need to enable a slight pause, in order to avoid concurrency errors when concatonating the media files
+		this.setPause(true);
 		
 		if (!_tab.userText()[0].isEmpty() && !_tab.userText()[1].isEmpty()){
-			return "avconv -i "+binLoc+"tempIntro.mp4 -qscale 1 "+binLoc
-					+"1.mpeg; avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -qscale 1 "+binLoc+"2.mpeg; avconv -i "+binLoc
-					+"tempOutro.mp4 -qscale 1 "+binLoc+"3.mpeg; cat "+binLoc+"1.mpeg "+binLoc
-					+"2.mpeg "+binLoc+"3.mpeg | avconv -f mpeg -i - -vcodec mpeg4 -strict experimental "+saveLoc;
+			return "avconv -i "+tempPath+"tempIntro.mp4 -qscale 1 "+tempPath
+					+"1.mpeg; avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -qscale 1 "+tempPath+"2.mpeg; avconv -i "+tempPath
+					+"tempOutro.mp4 -qscale 1 "+tempPath+"3.mpeg; cat "+tempPath+"1.mpeg "+tempPath
+					+"2.mpeg "+tempPath+"3.mpeg | avconv -f mpeg -i - -vcodec mpeg4 -strict experimental "+saveLoc;
 			
 		}else if (_tab.userText()[0].isEmpty() && !_tab.userText()[1].isEmpty()){
-			return "avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -qscale 1 "+binLoc+"2.mpeg; avconv -i "+binLoc
-					+"tempOutro.mp4 -qscale 1 "+binLoc+"3.mpeg; cat "+binLoc
-					+"2.mpeg "+binLoc+"3.mpeg | avconv -f mpeg -i - -vcodec mpeg4 -strict experimental "+saveLoc;
+			return "avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -qscale 1 "+tempPath+"2.mpeg; avconv -i "+tempPath
+					+"tempOutro.mp4 -qscale 1 "+tempPath+"3.mpeg; cat "+tempPath
+					+"2.mpeg "+tempPath+"3.mpeg | avconv -f mpeg -i - -vcodec mpeg4 -strict experimental "+saveLoc;
 		}else if (!_tab.userText()[0].isEmpty() && _tab.userText()[1].isEmpty()){
-			return "avconv -i "+binLoc+"tempIntro.mp4 -qscale 1 "+binLoc
-					+"1.mpeg; avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -qscale 1 "+binLoc+"2.mpeg; cat "+binLoc+"1.mpeg "+binLoc
+			return "avconv -i "+tempPath+"tempIntro.mp4 -qscale 1 "+tempPath
+					+"1.mpeg; avconv -i "+_tab.getMain().getVideo().getVideoLoc()+" -qscale 1 "+tempPath+"2.mpeg; cat "+tempPath+"1.mpeg "+tempPath
 					+"2.mpeg | avconv -f mpeg -i - -vcodec mpeg4 -strict experimental "+saveLoc;
 		}
 		return null;

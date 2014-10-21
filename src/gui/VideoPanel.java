@@ -77,7 +77,11 @@ public class VideoPanel extends JPanel {
 	private Icon mute;
 
 	public VideoPanel(MainGui parent){
+<<<<<<< HEAD
 		
+=======
+		this.setOpaque(false);
+>>>>>>> ofekdev
 		play = new ImageIcon(getClass().getResource("/icons/play.png"));
 		unmute = new ImageIcon(getClass().getResource("/icons/unmute.png"));
 		mute = new ImageIcon(getClass().getResource("/icons/mute.png"));
@@ -95,7 +99,7 @@ public class VideoPanel extends JPanel {
 		
 		
 		this.setMinimumSize(new Dimension(parent.getFrame().getWidth()-50, parent.getFrame().getHeight()-300));
-		this.setLayout(new MigLayout("", "[grow,center]", "[][][][][][][]"));
+		this.setLayout(new MigLayout("", "[][]25[]25[][grow,center][][]", "[][][][][][][]"));
 		createControls();
 		registerListeners();
 
@@ -105,9 +109,15 @@ public class VideoPanel extends JPanel {
 
 		// Setup canvas for player to go on
 
-
+		JPanel playerBackground = new JPanel();
+		//playerBackground.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
+		playerBackground.setBackground(Color.BLACK);
 		Canvas mediaCanvas = new Canvas();
+<<<<<<< HEAD
 		//	mediaCanvas.setBackground(Color.black);
+=======
+		//mediaCanvas.setBackground(Color.black);
+>>>>>>> ofekdev
 		mediaCanvas.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
 
 		mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
@@ -131,43 +141,29 @@ public class VideoPanel extends JPanel {
 			}
 		});
 		_timer.stop();
-
-		this.add(mediaCanvas, "cell 0 0,growx, span");
+		this.add(playerBackground,"cell 0 0 7 1,growx");
+		playerBackground.add(mediaCanvas);
 
 	}
 
 	private void createControls() {
-		_timeLabel = new JLabel("00:00:00");
-		_progressSlider = new JSlider(JSlider.HORIZONTAL);
-		_progressSlider.setMinimum(0);
-		_progressSlider.setMaximum(maxTime);
-		_progressSlider.setValue(0);
-		_progressSlider.setEnabled(false);
-
-		_rewindButton = new JToggleButton();
-		_rewindButton.setIcon(rewind);
-		_rewindButton.setToolTipText("Skip back");
 
 		_stopButton = new JButton();
 		_stopButton.setIcon(stop);
 		_stopButton.setToolTipText("Stop");
-
-		_playButton = new JButton();
-		_playButton.setIcon(play);
-		_playButton.setToolTipText("Play");
 
 		_fastForwardButton = new JToggleButton();
 		_fastForwardButton.setIcon(fastForward);
 		_fastForwardButton.setToolTipText("Skip forward");
 
 		//Creating audio manipulation controls
-
 		_volumeSlider = new JSlider();
 		_volumeSlider.setOrientation(JSlider.HORIZONTAL);
 		_volumeSlider.setMinimum(LibVlcConst.MIN_VOLUME);
 		_volumeSlider.setMaximum(LibVlcConst.MAX_VOLUME);
 		_volumeSlider.setPreferredSize(new Dimension(100, 40));
 		_volumeSlider.setToolTipText("Change volume");
+<<<<<<< HEAD
 
 		this.add(_timeLabel, "cell 0 2");
 		this.add(_progressSlider, "cell 0 2, growx");
@@ -232,6 +228,86 @@ public class VideoPanel extends JPanel {
 		});
 		add(_fullScreen, "cell 0 3");
 		this.add(_volumeSlider, "cell 0 3");
+=======
+		_timeLabel = new JLabel("00:00:00");
+		
+				this.add(_timeLabel, "cell 0 2");
+		_progressSlider = new JSlider(JSlider.HORIZONTAL);
+		_progressSlider.setMinimum(0);
+		_progressSlider.setMaximum(maxTime);
+		_progressSlider.setValue(0);
+		_progressSlider.setEnabled(false);
+		this.add(_progressSlider, "cell 1 2 6 1,growx");
+				
+						_playButton = new JButton();
+						_playButton.setIcon(play);
+						_playButton.setToolTipText("Play");
+						this.add(_playButton, "cell 1 3");
+		
+				_rewindButton = new JToggleButton();
+				_rewindButton.setIcon(rewind);
+				_rewindButton.setToolTipText("Skip back");
+				this.add(_rewindButton, "flowx,cell 2 3");
+		this.add(_stopButton, "cell 2 3");
+		this.add(_fastForwardButton, "cell 2 3");
+		
+				_fullScreen = new JButton();
+				_fullScreen.setToolTipText("Toggles fullscreen");
+				_fullScreen.setIcon(fullScreen);
+				_fullScreen.addActionListener(new ActionListener() {
+					private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						//			FullScreenMultiMediaTest full = new FullScreenMultiMediaTest(_parent);
+						//			full.setMedia(videoLocation);
+						//			full.play();
+						if (mediaPlayer.getTime() == -1 && _progressSlider.getValue() == 0){
+							//check if there has been an input file selected
+							if (_videoLocation == null){
+								errorPlaybackFile();
+							}else{
+								//start media from beginning and set play button to pause logo
+								_progressSlider.setValue(0);
+								mediaPlayer.play();
+								//mediaPlayer.stop();
+								pause();
+								//have to sleep cause vlcj sucks and won't allow
+								//getting length until video has played for a small amount of time
+								try {
+									Thread.sleep(400);
+								} catch (InterruptedException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								_timer.start();
+								fullScreenToggle();
+							}
+							//check if video is paused
+						}else if (!mediaPlayer.isPlaying()){
+							pause();
+							fullScreenToggle();
+							//pause video otherwise
+						}else{
+							pause();
+							if(_fastForwardButton.isSelected()){
+								skipper.cancel(true);
+								enableSkips();
+							}else if (_rewindButton.isSelected()){
+								skipper.cancel(true);
+								enableSkips();
+							}
+							fullScreenToggle();
+						}
+
+					}
+				});
+				add(_fullScreen, "cell 3 3");
+
+		_muteToggle = new JButton();
+		_muteToggle.setToolTipText("Mute/Unmute");
+		add(_muteToggle, "cell 6 3");
+		this.add(_volumeSlider, "cell 6 3");
+>>>>>>> ofekdev
 
 		skipper = new SkipWorker(mediaPlayer, true, VideoPanel.this);
 	}
@@ -402,6 +478,13 @@ public class VideoPanel extends JPanel {
 		String s = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 		_timeLabel.setText(s);
 		//		System.out.println(s);
+	}
+	
+	public String getCurrentTime() {
+		long millis = mediaPlayer.getTime();
+		String s = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+		System.out.println(s);
+		return s;
 	}
 
 	/**

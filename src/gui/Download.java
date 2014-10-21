@@ -43,13 +43,13 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 	private String _filePath;
 	private JPanel _parent;
 
-	public Download(JPanel parent) {
+	public Download(JPanel jPanel) {
 		super(new FlowLayout(FlowLayout.LEFT));
-		this._parent = parent;
+		this._parent = jPanel;
 		/**
 		 * Initializes the download pane.
 		 */
-		this.setPreferredSize(new Dimension(1000, 180));
+		this.setPreferredSize(new Dimension(1020, 250));
 
 		Box verticalBox = Box.createVerticalBox();
 		add(verticalBox);
@@ -60,8 +60,7 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		JLabel lblMpUrl = new JLabel("Media URL:");
 		horizontalBox.add(lblMpUrl);
 
-		Component rigidArea = Box.createRigidArea(new Dimension(50, 20));
-		rigidArea.setPreferredSize(new Dimension(105, 20));
+		Component rigidArea = Box.createRigidArea(new Dimension(65, 20));
 		horizontalBox.add(rigidArea);
 
 		_textField = new JTextField();
@@ -139,11 +138,10 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 								 */
 								JFileChooser dirChooser = new JFileChooser();
 								dirChooser
-								.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-								dirChooser
+//								.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+//								dirChooser
 								.setDialogTitle("Select File Location");
-								int returnValue = dirChooser
-										.showOpenDialog(null);
+								int returnValue = dirChooser.showSaveDialog(Download.this);
 								if (returnValue == JFileChooser.APPROVE_OPTION) {
 									File selectedFile = dirChooser
 											.getSelectedFile();
@@ -179,7 +177,6 @@ public class Download extends JPanel implements PropertyChangeListener { // Acti
 		Box horizontalBox_2 = Box.createHorizontalBox();
 		verticalBox.add(horizontalBox_2);
 		_progressBar = new JProgressBar();
-		_progressBar.setStringPainted(true);
 		horizontalBox_2.add(_progressBar);
 
 		Box horizontalBox_4 = Box.createHorizontalBox();

@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.Color;
 
+import gui.MainGui;
 import gui.TextTab;
 
 import javax.swing.JOptionPane;
@@ -10,11 +11,12 @@ import javax.swing.JOptionPane;
 public class VideoOutroProcess extends AbstractProcess {
 
 	private TextTab _tab;
+	public static final String tempOutroPath = MainGui.VAMIX.getAbsolutePath()+MainGui.SEPERATOR+".tempMedia"+MainGui.SEPERATOR;
 
-	public VideoOutroProcess(TextTab tab,int textSize, String font, String text, Color colour){
+	public VideoOutroProcess(TextTab tab,int textSize, String font, String text, Color colour, String background){
 		String loc = System.getProperty("user.dir");
-		ShellProcess.command("rm -f "+loc+System.getProperty("file.separator")+".tempMedia"+System.getProperty("file.separator")+"tempOutro.mp4");
-		super.setCommand(makeCommand(textSize, font, text, colour, loc));
+		ShellProcess.command("rm -f "+tempOutroPath+"tempOutro.mp4");
+		super.setCommand(makeCommand(textSize, font, text, colour, loc, background));
 		_tab = tab;
 	}
 	protected void doDone() {
@@ -27,10 +29,12 @@ public class VideoOutroProcess extends AbstractProcess {
 			JOptionPane
 			.showMessageDialog(_tab,"Something went wrong with creating an outro. Please check input media file",
 					"Process Error", JOptionPane.ERROR_MESSAGE);
+			_tab.enableButtons();
 		} else if (get() < 0){
 			JOptionPane
 			.showMessageDialog(_tab,"Process cancelled",
 					"Process Error", JOptionPane.ERROR_MESSAGE);
+			_tab.enableButtons();
 		}
 	}
 
@@ -38,14 +42,13 @@ public class VideoOutroProcess extends AbstractProcess {
 		//System.out.println(line);
 	}
 
-	private String makeCommand(int textSize, String font, String text, Color colour, String loc){
+	private String makeCommand(int textSize, String font, String text, Color colour, String loc, String background){
 
-		String binLoc = loc+System.getProperty("file.separator")+".tempMedia"
-				+System.getProperty("file.separator");
-		return "avconv -i " + binLoc + "background.mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
-				+ "\"" + " "+binLoc+"tempOutro.mp4";
+		return "avconv -i " + tempOutroPath +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
+				+ "\"" + " "+tempOutroPath+"tempOutro.mp4";
 	}
-
+	
+	//copied from http://stackoverflow.com/questions/3607858/how-to-convert-a-rgb-color-value-to-an-hexadecimal-value-in-java
 	public static String toHexString(Color c) {
 		StringBuilder sb = new StringBuilder("#");
 
