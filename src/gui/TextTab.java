@@ -46,17 +46,13 @@ import controller.ShellProcess;
 import controller.VideoIntroProcess;
 import controller.VideoOutroProcess;
 /**
- * Tab for audio manipulation
+ * Tab for the creation of intro/credits screens
+ * This tab is used to add opening and closing text scenes to the selected video file
  * @author Ofek Wittenberg
  *
  */
 @SuppressWarnings("serial")
 public class TextTab extends Tab {
-	/*
-	 * This tab is used to add opening and closing text scenes to the selected video file
-	 * future implementation can include setting a specific time frame for intro/outro, having seperate
-	 * formating for the start and ending and being able to change the background of the intro/outro
-	 */
 	private JTextField _textFieldIntro;
 	private JTextField _textFieldEnd;
 	private PreviewPane _txtPreview;
@@ -80,10 +76,12 @@ public class TextTab extends Tab {
 		this._main=main;
 
 	}
-
+	/**
+	 * initializes the main ui components
+	 */
 	@Override
 	protected void initialise() {
-		this.setPreferredSize(new Dimension(1000, 130));
+	this.setPreferredSize(new Dimension(1000, 130));
 
 		Box verticalBox = Box.createVerticalBox();
 		verticalBox.setPreferredSize(new Dimension(980,170));
@@ -109,7 +107,9 @@ public class TextTab extends Tab {
 		((AbstractDocument) _textFieldIntro.getDocument()).setDocumentFilter(charFilter);
 
 
-
+		/**
+		 * adds relevant listeners to the text field to update the live preview pane whilst typing
+		 */
 		_textFieldIntro.setToolTipText("Text to be placed at the start of the video (999 character limit)");
 		_textFieldIntro.addFocusListener(new FocusAdapter() {
 			@Override
@@ -136,8 +136,8 @@ public class TextTab extends Tab {
 			}
 		});
 		
-		/*
-		 * key listners added to update textpane as users type
+		/**
+		 * key listeners added to update textpane as users type
 		 */
 		
 		_textFieldIntro.addKeyListener(new KeyAdapter() {
@@ -181,11 +181,13 @@ public class TextTab extends Tab {
 		horizontalBox_1.add(lblClosingText);
 
 		_textFieldEnd = new JTextField();
-		_textFieldEnd.setToolTipText("Text to be placed at the end of the video (999 character limit)");
+		_textFieldEnd.setToolTipText("Text to be placed at the end of the video (250 character limit)");
 
 
 		((AbstractDocument) _textFieldEnd.getDocument()).setDocumentFilter(charFilter);
-
+		/**
+		 * similiar to the intro text, key listeners are added to update the preview pane as users type
+		 */
 		_textFieldEnd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
@@ -212,6 +214,10 @@ public class TextTab extends Tab {
 					_apply.setEnabled(false);
 				}
 			}
+			
+			/**
+			 * makes sure to set the preview immediately when text focus is gained
+			 */
 			@Override
 			public void focusGained(FocusEvent e) {
 				String text = _textFieldEnd.getText();
@@ -224,6 +230,7 @@ public class TextTab extends Tab {
 				}
 			}
 		});
+		
 		
 		_textFieldEnd.addKeyListener(new KeyAdapter() {
 			@Override
@@ -250,6 +257,10 @@ public class TextTab extends Tab {
 
 		JLabel lblFontSize = new JLabel("Font Size:");
 		horizontalBox_2.add(lblFontSize);
+		
+		/**
+		 * spinners for setting the font
+		 */
 
 		_fontSize = new JSpinner();
 		_fontSize.addChangeListener(new ChangeListener() {
@@ -265,7 +276,9 @@ public class TextTab extends Tab {
 
 		Component rigidArea = Box.createRigidArea(new Dimension(20, 20));
 		horizontalBox_2.add(rigidArea);
-
+		/**
+		 * button to change the colour of the text (button also changes colour to reflect this)
+		 */
 		_btnColourSelect = new JButton("Colour Select");
 		_btnColourSelect.setForeground(Color.RED);
 		_btnColourSelect.addActionListener(new ActionListener() {
@@ -306,7 +319,9 @@ public class TextTab extends Tab {
 		});
 
 		horizontalBox_2.add(_fontType);
-
+		/**
+		 * following the existing design scheme of having one apply button for a user focused experience
+		 */
 		_apply = new JButton("Apply");
 		_apply.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -329,6 +344,9 @@ public class TextTab extends Tab {
 		
 		_txtPreview.repaintBackground("bg0");
 		_backgroundSelect = new JComboBox<String>();
+		/**
+		 * combo box which has the selection of different backgrounds the user can choose from
+		 */
 		_backgroundSelect.setModel(new DefaultComboBoxModel<String>(new String[] { "Background 1", "Background 2", "Background 3", "Background 4", "Background 5"}));
 		_backgroundSelect.setToolTipText("Background type");
 		horizontalBox_2.add(_backgroundSelect);
@@ -338,7 +356,9 @@ public class TextTab extends Tab {
 				switch (_backgroundSelect.getSelectedIndex()) {
 				case 0: _txtPreview.repaintBackground("bg0");
 				_background="bg0";
-					
+				/**
+				 * switch case to appropriately repaint the textpreview pane to selected background	
+				 */
 					break;
 				case 1: _txtPreview.repaintBackground("bg1");
 				_background="bg1";
@@ -360,7 +380,9 @@ public class TextTab extends Tab {
 		});
 		
 
-
+		/**
+		 * Indeterminate progress bar to show that the application is working 
+		 */
 		_progressBar = new JProgressBar();
 		horizontalBox_2.add(_progressBar);
 		horizontalBox_2.add(_apply);
@@ -385,11 +407,10 @@ public class TextTab extends Tab {
 		horizontalBox_3.add(scrollBar);
 
 	}
-
+	/**
+	 * An interactive file chooser to set colour of text with fancy colour wheel
+	 */
 	private void createColourChooser() {
-		/*
-		 * An interactive file chooser to set colour of text with fancy colour wheel
-		 */
 
 		_colourSelect = JColorChooser.showDialog(this, "Choose a color", Color.RED);
 
@@ -399,7 +420,14 @@ public class TextTab extends Tab {
 
 	}
 
-
+	/**
+	 * sets the preview pane (called by the action/change listners)
+	 * @param tp
+	 * @param msg
+	 * @param c
+	 * @param fontSize
+	 * @param font
+	 */
 	private void SetPreview(JTextPane tp, String msg, Color c, int fontSize, String font) {
 		/*
 		 * Method used to update the preview field
@@ -417,13 +445,19 @@ public class TextTab extends Tab {
 		tp.setText(msg);
 
 	}
-
+	/**
+	 * obtains the selected user font for the linux process
+	 * @return string colour
+	 */
 	private String getUserFont() {
 
 		String fontString = _fontType.getSelectedItem().toString();
 		return fontString;
 	}
-
+	/**
+	 * returns the default font location on ubuntu machines
+	 * @return fontloc
+	 */
 	public String getUserFontLoc(){
 		String fontSelected = _fontType.getSelectedItem().toString();
 		String fontLoc;
@@ -443,11 +477,16 @@ public class TextTab extends Tab {
 		}
 		return fontLoc;
 	}
-
+	/**
+	 * returns the selected user colour
+	 * @return Color
+	 */
 	private Color getUserColour() {
 		return _colourSelect;
 	}
-
+	/**
+	 * creates the intro/outro process according to which text fields are filled in
+	 */
 	private void createProcess() {
 		_processNumber = 0;
 		if(!_textFieldIntro.getText().isEmpty()){
@@ -463,12 +502,16 @@ public class TextTab extends Tab {
 			_processNumber = 2;
 		}
 	}
-
+	/**
+	 * error message if no media playback is selected in the media tab
+	 */
 	private void noMediaSelected() {
 		JOptionPane.showMessageDialog(this, "Invalid media selected in the Media tab",
 				"Media Error", JOptionPane.ERROR_MESSAGE);
 	}
-
+	/**
+	 * Obtains the save location from the user and calls the {@link}createProcess() method
+	 */
 	private void SaveLocAndTextProcess(){
 		JFileChooser fileChooser = new JFileChooser() {
 			@Override
@@ -517,7 +560,7 @@ public class TextTab extends Tab {
 		File fileToSave = null;
 		if (userSelection == JFileChooser.OPEN_DIALOG) {
 			fileToSave = fileChooser.getSelectedFile();
-			/*
+			/**
 			 * Makes sure the filename ends with extension .mp4
 			 */
 
@@ -535,11 +578,16 @@ public class TextTab extends Tab {
 		}
 
 	}
-
+	/**
+	 * getter for the save location from the user
+	 * @return
+	 */
 	public String getSaveloc(){
 		return _saveLoc;
 	}
-
+	/**
+	 * disables all the buttons when the text process is running
+	 */
 	public void disableButtons(){
 		_textFieldEnd.setEnabled(false);
 		_textFieldIntro.setEnabled(false);
@@ -548,7 +596,9 @@ public class TextTab extends Tab {
 		_fontSize.setEnabled(false);
 		_fontType.setEnabled(false);
 	}
-
+	/**
+	 * enables all the buttons when the text process is finished
+	 */
 	public void enableButtons(){
 		_textFieldEnd.setEnabled(true);
 		_textFieldIntro.setEnabled(true);
@@ -558,7 +608,10 @@ public class TextTab extends Tab {
 		_fontType.setEnabled(true);
 		_progressBar.setIndeterminate(false);
 	}
-
+	/**
+	 * Getters for the parent pane
+	 * @return
+	 */
 	public MainGui getMain(){
 		return _main;
 	}

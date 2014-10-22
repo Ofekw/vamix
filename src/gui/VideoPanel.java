@@ -413,7 +413,7 @@ public class VideoPanel extends JPanel {
 	public String getCurrentTime() {
 		long millis = _mediaPlayer.getTime();
 		String s = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-		System.out.println(s);
+		//System.out.println(s);
 		return s;
 	}
 
@@ -546,6 +546,17 @@ public class VideoPanel extends JPanel {
 	 */
 	public EmbeddedMediaPlayer getMediaPlayer(){
 		return _mediaPlayer;
+	}
+
+	public String getLength() {
+		long length = _mediaPlayer.getLength();
+		play();
+		String s = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(length), TimeUnit.MILLISECONDS.toMinutes(length) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(length)), TimeUnit.MILLISECONDS.toSeconds(length) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(length)));
+		pause();
+		System.out.println(s);
+		return s;
+		
+		
 	}
 }
 

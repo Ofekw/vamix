@@ -80,6 +80,7 @@ public class MediaTab extends Tab {
 								_main.getFilters().enableButtons();
 								_main.getCrop().enableButtons();
 								_main.getSubtitles().enableButtons();
+								_main.getAudio().setLimits();
 								
 							}
 						}else{

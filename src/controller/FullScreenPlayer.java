@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -38,7 +40,7 @@ public class FullScreenPlayer {
 
 	public FullScreenPlayer(String args, VideoPanel panel) {
 		this._panel = panel;
-		Canvas c = new Canvas();
+		final Canvas c = new Canvas();
 
 		c.setBackground(Color.black);
 
@@ -67,6 +69,36 @@ public class FullScreenPlayer {
 			mediaPlayer.setTime(_panel.getTime());
 		}
 		
+		
+		c.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				int code = e.getKeyCode();
+				if(code == KeyEvent.VK_ESCAPE){
+					_time = mediaPlayer.getTime();
+					//Key pressed is the Escape key. Exit fullscreen
+					if (!mediaPlayer.isPlaying()){
+						_panel.StopPlay(_time);
+					}else{//if playing
+						_panel.ContinuePlay(_time);
+						
+					}
+					mediaPlayer.stop();
+					f.dispose();
+				}else if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE){
+					@SuppressWarnings("unused")
+					Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+					//Key press is Enter, play/pause video
+					if (!mediaPlayer.isPlaying()){
+						mediaPlayer.play();					
+						//pause video otherwise
+					}else{
+						mediaPlayer.pause();
+					}
+				}
+			}
+		});
 		
 		f.addKeyListener(new KeyAdapter() {
 			@Override
@@ -97,6 +129,53 @@ public class FullScreenPlayer {
 				}
 			}
 		});
+		
+		f.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				c.requestFocus();
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				mediaPlayer.release();
+				
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				c.requestFocus();
+				
+			}
+		});
+		
+		
 	}
 
 

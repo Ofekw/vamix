@@ -22,6 +22,12 @@ import controller.ShellProcess;
 import controller.VideoCropProcess;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
+import uk.co.caprica.vlcj.binding.internal.media_duration_changed;
 
 @SuppressWarnings("serial")
 /**
@@ -45,6 +51,7 @@ public class VideoCropTab extends Tab {
 	private JSpinner _endMin;
 	private JSpinner _endHr;
 	private SaveLoadState saveLoad;
+	private int[] mediaLength = new int[3];
 
 	public VideoCropTab(VideoPanel panel, MainGui main){
 		super(panel);
@@ -56,19 +63,51 @@ public class VideoCropTab extends Tab {
 
 		JLabel lblChooseVideoFilter = new JLabel("Enter start time (HH:MM:SS):");
 		add(lblChooseVideoFilter, "cell 1 1");
-
 		
 		_startHour = new JSpinner();
+		_startHour.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_endHr.getValue();
+				int range = mediaLength[0]-(int)_startHour.getValue();
+				if(value>range){
+				_endHr.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_endHr.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 		_startHour.setModel(new SpinnerNumberModel(0, 0, 99, 1));
 		_startHour.setToolTipText("hours");
 		add(_startHour, "cell 3 1,growx");
 		
 		_startMin = new JSpinner();
+		_startMin.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_endSec.getValue();
+				int range = mediaLength[1]-(int)_startMin.getValue();
+				if(value>range){
+				_endMin.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_endMin.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 		_startMin.setModel(new SpinnerNumberModel(0, 0, 59, 1));
 		_startMin.setToolTipText("minutes");
 		add(_startMin, "cell 6 1,growx");
 		
 		_startSec = new JSpinner();
+		_startSec.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_endSec.getValue();
+				int range = mediaLength[2]-(int)_startSec.getValue();
+				if(value>range){
+				_endSec.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_endSec.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 		_startSec.setModel(new SpinnerNumberModel(0, 0, 59, 1));
 		_startSec.setToolTipText("seconds");
 		add(_startSec, "cell 8 1,growx");
@@ -107,6 +146,7 @@ public class VideoCropTab extends Tab {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(_apply.isEnabled()){
+					setLimits();
 					if (!_main.getVideo().getVideoLoc().isEmpty() &&
 							new CheckFile(true).checkFileType(_main.getVideo().getVideoLoc())){
 						SaveLocAndTextProcess();	
@@ -195,13 +235,33 @@ public class VideoCropTab extends Tab {
 	}
 
 	private void disableButtons() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void enableButtons() {
 		_apply.setEnabled(true);
+		setLimits();
+		//method must be called twice to get proper end time
+		setLimits();
 
+	}
+
+	private void setLimits() {
+		String length = _videoPanel.getLength();
+		System.out.println(length);
+		String[] format = length.split(":");
+		for (int i = 0; i<3;i++){
+			mediaLength[i] = Integer.parseInt(format[i]);
+			_startHour.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+			_startMin.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+			_startSec.setModel(new SpinnerNumberModel(0, 0, mediaLength[2], 1));
+			_endHr.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+			_endMin.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+			_endSec.setModel(new SpinnerNumberModel(0, 0, mediaLength[2], 1));
+			_endHr.setValue((new Integer(mediaLength[0])));
+			_endMin.setValue((new Integer(mediaLength[1])));
+			_endSec.setValue((new Integer(mediaLength[2])));
+		}
+		
 	}
 
 	public void progressReset(){

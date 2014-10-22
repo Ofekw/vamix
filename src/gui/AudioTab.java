@@ -24,6 +24,8 @@ import controller.ReplaceAudioProcess;
 import controller.SaveLoadState;
 import controller.ShellProcess;
 import controller.AbstractProcess;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 @SuppressWarnings("serial")
 /**
@@ -65,6 +67,7 @@ public class AudioTab extends Tab {
 	private final String REMOVE = "REMOVE";
 	private final String OVERLAY = "OVERLAY";
 	private final String REPLACE = "REPLACE";
+	private int[] mediaLength = new int[3];
 
 
 
@@ -93,8 +96,41 @@ public class AudioTab extends Tab {
 		//sets the labels and buttons
 		_startLabel = new JLabel("Enter start time (HH:MM:SS)");
 		_startHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+		_startHours.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_durationHours.getValue();
+				int range = mediaLength[0]-(int)_startHours.getValue();
+				if(value>range){
+				_durationHours.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_durationHours.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 		_startMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+		_startMinutes.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_durationMinutes.getValue();
+				int range = mediaLength[1]-(int)_startMinutes.getValue();
+				if(value>range){
+				_durationMinutes.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_durationMinutes.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 		_startSeconds = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+		_startSeconds.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_durationSeconds.getValue();
+				int range = mediaLength[2]-(int)_startSeconds.getValue();
+				if(value>range){
+				_durationSeconds.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_durationSeconds.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 
 		_durationLabel = new JLabel("Enter duration (HH:MM:SS)");
 		_durationHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
@@ -537,6 +573,23 @@ public class AudioTab extends Tab {
 				_durationMinutes, _durationSeconds, _inputAudio, 
 				saveFile);
 		saveLoad.load("audio");
+	}
+	
+	public void setLimits() {
+		String length = _videoPanel.getLength();
+		String[] format = length.split(":");
+		for (int i = 0; i<3;i++){
+			mediaLength[i] = Integer.parseInt(format[i]);
+		}
+			_startHours.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+			_startMinutes.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+			_startSeconds.setModel(new SpinnerNumberModel(0, 0, mediaLength[2], 1));
+			_durationHours.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+			_durationMinutes.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+			_durationSeconds.setModel(new SpinnerNumberModel(0, 0, mediaLength[2], 1));
+			_durationHours.setValue((new Integer(mediaLength[0])));
+			_durationMinutes.setValue((new Integer(mediaLength[1])));
+			_durationSeconds.setValue((new Integer(mediaLength[2])));
 	}
 
 	
