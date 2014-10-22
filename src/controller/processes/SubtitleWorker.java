@@ -15,12 +15,12 @@ import javax.swing.SwingWorker;
  *
  */
 
-public class Subtitleworker extends SwingWorker<Void, Void>{
+public class SubtitleWorker extends SwingWorker<Void, Void>{
 	private SubTitles _tab;
 	public static final String tempSubPath = MainGui.VAMIX.getAbsolutePath()+MainGui.SEPERATOR+".tempMedia"+MainGui.SEPERATOR;
 	private File _srtFile;
 	private int importOrCreate; // >0 = create srt otherwise import
-	public Subtitleworker(SubTitles tab, int i){ 
+	public SubtitleWorker(SubTitles tab, int i){ 
 		_tab = tab;
 		importOrCreate = i;
 
@@ -39,8 +39,18 @@ public class Subtitleworker extends SwingWorker<Void, Void>{
 			try {
 				writer = new PrintWriter(_srtFile, "UTF-8");
 				String[] lines = _tab.getSRT().split("\\n"); 
+				int count = 1;
 				for(int i = 0; i < lines.length; i++) {
+					if ((i)%3 == 0){
+						writer.println(count);
+						count++;
+					}
 					writer.println(lines[i]);
+					i++;
+					writer.println("<font color="+ "\"" + "#ffff00"+ "\"" + ">"+lines[i]+"</font>");
+					i++;
+					writer.println(lines[i]);
+					//writer.println("\n");
 				}		
 				return null;
 			}finally{
@@ -48,23 +58,21 @@ public class Subtitleworker extends SwingWorker<Void, Void>{
 			}
 		}else{
 				BufferedReader br = new BufferedReader(new FileReader(_tab.getImportLoc()));
-				int subLines = 0;
 				try {
 					StringBuilder sb = new StringBuilder();
 					String line = br.readLine();
-
-					while (line != null) {
-						sb.append(line);
-						sb.append("\n");
-						line = br.readLine();
-						if (!line.equals("\n")){ //ignore white space
-						subLines++;
+					while (line != null ) {
+						if (line.length() > 1){
+							sb.append(line+"\n");
 						}
+						if (line.contains("font")){
+							sb.append("\n");
+						}
+						line = br.readLine();
 					}
 					_tab.setImport(sb.toString());
 				} finally {
 					br.close();
-					_tab.setSubNum(subLines/3); //divide by 3 as each subtitle input takes up 3 lines
 				}
 			}
 		return null;

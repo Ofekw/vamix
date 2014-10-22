@@ -59,7 +59,7 @@ public class VideoPanel extends JPanel {
 	//it is now scaled so it updates alot
 	//smoother than before, check the updatePosition
 	//method for the details
-	private final int maxTime = 100000;
+	private final int maxTime = 100000000;
 	private JButton _muteToggle;
 
 	private SkipWorker skipper;
@@ -118,7 +118,7 @@ public class VideoPanel extends JPanel {
 
 
 		//just setting up the timer and stopping it so it doesnt run
-		_timer = new Timer(300, new ActionListener() {
+		_timer = new Timer(100, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//checks if the file is at the end and resets it

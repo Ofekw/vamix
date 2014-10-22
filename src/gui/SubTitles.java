@@ -23,7 +23,7 @@ import model.IntegerField;
 import net.miginfocom.swing.MigLayout;
 import controller.processes.SaveLoadState;
 import controller.processes.ShellProcess;
-import controller.processes.Subtitleworker;
+import controller.processes.SubtitleWorker;
 
 import javax.swing.JProgressBar;
 
@@ -73,7 +73,7 @@ public class SubTitles extends Tab {
 		_main = main;
 		_subtitleOutputFormat = new JTextPane();
 		_doc = _subtitleOutputFormat.getStyledDocument();
-		_subtitleOutputFormat.setEditable(true);
+		_subtitleOutputFormat.setEditable(false);
 
 		JScrollPane scrollBar = new JScrollPane(_subtitleOutputFormat);
 		scrollBar.setViewportView(_subtitleOutputFormat);
@@ -126,11 +126,10 @@ public class SubTitles extends Tab {
 			public void actionPerformed(ActionEvent e) {
 				if (!getText().isEmpty()){
 					try{
-						_doc.insertString(_doc.getLength(), Integer.toString(_subTitleNo)+"\n", null);
-						_doc.insertString(_doc.getLength(), _starTime.getText()+",600 -->"+_endTime.getText() +",600 X1:0 !!!\n", null);
-						_doc.insertString(_doc.getLength(), "<font color="+ "\"" + "#ffff00"+ "\"" + ">"+getText()+"</font>\n", null);
+						_doc.insertString(_doc.getLength(), _starTime.getText()+",000 -->"+_endTime.getText() +",000 X1:0\n", null);
+						_doc.insertString(_doc.getLength(), getText(), null);
 						_doc.insertString(_doc.getLength(), "\n", null);
-						_subTitleNo++; //add to subtitle count
+						_doc.insertString(_doc.getLength(), "\n", null);
 						_subtitleInput.setText("");
 						//saves previous input for the undo file
 						alt[alterations%2] = _subtitleOutputFormat.getText();
@@ -166,7 +165,7 @@ public class SubTitles extends Tab {
 				JButton _importSrt = new JButton("Import Subtitle File");
 				_importSrt.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						Subtitleworker writer = new Subtitleworker(SubTitles.this, 0);
+						SubtitleWorker writer = new SubtitleWorker(SubTitles.this, 0);
 						writer.execute();
 					}
 				});
@@ -251,7 +250,7 @@ public class SubTitles extends Tab {
 	 * creates the subtitle worker process
 	 */
 	private void createProcess() {
-		Subtitleworker writer = new Subtitleworker(this, 1);
+		SubtitleWorker writer = new SubtitleWorker(this, 1);
 		writer.execute();
 	}
 	/**
