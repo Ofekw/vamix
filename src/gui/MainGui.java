@@ -32,9 +32,9 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
-import controller.FileMover;
-import controller.SaveLoadState;
-import controller.ShellProcess;
+import controller.gui.FileMover;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
 
 import model.FileChooserModel;
 

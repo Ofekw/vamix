@@ -21,8 +21,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import controller.DownloadProcess;
-import controller.ShellProcess;
+import controller.processes.DownloadProcess;
+import controller.processes.ShellProcess;
 
 @SuppressWarnings("serial")
 public class Download extends JPanel implements PropertyChangeListener { // ActionListener,

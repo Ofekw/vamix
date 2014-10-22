@@ -40,11 +40,11 @@ import javax.swing.text.StyleContext;
 
 import model.CharsOnlyLimitFilter;
 import model.PreviewPane;
-import controller.CheckFile;
-import controller.SaveLoadState;
-import controller.ShellProcess;
-import controller.VideoIntroProcess;
-import controller.VideoOutroProcess;
+import controller.gui.CheckFile;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
+import controller.processes.VideoIntroProcess;
+import controller.processes.VideoOutroProcess;
 /**
  * Tab for the creation of intro/credits screens
  * This tab is used to add opening and closing text scenes to the selected video file

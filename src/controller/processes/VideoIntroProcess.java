@@ -1,40 +1,41 @@
-package controller;
-
-import java.awt.Color;
+package controller.processes;
 
 import gui.MainGui;
 import gui.TextTab;
 
+import java.awt.Color;
+
 import javax.swing.JOptionPane;
 
 
-public class VideoOutroProcess extends AbstractProcess {
+
+public class VideoIntroProcess extends AbstractProcess {
 	/**
-	 * main process for adding the outro to the video
+	 * Main process for creating the intro screen 
 	 * @author ofek wittenberg
 	 */
 
 	private TextTab _tab;
-	public static final String tempOutroPath = MainGui.VAMIX.getAbsolutePath()+MainGui.SEPERATOR+".tempMedia"+MainGui.SEPERATOR;
+	public static final String tempIntroPath = MainGui.VAMIX.getAbsolutePath()+MainGui.SEPERATOR+".tempMedia"+MainGui.SEPERATOR;
 
-	public VideoOutroProcess(TextTab tab,int textSize, String font, String text, Color colour, String background){
+	public VideoIntroProcess(TextTab tab,int textSize, String font, String text, Color colour, String background){
 		String loc = System.getProperty("user.dir");
-		ShellProcess.command("rm -f "+tempOutroPath+"tempOutro.mp4");
+		ShellProcess.command("rm -f "+tempIntroPath+"tempIntro.mp4");
 		super.setCommand(makeCommand(textSize, font, text, colour, loc, background));
 		_tab = tab;
 	}
 	/**
-	 * returns the appropriate response to the success of the outro process
+	 * returns the appropriate response to the intro process
 	 */
 	protected void doDone() {
 		if (get() == 0) {
-			if(_tab.getProcessNumber() == 2){
+			if(_tab.getProcessNumber() == 1){
 				ConcatVideosProcess process = new ConcatVideosProcess(_tab);
 				process.execute();
 			}
 		} else if (get() > 0) {
 			JOptionPane
-			.showMessageDialog(_tab,"Something went wrong with creating an outro. Please check input media file",
+			.showMessageDialog(_tab,"Something went wrong with creating an intro. Please check input media file",
 					"Process Error", JOptionPane.ERROR_MESSAGE);
 			_tab.enableButtons();
 		} else if (get() < 0){
@@ -51,11 +52,10 @@ public class VideoOutroProcess extends AbstractProcess {
 
 	private String makeCommand(int textSize, String font, String text, Color colour, String loc, String background){
 
-		return "avconv -i " + tempOutroPath +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
-				+ "\"" + " "+tempOutroPath+"tempOutro.mp4";
+		return "avconv -i " + tempIntroPath +background+".mp4 -strict experimental -vf " + "\"" + "drawtext=fontfile='"+font+"':text='" + text + "':x=(main_w-text_w)/2:y=50:fontsize=" + textSize + ":fontcolor=" + toHexString(colour)
+				+ "\"" + " "+tempIntroPath+"tempIntro.mp4";
 	}
-	
-	//copied from http://stackoverflow.com/questions/3607858/how-to-convert-a-rgb-color-value-to-an-hexadecimal-value-in-java
+//copied from http://stackoverflow.com/questions/3607858/how-to-convert-a-rgb-color-value-to-an-hexadecimal-value-in-java
 	public static String toHexString(Color c) {
 		StringBuilder sb = new StringBuilder("#");
 

@@ -16,10 +16,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 
 import net.miginfocom.swing.MigLayout;
-import controller.CheckFile;
-import controller.FilterProcess;
-import controller.SaveLoadState;
-import controller.ShellProcess;
+import controller.gui.CheckFile;
+import controller.processes.FilterProcess;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
 
 @SuppressWarnings("serial")
 /**

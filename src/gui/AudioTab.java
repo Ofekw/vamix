@@ -17,13 +17,14 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import net.miginfocom.swing.MigLayout;
-import controller.CheckFile;
-import controller.ExtractAudioProcess;
-import controller.OverlayAudioProcess;
-import controller.ReplaceAudioProcess;
-import controller.SaveLoadState;
-import controller.ShellProcess;
-import controller.AbstractProcess;
+import controller.gui.CheckFile;
+import controller.processes.AbstractProcess;
+import controller.processes.ExtractAudioProcess;
+import controller.processes.OverlayAudioProcess;
+import controller.processes.ReplaceAudioProcess;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
+
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 

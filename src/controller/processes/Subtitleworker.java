@@ -1,4 +1,4 @@
-package controller;
+package controller.processes;
 
 import gui.MainGui;
 import gui.SubTitles;

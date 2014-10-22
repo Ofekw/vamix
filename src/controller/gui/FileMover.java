@@ -1,8 +1,10 @@
-package controller;
+package controller.gui;
 
 import gui.MainGui;
 
 import java.io.File;
+
+import controller.processes.AbstractProcess;
 
 /**
  * Creates .vamix folder and moves all neccesarry files to .vamix folder from within jar file

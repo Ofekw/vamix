@@ -34,8 +34,8 @@ import uk.co.caprica.vlcj.binding.LibVlcConst;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import controller.FullScreenPlayer;
-import controller.SkipWorker;
+import controller.gui.FullScreenPlayer;
+import controller.processes.SkipWorker;
 
 
 @SuppressWarnings("serial")

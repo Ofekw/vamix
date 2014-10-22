@@ -1,4 +1,4 @@
-package controller;
+package controller.processes;
 
 import javax.swing.JOptionPane;
 

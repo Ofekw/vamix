@@ -16,10 +16,11 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
-import controller.CheckFile;
-import controller.SaveLoadState;
-import controller.ShellProcess;
-import controller.VideoCropProcess;
+import controller.gui.CheckFile;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
+import controller.processes.VideoCropProcess;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeListener;

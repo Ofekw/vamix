@@ -1,4 +1,4 @@
-package controller;
+package controller.gui;
 import gui.VideoPanel;
 
 import java.awt.BorderLayout;

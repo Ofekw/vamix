@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import controller.CheckFile;
+import controller.gui.CheckFile;
 import net.miginfocom.swing.MigLayout;
 
 public class MediaTab extends Tab {

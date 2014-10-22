@@ -21,9 +21,9 @@ import model.FileChooserModel;
 import model.FileSRTChooserModel;
 import model.IntegerField;
 import net.miginfocom.swing.MigLayout;
-import controller.SaveLoadState;
-import controller.ShellProcess;
-import controller.Subtitleworker;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
+import controller.processes.Subtitleworker;
 
 import javax.swing.JProgressBar;
 

@@ -1,4 +1,4 @@
-package controller;
+package controller.processes;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
