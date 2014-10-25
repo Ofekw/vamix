@@ -1,12 +1,10 @@
 package controller.processes;
 import java.awt.Color;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.Character.Subset;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;

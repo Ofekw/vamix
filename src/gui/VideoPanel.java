@@ -115,7 +115,7 @@ public class VideoPanel extends JPanel {
 		_mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(_mediaCanvas));
 
 
-		//just setting up the timer and stopping it so it doesnt run
+		// setting up the timer and stopping it so it does not run
 		_timer = new Timer(100, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -551,7 +551,7 @@ public class VideoPanel extends JPanel {
 		}
 	/**
 	 * Get the media player
-	 * @return
+	 * @return mediaPlayer object
 	 */
 	public EmbeddedMediaPlayer getMediaPlayer(){
 		return _mediaPlayer;
@@ -570,7 +570,10 @@ public class VideoPanel extends JPanel {
 		_mediaPlayer.setMarqueeLocation(50, 50);
 		_mediaPlayer.enableMarquee(true);
 	}
-
+/**
+ * Returns the length of the input media
+ * @return String formatted time
+ */
 	public String getLength() {
 		long length = _mediaPlayer.getLength();
 		play();
