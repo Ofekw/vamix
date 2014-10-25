@@ -37,6 +37,7 @@ public class FullScreenPlayer {
 
 	protected long _time;
 	protected VideoPanel _panel;
+	private EmbeddedMediaPlayer _mediaPlayer;
 
 	public FullScreenPlayer(String args, VideoPanel panel) {
 		this._panel = panel;
@@ -52,21 +53,23 @@ public class FullScreenPlayer {
 
 		//creates the full screen panel
 		f.setContentPane(p);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setSize(800, 600);
 
 		MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
-		final EmbeddedMediaPlayer mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new DefaultFullScreenStrategy(f));
-		mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(c));
+		_mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new DefaultFullScreenStrategy(f));
+		_mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(c));
 
 		f.setVisible(true);
 
-		mediaPlayer.setFullScreen(true);
+		_mediaPlayer.setFullScreen(true);
+		
+		overlay("TEXT!!!!");
 
 		// Put a Thread.sleep(500) here if you get a fatal JVM crash
-		mediaPlayer.playMedia(args);
+		_mediaPlayer.playMedia(args);
 		if (_panel.getTime()>0){
-			mediaPlayer.setTime(_panel.getTime());
+			_mediaPlayer.setTime(_panel.getTime());
 		}
 		
 		
@@ -75,26 +78,26 @@ public class FullScreenPlayer {
 			public void keyPressed(KeyEvent e) {
 				int code = e.getKeyCode();
 				if(code == KeyEvent.VK_ESCAPE){
-					_time = mediaPlayer.getTime();
+					_time = _mediaPlayer.getTime();
 					//Key pressed is the Escape key. Exit fullscreen
-					if (!mediaPlayer.isPlaying()){
+					if (!_mediaPlayer.isPlaying()){
 						_panel.StopPlay(_time);
 					}else{//if playing
 						_panel.ContinuePlay(_time);
 						
 					}
-					mediaPlayer.stop();
+					_mediaPlayer.stop();
 					f.dispose();
 				}else if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE){
 					@SuppressWarnings("unused")
 					Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 					//Key press is Enter, play/pause video
-					if (!mediaPlayer.isPlaying()){
-						mediaPlayer.play();					
+					if (!_mediaPlayer.isPlaying()){
+						_mediaPlayer.play();					
 						//pause video otherwise
 					}else{
-						mediaPlayer.pause();
+						_mediaPlayer.pause();
 					}
 				}
 			}
@@ -105,26 +108,28 @@ public class FullScreenPlayer {
 			public void keyPressed(KeyEvent e) {
 				int code = e.getKeyCode();
 				if(code == KeyEvent.VK_ESCAPE){
-					_time = mediaPlayer.getTime();
+					_time = _mediaPlayer.getTime();
 					//Key pressed is the Escape key. Exit fullscreen
-					if (!mediaPlayer.isPlaying()){
+					if (!_mediaPlayer.isPlaying()){
 						_panel.StopPlay(_time);
 					}else{//if playing
 						_panel.ContinuePlay(_time);
 						
 					}
-					mediaPlayer.stop();
+					_mediaPlayer.stop();
 					f.dispose();
 				}else if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE){
 					@SuppressWarnings("unused")
 					Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 					//Key press is Enter, play/pause video
-					if (!mediaPlayer.isPlaying()){
-						mediaPlayer.play();					
+					if (!_mediaPlayer.isPlaying()){
+						_mediaPlayer.play();
+						overlay("Play");
 						//pause video otherwise
 					}else{
-						mediaPlayer.pause();
+						_mediaPlayer.pause();
+						overlay("Pause");
 					}
 				}
 			}
@@ -158,7 +163,8 @@ public class FullScreenPlayer {
 			
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				mediaPlayer.release();
+				_mediaPlayer.release();
+				f.dispose();
 				
 			}
 			
@@ -176,6 +182,20 @@ public class FullScreenPlayer {
 		});
 		
 		
+	}
+	
+	/**
+	 * Creates a short overlay on the media panel to show specific media action (such as play,pause etc)
+	 * @param String text for overlay
+	 */
+	private void overlay(String text){
+		_mediaPlayer.setMarqueeText(text);
+		_mediaPlayer.setMarqueeSize(60);
+		_mediaPlayer.setMarqueeOpacity(70);
+		_mediaPlayer.setMarqueeColour(Color.GREEN);
+		_mediaPlayer.setMarqueeTimeout(3000);
+		_mediaPlayer.setMarqueeLocation(50, 50);
+		_mediaPlayer.enableMarquee(true);
 	}
 
 

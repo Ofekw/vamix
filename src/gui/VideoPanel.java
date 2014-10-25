@@ -3,27 +3,20 @@ package gui;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
@@ -64,8 +57,12 @@ public class VideoPanel extends JPanel {
 
 	private SkipWorker skipper;
 	private JButton _fullScreen;
+	//these items are used, but considered suppressed because not initialized
+	@SuppressWarnings("unused")
 	private EmbeddedMediaPlayer _mediaPlayerFull;
+	@SuppressWarnings("unused")
 	private FullScreenPlayer _fullScreenPlayer;
+	@SuppressWarnings("unused")
 	private  AudioTab _audioTab;
 	
 	private Icon play;
@@ -76,6 +73,7 @@ public class VideoPanel extends JPanel {
 	private Icon fullScreen;
 	private Icon unmute;
 	private Icon mute;
+	private Canvas _mediaCanvas;
 
 	public VideoPanel(MainGui parent){
 		this.setOpaque(false);
@@ -109,12 +107,12 @@ public class VideoPanel extends JPanel {
 		JPanel playerBackground = new JPanel();
 		//playerBackground.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
 		playerBackground.setBackground(Color.BLACK);
-		Canvas mediaCanvas = new Canvas();
+		_mediaCanvas = new Canvas();
 		//mediaCanvas.setBackground(Color.black);
-		mediaCanvas.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
+		_mediaCanvas.setPreferredSize(new Dimension(parent.getFrame().getWidth()-50,300));
 
 		_mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
-		_mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(mediaCanvas));
+		_mediaPlayer.setVideoSurface(mediaPlayerFactory.newVideoSurface(_mediaCanvas));
 
 
 		//just setting up the timer and stopping it so it doesnt run
@@ -135,7 +133,7 @@ public class VideoPanel extends JPanel {
 		});
 		_timer.stop();
 		this.add(playerBackground,"cell 0 0 7 1,growx");
-		playerBackground.add(mediaCanvas);
+		playerBackground.add(_mediaCanvas);
 
 	}
 
@@ -182,6 +180,7 @@ public class VideoPanel extends JPanel {
 				_fullScreen.setToolTipText("Toggles fullscreen");
 				_fullScreen.setIcon(fullScreen);
 				_fullScreen.addActionListener(new ActionListener() {
+					@SuppressWarnings("unused")
 					private EmbeddedMediaPlayerComponent mediaPlayerComponentFullScreen;
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -308,6 +307,7 @@ public class VideoPanel extends JPanel {
 				if(_fastForwardButton.isSelected()){
 					//pause media and start fastforwarding
 					play();
+					overlay("Fast forward");
 					skipper.cancel(true);
 					skipper = new SkipWorker(_mediaPlayer, true, VideoPanel.this);
 					skipper.execute();
@@ -326,6 +326,7 @@ public class VideoPanel extends JPanel {
 				if(_rewindButton.isSelected()){
 					//pause media and start rewinding
 					play();
+					overlay("Rewind");
 					skipper.cancel(true);
 					skipper = new SkipWorker(_mediaPlayer, false, VideoPanel.this);
 					skipper.execute();
@@ -351,9 +352,11 @@ public class VideoPanel extends JPanel {
 				_mediaPlayer.mute();
 				//mute media
 				if (_mediaPlayer.isMute()){
+					overlay("Unmute");
 					_muteToggle.setIcon(unmute);
 					//unmute media
 				}else{
+					overlay("Mute");
 					_muteToggle.setIcon(mute);
 				}
 			}
@@ -458,6 +461,10 @@ public class VideoPanel extends JPanel {
 		float positionValue = _progressSlider.getValue();
 		if (positionValue>=maxTime){
 			_progressSlider.setValue(maxTime);
+			
+//			Point p = VideoPanel.this._progressSlider.getMousePosition();
+//			int width = VideoPanel.this._progressSlider.getWidth();
+//			VideoPanel.this._progressSlider.setValue(maxTime *p.x/width);
 		}
 		_mediaPlayer.setPosition(positionValue/maxTime);
 		updateTime(_mediaPlayer.getTime());
@@ -516,7 +523,7 @@ public class VideoPanel extends JPanel {
 				_progressSlider.setValue(0);
 				_mediaPlayer.play();
 				_playButton.setIcon(pause);
-				//have to sleep cause vlcj sucks and won't allow
+				//have to sleep cause vlcj
 				//getting length until video has played for a small amount of time
 				try {
 					Thread.sleep(400);
@@ -531,12 +538,14 @@ public class VideoPanel extends JPanel {
 			//cancel skipping
 			skipper.cancel(true);
 			enableSkips();
+			overlay("Play");
 			play();
 			//pause video otherwise
 		}else{
 			//cancel skipping
 			skipper.cancel(true);
 			enableSkips();
+			overlay("Pause");
 			pause();
 			}
 		}
@@ -546,6 +555,20 @@ public class VideoPanel extends JPanel {
 	 */
 	public EmbeddedMediaPlayer getMediaPlayer(){
 		return _mediaPlayer;
+	}
+	
+	/**
+	 * Creates a short overlay on the media panel to show specific media action (such as play,pause etc)
+	 * @param String text for overlay
+	 */
+	protected void overlay(String text){
+		_mediaPlayer.setMarqueeText(text);
+		_mediaPlayer.setMarqueeSize(60);
+		_mediaPlayer.setMarqueeOpacity(70);
+		_mediaPlayer.setMarqueeColour(Color.GREEN);
+		_mediaPlayer.setMarqueeTimeout(3000);
+		_mediaPlayer.setMarqueeLocation(50, 50);
+		_mediaPlayer.enableMarquee(true);
 	}
 
 	public String getLength() {
