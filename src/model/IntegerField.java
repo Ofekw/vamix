@@ -12,6 +12,10 @@ import javax.swing.text.PlainDocument;
  */
 public class IntegerField extends JTextField {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	NumbersDocument doc;
 
 	public IntegerField() {
@@ -33,6 +37,10 @@ public class IntegerField extends JTextField {
 	}
 
 	static class NumbersDocument extends PlainDocument {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		public static boolean _inputRestriction = false;
 		private int limit;
 
@@ -41,6 +49,7 @@ public class IntegerField extends JTextField {
 			this.limit = limit;
 		}
 
+		@SuppressWarnings("unused")
 		@Override
 		public void insertString(int offs, String str, AttributeSet a)
 				throws BadLocationException {

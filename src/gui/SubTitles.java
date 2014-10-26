@@ -138,6 +138,9 @@ public class SubTitles extends Tab {
 					catch (Exception err){
 						System.out.println(err);
 					}
+				}else{
+					JOptionPane.showMessageDialog(SubTitles.this, "Subtitles field empty",
+							"Empty Field", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});

@@ -44,6 +44,7 @@ public class MediaTab extends Tab {
 				_txtVideoLoc.setPreferredSize(new Dimension(5,10));
 				
 						_btnBrowse = new JButton("Browse");
+						_btnBrowse.setToolTipText("Select media to be used in the Media Player or for editing");
 						add(_btnBrowse, "cell 0 1");
 						
 						

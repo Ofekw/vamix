@@ -142,13 +142,19 @@ public class MainGui {
 
 		//creating all the tabs
 		_text = new TextTab(_videoPanel, this);
+		_text.setToolTipText("Tab for adding an Intro/Credits screen to your video");
 		_audio = new AudioTab(_videoPanel, _media);
+		_audio.setToolTipText("Tab for extracting,overlaying and removing audio from media");
 		_media = new MediaTab(_videoPanel,this);
+		_media.setToolTipText("This is where you select the media to be used for playback and editing");
 		_audio.setVideoTab(_media);
 		_filterTab = new FilterTab(_videoPanel, this);
+		_filterTab.setToolTipText("Tab for applying visual filters to video");
 		_videoCrop = new VideoCropTab(_videoPanel, this);
 		_subtitle = new SubTitles(_videoPanel, this);
+		_subtitle.setToolTipText("Tab for adding/removing subtitles to videos");
 		_download = new DownloadTab(_videoPanel);
+		_download.setToolTipText("Tab for downloading opensource media from the internet");
 
 
 		tabbedPane.addTab("Media", null, _media, null);
