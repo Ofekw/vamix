@@ -5,7 +5,11 @@ import java.awt.Toolkit;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
-
+/**
+ * Character only model for text fields
+ * @author ofek
+ *
+ */
 public class CharsOnlyLimitFilter extends DocumentFilter{
 	/**
 	 *  modified from http://stackoverflow.com/questions/14058505/jtextfield-accept-only-alphabet-and-white-space

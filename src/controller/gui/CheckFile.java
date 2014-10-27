@@ -1,4 +1,4 @@
-package controller;
+package controller.gui;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,6 +23,11 @@ public class CheckFile {
 		checkVideo = checkVid;
 	}
 
+
+	/**
+	 * Uses the file linux process to call the "file" command
+	 * @param string file location
+	 */
 	public boolean checkFileType(String file) {
 		ProcessBuilder vBuilder = new ProcessBuilder("/bin/bash", "-c", "file "+file);
 		vBuilder.redirectErrorStream(true);
@@ -52,7 +57,10 @@ public class CheckFile {
 		}
 		return false;
 	}
-
+	/**
+	 * Uses the file linux process to call the "file" command and confirm it is a media fileq
+	 * @param string file location
+	 */
 	public boolean checkVideoHasAudio(String file){
 		ProcessBuilder vBuilder = new ProcessBuilder("/bin/bash", "-c", "avconv -i "+file);
 		vBuilder.redirectErrorStream(true);

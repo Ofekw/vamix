@@ -1,4 +1,4 @@
-package controller;
+package controller.processes;
 
 import gui.MainGui;
 import gui.TextTab;
@@ -10,6 +10,10 @@ import javax.swing.JOptionPane;
 
 
 public class VideoIntroProcess extends AbstractProcess {
+	/**
+	 * Main process for creating the intro screen 
+	 * @author ofek wittenberg
+	 */
 
 	private TextTab _tab;
 	public static final String tempIntroPath = MainGui.VAMIX.getAbsolutePath()+MainGui.SEPERATOR+".tempMedia"+MainGui.SEPERATOR;
@@ -20,6 +24,9 @@ public class VideoIntroProcess extends AbstractProcess {
 		super.setCommand(makeCommand(textSize, font, text, colour, loc, background));
 		_tab = tab;
 	}
+	/**
+	 * returns the appropriate response to the intro process
+	 */
 	protected void doDone() {
 		if (get() == 0) {
 			if(_tab.getProcessNumber() == 1){

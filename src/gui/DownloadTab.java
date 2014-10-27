@@ -2,6 +2,12 @@ package gui;
 
 public class DownloadTab extends Tab{
 
+	/**
+	 * Download tab that contains the download object to download media
+	 * @author ofek
+	 */
+	private static final long serialVersionUID = 7930042257291577125L;
+
 	public DownloadTab(VideoPanel panel) {
 		super(panel);
 		Download download = new Download(this);
@@ -11,9 +17,7 @@ public class DownloadTab extends Tab{
 	}
 
 	@Override
-	protected void initialise() {
-		// TODO Auto-generated method stub
-		
+	protected void initialise() {	
 	}
 
 }

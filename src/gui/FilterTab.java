@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,10 +16,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 
 import net.miginfocom.swing.MigLayout;
-import controller.CheckFile;
-import controller.FilterProcess;
-import controller.SaveLoadState;
-import controller.ShellProcess;
+import controller.gui.CheckFile;
+import controller.processes.FilterProcess;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
 
 @SuppressWarnings("serial")
 /**
@@ -34,18 +33,21 @@ public class FilterTab extends Tab {
 	private String _saveLoc;
 	private JProgressBar _progressBar;
 	private ButtonGroup _filters;
-	private JRadioButton _rdbtnNone;
 	private JRadioButton _rdbtnBorder;
 	private JRadioButton _rdbtnFlipHorizontally;
 	private JRadioButton _rdbtnFlipVertically;
 	private JRadioButton _rdbtnMono;
 	private JRadioButton _rdbtnBlur;
 	private String _selection = "blur";
-	
+
 	private SaveLoadState saveLoad;
 
 	public FilterTab(VideoPanel panel, MainGui main){
 		super(panel);
+		
+		/**
+		 * setting out of main ui components for the tab
+		 */
 		this.setPreferredSize(new Dimension(1046, 150));
 		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][73.00][90.00][83.00][][][][]", "[][][][][][][][][][][][][][][][]"));
 
@@ -56,9 +58,7 @@ public class FilterTab extends Tab {
 		JLabel lblChooseVideoFilter = new JLabel("Choose Video Filter:");
 		add(lblChooseVideoFilter, "cell 1 1");
 
-		_rdbtnNone = new JRadioButton("None");
-//		add(_rdbtnNone, "cell 5 1");
-		
+
 		_rdbtnBlur = new JRadioButton("Blur");
 		_rdbtnBlur.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -76,16 +76,16 @@ public class FilterTab extends Tab {
 			}
 		});
 		add(_rdbtnFlipVertically, "cell 9 1");
-		
-				_rdbtnFlipHorizontally = new JRadioButton("Flip Horizontally");
-				_rdbtnFlipHorizontally.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						_selection="flipH";
-					}
-				});
-				add(_rdbtnFlipHorizontally, "flowx,cell 11 1");
-				_filters.add(_rdbtnFlipHorizontally);
-		
+
+		_rdbtnFlipHorizontally = new JRadioButton("Flip Horizontally");
+		_rdbtnFlipHorizontally.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				_selection="flipH";
+			}
+		});
+		add(_rdbtnFlipHorizontally, "flowx,cell 11 1");
+		_filters.add(_rdbtnFlipHorizontally);
+
 		_rdbtnMono = new JRadioButton("Mono");
 		_rdbtnMono.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -95,35 +95,35 @@ public class FilterTab extends Tab {
 		add(_rdbtnMono, "cell 13 1");
 		_filters.add(_rdbtnFlipVertically);
 		_filters.add(_rdbtnMono);
-		
-				_rdbtnBorder = new JRadioButton("Border");
-				_rdbtnBorder.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						_selection="border";
-					}
-				});
-				add(_rdbtnBorder, "cell 15 1");
-				_filters.add(_rdbtnBorder);
-		
+
+		_rdbtnBorder = new JRadioButton("Border");
+		_rdbtnBorder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				_selection="border";
+			}
+		});
+		add(_rdbtnBorder, "cell 15 1");
+		_filters.add(_rdbtnBorder);
+
 
 
 		_progressBar = new JProgressBar();
 		add(_progressBar, "cell 1 15 46 1,growx");
 		_apply = new JButton("Apply");
 		add(_apply, "cell 47 15");
-		
-				_apply.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-					}
-				});
-				_apply.setEnabled(false);
+
+		_apply.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		_apply.setEnabled(false);
 		_apply.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(_apply.isEnabled()){
 					if (!_main.getVideo().getVideoLoc().isEmpty() &&
 							new CheckFile(true).checkFileType(_main.getVideo().getVideoLoc())){
-						SaveLocAndTextProcess();	
+						saveLocAndFilterProcess();	
 					}else {
 						noMediaSelected();
 					}
@@ -140,8 +140,10 @@ public class FilterTab extends Tab {
 
 
 	}
-
-	private void SaveLocAndTextProcess(){
+	/**
+	 * Gets file location for the user and creates the the filter process
+	 */
+	private void saveLocAndFilterProcess(){
 		JFileChooser fileChooser = new JFileChooser() {
 			@Override
 			public void approveSelection() {
@@ -189,7 +191,7 @@ public class FilterTab extends Tab {
 		File fileToSave = null;
 		if (userSelection == JFileChooser.OPEN_DIALOG) {
 			fileToSave = fileChooser.getSelectedFile();
-			/*
+			/**
 			 * Makes sure the filename ends with extension .mp4
 			 */
 
@@ -207,93 +209,106 @@ public class FilterTab extends Tab {
 		}
 
 	}
-
+	/**
+	 * disables the main apply button
+	 */
 	private void disableButtons() {
 		_apply.setEnabled(false);
 
 	}
-
+	/**
+	 * enables the main apply button
+	 */
 	public void enableButtons() {
 		_apply.setEnabled(true);
 
 	}
-
+	/**
+	 * resets the progress when it is cancelled
+	 */
 	public void progressReset(){
 		_progressBar.setValue(0);
 		_progressBar.setIndeterminate(false);
 		enableButtons();
 	}
-
+	/**
+	 * sets the progress to 100 when process is done
+	 */
 	public void progressDone(){
 		_progressBar.setValue(100);
 		_progressBar.setIndeterminate(false);
 		enableButtons();
 	}
-
+	/**
+	 * called when the process is made
+	 */
 	private void createProcess() {
 		FilterProcess process = new FilterProcess(this);
 		process.execute();
 	}
-
+	/**
+	 * getter for the saveloc
+	 * @return
+	 */
 	public String getSaveloc(){
 		return _saveLoc;
 	}
-
+	/**
+	 * getter for the main gui file
+	 * @return
+	 */
 	public MainGui getMain(){
 		return _main;
 	}
-
+	/**
+	 * returns the specific file filter selected by the user
+	 * @return
+	 */
 	public String getFilterSelection(){
-	
+
 		return _selection;
-}
-
-private void noMediaSelected() {
-	JOptionPane.showMessageDialog(this, "Invalid media selected in the Media tab",
-			"Media Error", JOptionPane.ERROR_MESSAGE);
-}
-
-/**
- * Saves the current text settings to a vamix save file
- * @param saveFileName: Path to save file
- */
-public void save(String saveFileName){
-	saveLoad = new SaveLoadState(getFilterSelection(), saveFileName);
-	saveLoad.save();
-}
-
-/**
- * Loads the settings from the file specified
- * @param loadFileName: Path to Vamix save file to be loaded
- */
-public void load(String loadFileName){
-	saveLoad = new SaveLoadState(getFilterSelection(), loadFileName);
-	int filter = saveLoad.load("filter");
-	if (filter == 0){
-		_selection = saveLoad.getFilter();
 	}
-//	deselectAll();
-	if ( _selection.equals("blur")) {
-		_rdbtnBlur.doClick();
-	} else if (_selection.equals("border")) {
-		_rdbtnBorder.doClick();
-	} else if (_selection.equals("flipH")) {
-		_rdbtnFlipHorizontally.doClick();
-	} else if (_selection.equals("flipV")) {
-		_rdbtnFlipVertically.doClick();
-	} else if (_selection.equals("mono")) {
-		_rdbtnMono.doClick();
-}
-	repaint();
-}
+	/**
+	 * displays an error message when no media file is selected
+	 */
+	private void noMediaSelected() {
+		JOptionPane.showMessageDialog(this, "Invalid media selected in the Media tab",
+				"Media Error", JOptionPane.ERROR_MESSAGE);
+	}
 
-private void deselectAll() {
-	_rdbtnBlur.setSelected(false);
-	_rdbtnBorder.setSelected(false);
-	_rdbtnFlipHorizontally.setSelected(false);
-	_rdbtnFlipVertically.setSelected(false);
-	_rdbtnMono.setSelected(false);
-	_rdbtnNone.setSelected(false);
-}
+	/**
+	 * Saves the current text settings to a vamix save file
+	 * @param saveFileName: Path to save file
+	 */
+	public void save(String saveFileName){
+		saveLoad = new SaveLoadState(getFilterSelection(), saveFileName);
+		saveLoad.save();
+	}
+
+	/**
+	 * Loads the settings from the file specified
+	 * @param loadFileName: Path to Vamix save file to be loaded
+	 */
+	public void load(String loadFileName){
+		saveLoad = new SaveLoadState(getFilterSelection(), loadFileName);
+		int filter = saveLoad.load("filter");
+		if (filter == 0){
+			_selection = saveLoad.getFilter();
+		}
+		//	deselectAll();
+		if ( _selection.equals("blur")) {
+			_rdbtnBlur.doClick();
+		} else if (_selection.equals("border")) {
+			_rdbtnBorder.doClick();
+		} else if (_selection.equals("flipH")) {
+			_rdbtnFlipHorizontally.doClick();
+		} else if (_selection.equals("flipV")) {
+			_rdbtnFlipVertically.doClick();
+		} else if (_selection.equals("mono")) {
+			_rdbtnMono.doClick();
+		}
+		repaint();
+	}
+
 
 }

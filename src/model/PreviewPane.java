@@ -1,20 +1,13 @@
 package model;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
-import javax.swing.UIManager;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -25,6 +18,11 @@ import javax.swing.text.StyledDocument;
  */
 
 public class PreviewPane extends JTextPane   {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("unused")
 	private String _name = "bg1";
 	BufferedImage img = null;
 
@@ -46,9 +44,10 @@ public class PreviewPane extends JTextPane   {
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
 		document.setParagraphAttributes(0, document.getLength(), center, false);
 		initImageMap();
-		//repaintBackground(DIRECTORY);
 	}
-
+	/**
+	 * gets the resource files and adds them to a map
+	 */
 	private void initImageMap() {
 		ImageIcon bg0 = new ImageIcon(getClass().getResource("/icons/"+"bg0"+".png"));
 		ImageIcon bg1 = new ImageIcon(getClass().getResource("/icons/"+"bg1"+".png"));
@@ -69,53 +68,10 @@ public class PreviewPane extends JTextPane   {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		
+
 		g.drawImage(currentImage, 0, 0, getWidth(), getHeight(), this);
 		super.paintComponent(g);
 	}
 
-//    @Override
-//    public Dimension getPreferredSize() {
-//        return new Dimension(150, 150);
-//    }
+
 }
-
-
-//	public PreviewPane() throws RuntimeException  {
-//		super();
-//		setOpaque(false);
-//		StyledDocument document = this.getStyledDocument();
-//		SimpleAttributeSet center = new SimpleAttributeSet();
-//		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-//		document.setParagraphAttributes(0, document.getLength(), center, false);
-//	}
-//
-//	@Override
-//	protected void paintComponent(Graphics g)  throws RuntimeException {
-//		g.setColor(Color.WHITE);
-//		g.fillRect(0, 0, getWidth(), getHeight());
-//		
-//		BufferedImage img = null;
-//
-//			try {
-//				img = ImageIO.read(new File(getClass().getResource("/icons/"+_name+".png").toURI()));
-//			} catch (IOException | URISyntaxException e) {
-//				// TODO Auto-generated catch block
-//				//e.printStackTrace();
-//			}
-//
-//		 g.drawImage(img, 0, 0, this);
-//
-//
-//		super.paintComponent(g);
-//	}
-//	
-//	public void repaintBackground(String bgName){
-//		
-//		_name = bgName;
-//		
-//		paintComponent(this.getGraphics());
-//		
-//	}
-
-//}

@@ -1,10 +1,5 @@
-package controller;
+package controller.processes;
 
-import java.awt.Color;
-
-import gui.AudioTab;
-import gui.FilterTab;
-import gui.TextTab;
 import gui.MediaTab;
 import gui.VideoCropTab;
 
@@ -12,6 +7,10 @@ import javax.swing.JOptionPane;
 
 
 public class VideoCropProcess extends AbstractProcess {
+	/**
+	 * Main process for cropping video
+	 * @author ofek
+	 */
 
 	private VideoCropTab _tab;
 
@@ -20,6 +19,9 @@ public class VideoCropProcess extends AbstractProcess {
 		_tab = videoCropTab;
 		super.setCommand(makeCommand(_tab.getSaveloc(), startHr, startMin, startSec, endHr, endMin, endSec));
 	}
+	/**
+	 * returns appropriate response to process outcome
+	 */
 	protected void doDone() {
 		if (get() == 0) {
 			_tab.progressDone();

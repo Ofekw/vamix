@@ -17,22 +17,25 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import net.miginfocom.swing.MigLayout;
-import controller.CheckFile;
-import controller.ExtractAudioProcess;
-import controller.OverlayAudioProcess;
-import controller.ReplaceAudioProcess;
-import controller.SaveLoadState;
-import controller.ShellProcess;
-import controller.AbstractProcess;
+import controller.gui.CheckFile;
+import controller.processes.AbstractProcess;
+import controller.processes.ExtractAudioProcess;
+import controller.processes.OverlayAudioProcess;
+import controller.processes.ReplaceAudioProcess;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
+
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 @SuppressWarnings("serial")
 /**
  * Tab for audio manipulation
- * @author Patrick Poole
+ * @author patrick
  *
  */
 public class AudioTab extends Tab {
-	/*
+	/**
 	 * This tab is used to extract the audio from the movie file, future implementation can include extracting specific time frame audio
 	 */
 	private JButton _extractAudio;
@@ -65,6 +68,7 @@ public class AudioTab extends Tab {
 	private final String REMOVE = "REMOVE";
 	private final String OVERLAY = "OVERLAY";
 	private final String REPLACE = "REPLACE";
+	private int[] mediaLength = new int[3];
 
 
 
@@ -75,6 +79,7 @@ public class AudioTab extends Tab {
 
 	@Override
 	protected void initialise() {
+		//Sets up the main gui components for the AudioTab
 		this.setLayout(new MigLayout("", "[400px, grow][400px, grow]", "[300px, grow][200px,grow]"));
 
 		JPanel progressPanel = new JPanel(new MigLayout());
@@ -89,12 +94,44 @@ public class AudioTab extends Tab {
 
 		leftSide.setBorder(BorderFactory.createTitledBorder(""));
 		rightSide.setBorder(BorderFactory.createTitledBorder(""));
-		//		progressPanel.setBorder(BorderFactory.createBevelBorder(1));
-
+		//sets the labels and buttons
 		_startLabel = new JLabel("Enter start time (HH:MM:SS)");
 		_startHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+		_startHours.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_durationHours.getValue();
+				int range = mediaLength[0]-(int)_startHours.getValue();
+				if(value>range){
+				_durationHours.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_durationHours.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 		_startMinutes = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+		_startMinutes.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_durationMinutes.getValue();
+				int range = mediaLength[1]-(int)_startMinutes.getValue();
+				if(value>range){
+				_durationMinutes.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_durationMinutes.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 		_startSeconds = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1));
+		_startSeconds.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int value = (int)_durationSeconds.getValue();
+				int range = mediaLength[2]-(int)_startSeconds.getValue();
+				if(value>range){
+				_durationSeconds.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
+				}else{
+					_durationSeconds.setModel(new SpinnerNumberModel(value, 0, (range), 1));
+				}
+			}
+		});
 
 		_durationLabel = new JLabel("Enter duration (HH:MM:SS)");
 		_durationHours = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
@@ -164,6 +201,7 @@ public class AudioTab extends Tab {
 			}
 		});
 
+		//implements all the listeners 
 		_cancel.addActionListener(new ActionListener() {
 
 			@Override
@@ -369,6 +407,10 @@ public class AudioTab extends Tab {
 			disableAllButtons();
 		}
 	}
+	
+	/**
+	 * Method calls to enable/disable buttons
+	 */
 
 	public void enableExtractButtons() {
 		_extractAudio.setEnabled(true);
@@ -533,9 +575,55 @@ public class AudioTab extends Tab {
 				saveFile);
 		saveLoad.load("audio");
 	}
+	
+	public void setLimits() {
+		String length = _videoPanel.getLength();
+		String[] format = length.split(":");
+		for (int i = 0; i<3;i++){
+			mediaLength[i] = Integer.parseInt(format[i]);
+		}
+			_startHours.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+			_startMinutes.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+			_startSeconds.setModel(new SpinnerNumberModel(0, 0, mediaLength[2], 1));
+			_durationHours.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+			_durationMinutes.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+			_durationSeconds.setModel(new SpinnerNumberModel(0, 0, mediaLength[2], 1));
+			_durationHours.setValue((new Integer(mediaLength[0])));
+			_durationMinutes.setValue((new Integer(mediaLength[1])));
+			_durationSeconds.setValue((new Integer(mediaLength[2])));
+			resetLimits();
+	}
 
 	
+<<<<<<< HEAD
 	public void setVideoTab(VideoTab video) {
+=======
+	/**
+	 * resets the limits if there are several min/ hours to allow seconds
+	 */
+		private void resetLimits() {
+			if (mediaLength[1]>0){
+				mediaLength[2] = 59;
+				mediaLength[1] = (mediaLength[1]-1 == 0) ? 0 : mediaLength[1]-1;
+				_startSeconds.setModel(new SpinnerNumberModel(0, 0, 59, 1));
+				_durationSeconds.setValue(new Integer(59));
+				_startMinutes.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+				_durationMinutes.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+				_durationMinutes.setValue((new Integer(mediaLength[1])));
+			}
+			//if there is more than one hour then min spinner can get to 59 and lower the hour limit
+			if (mediaLength[0]>0){
+				mediaLength[1] = 59;
+				mediaLength[0] = (mediaLength[0]-1 == 0) ? 0 : mediaLength[0]-1;
+				_startMinutes.setModel(new SpinnerNumberModel(0, 0, 59, 1));
+				_durationMinutes.setValue(new Integer(59));
+				_startHours.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+				_durationHours.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+				_durationHours.setValue((new Integer(mediaLength[0])));
+			}
+		}
+	public void setVideoTab(MediaTab video) {
+>>>>>>> ofekdev
 		_tab = video;
 	}
 }

@@ -1,4 +1,4 @@
-package controller;
+package controller.processes;
 
 import java.awt.Color;
 
@@ -9,6 +9,10 @@ import javax.swing.JOptionPane;
 
 
 public class VideoOutroProcess extends AbstractProcess {
+	/**
+	 * main process for adding the outro to the video
+	 * @author ofek wittenberg
+	 */
 
 	private TextTab _tab;
 	public static final String tempOutroPath = MainGui.VAMIX.getAbsolutePath()+MainGui.SEPERATOR+".tempMedia"+MainGui.SEPERATOR;
@@ -19,6 +23,9 @@ public class VideoOutroProcess extends AbstractProcess {
 		super.setCommand(makeCommand(textSize, font, text, colour, loc, background));
 		_tab = tab;
 	}
+	/**
+	 * returns the appropriate response to the success of the outro process
+	 */
 	protected void doDone() {
 		if (get() == 0) {
 			if(_tab.getProcessNumber() == 2){

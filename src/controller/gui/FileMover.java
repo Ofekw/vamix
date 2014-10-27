@@ -1,12 +1,10 @@
-package controller;
+package controller.gui;
 
 import gui.MainGui;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
+
+import controller.processes.AbstractProcess;
 
 /**
  * Creates .vamix folder and moves all neccesarry files to .vamix folder from within jar file
@@ -27,7 +25,6 @@ public class FileMover extends AbstractProcess{
 		}
 		String command = "";
 		location = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());;;
-		System.out.println(location.getAbsolutePath().toString());
 		String fileDirectory = location.getAbsolutePath().toString();
 		String baseDirectory = fileDirectory.substring(0,fileDirectory.lastIndexOf("/")+1);
 		if (!location.getAbsoluteFile().toString().contains("bin")){

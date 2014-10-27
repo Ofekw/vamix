@@ -1,10 +1,8 @@
 package gui;
 
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -25,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileView;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
@@ -34,9 +31,9 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
-import controller.FileMover;
-import controller.SaveLoadState;
-import controller.ShellProcess;
+import controller.gui.FileMover;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
 
 import model.FileChooserModel;
 
@@ -64,15 +61,22 @@ public class MainGui {
 	public static final String SEPERATOR = File.separator;
 	public static final File VAMIX = new File(HOME+SEPERATOR+"vamix");
 	public static final String ZIP = new String("vamix.BIN.zip");
+	@SuppressWarnings("unused")
 	private String[] _moveableFiles = {".tempMedia", "bat", "com", "css", "images", "js", "readme.html"} ;
 	private SubTitles _subtitle;
 	private DownloadTab _download;
+<<<<<<< HEAD
 >>>>>>> ofekdev
 
+=======
+	/**
+	 * The main running starting point of the application, checks that vlc is installed, and starts setting the gui in a new ED thread
+	 * @param args
+	 * @author Ofek
+	 */
+>>>>>>> ofekdev
 	public static void main(String[] args){
 		NativeLibrary.addSearchPath(
-				//Check for vlc in home directory
-				//ui
 				RuntimeUtil.getLibVlcLibraryName(), "/home/linux/vlc/install/lib"
 				);
 		Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
@@ -83,18 +87,6 @@ public class MainGui {
 			e.printStackTrace();
 		}
 
-//				for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//					if ("GTK+".equals(info.getName())) {
-//						try {
-//							UIManager.setLookAndFeel(info.getClassName());
-//							UIManager.put("Slider.paintValue", false);
-//						} catch (Exception e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//							break;
-//						}
-//					}
-//				}
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -107,18 +99,24 @@ public class MainGui {
 			}
 		});
 	}
-
+	/**
+	 * calls the setup for the file mover (unpacks required jar files) and starts creating the gui
+	 */
 	public MainGui(){
 		setup();
 		initialize();
 	}
-
+	/**
+	 * File mover for (unpacking required jar / bin files)
+	 */
 	private void setup() {
 		FileMover mover = new FileMover();
 		mover.execute();
 
 	}
-
+	/**
+	 * Creates the main frame with all the tabs and the media player
+	 */
 	private void initialize() {
 <<<<<<< HEAD
 		frame = new JFrame();
@@ -132,10 +130,13 @@ public class MainGui {
 		frame.setTitle("Video Audio Mixer");
 		ImageIcon img = new ImageIcon(getClass().getResource("/icons/"+"V.png"));
 		frame.setIconImage(img.getImage());
+<<<<<<< HEAD
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 <<<<<<< HEAD
 		frame.setBounds(10, 10, (int)screen.getWidth()-100, (int)screen.getHeight()-75);
 =======
+=======
+>>>>>>> ofekdev
 		frame.setBounds(10, 10, 1200, 720);
 >>>>>>> ofekdev
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
@@ -163,9 +164,9 @@ public class MainGui {
 		EditPanel.setOpaque(false);
 >>>>>>> ofekdev
 		EditPanel.add(tabbedPane);
-
 		//creating all the tabs
 		_text = new TextTab(_videoPanel, this);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 		//java is being weird and not intialising the fields right
@@ -174,13 +175,24 @@ public class MainGui {
 		_video = new VideoTab(_videoPanel,_audio);
 		_audio.setVideoTab(_video);
 =======
+=======
+		_text.setToolTipText("Tab for adding an Intro/Credits screen to your video");
+>>>>>>> ofekdev
 		_audio = new AudioTab(_videoPanel, _media);
+		_audio.setToolTipText("Tab for extracting,overlaying and removing audio from media");
 		_media = new MediaTab(_videoPanel,this);
+		_media.setToolTipText("This is where you select the media to be used for playback and editing");
 		_audio.setVideoTab(_media);
 		_filterTab = new FilterTab(_videoPanel, this);
+		_filterTab.setToolTipText("Tab for applying visual filters to video");
 		_videoCrop = new VideoCropTab(_videoPanel, this);
 		_subtitle = new SubTitles(_videoPanel, this);
+		_subtitle.setToolTipText("Tab for adding/removing subtitles to videos");
 		_download = new DownloadTab(_videoPanel);
+<<<<<<< HEAD
+>>>>>>> ofekdev
+=======
+		_download.setToolTipText("Tab for downloading opensource media from the internet");
 >>>>>>> ofekdev
 
 
@@ -198,7 +210,7 @@ public class MainGui {
 
 		final JMenuBar menuBar = new JMenuBar();
 		frame.getRootPane().setJMenuBar(menuBar);
-
+		//creates the menu bar
 		JMenu mainMenu = new JMenu("Project");
 		JMenu help = new JMenu("Help");
 		help.addMouseListener(new MouseAdapter() {
@@ -212,6 +224,8 @@ public class MainGui {
 				}
 			}
 		});
+		
+		
 		menuBar.add(mainMenu);
 		menuBar.add(help);
 
@@ -248,6 +262,7 @@ public class MainGui {
 						_text.save(result);
 						_filterTab.save(result);
 						_videoCrop.save(result);
+						_subtitle.save(result);
 						return;
 					}
 				}
@@ -277,7 +292,6 @@ public class MainGui {
 
 
 				});
-				//				chooser.setCurrentDirectory(new File (System.getProperty("user.home") + System.getProperty("line.separator")+ ".vamix"));
 				int returnVal = chooser.showOpenDialog(menuBar);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = new File(chooser.getSelectedFile().toString());
@@ -286,6 +300,7 @@ public class MainGui {
 						_audio.load(chooser.getSelectedFile().getName());
 						_filterTab.load(chooser.getSelectedFile().getName());
 						_videoCrop.load(chooser.getSelectedFile().getName());
+						_subtitle.load(chooser.getSelectedFile().getName());
 						if (!_media.getVideoLoc().equals("")){
 							_media.checkMediaFile(new File(_media.getVideoLoc()));
 						}
@@ -316,6 +331,11 @@ public class MainGui {
 		mainMenu.add(quit);
 
 	}
+	
+	/**
+	 * all the getters for the tab objects
+	 * @return
+	 */
 
 <<<<<<< HEAD
 	public VideoTab getVideo() {
@@ -352,5 +372,4 @@ public class MainGui {
 	public SubTitles getSubtitles(){
 		return _subtitle;
 	}
-
 }

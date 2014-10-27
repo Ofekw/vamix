@@ -1,15 +1,14 @@
-package controller;
+package controller.processes;
 
-import java.awt.Color;
-
-import gui.AudioTab;
 import gui.FilterTab;
-import gui.TextTab;
 import gui.MediaTab;
 
 import javax.swing.JOptionPane;
 
-
+/**
+ * Uses the file linux process to call specific audio manipulation calls on the media
+ * @param filter tab
+ */
 public class FilterProcess extends AbstractProcess {
 
 	private FilterTab _tab;
@@ -19,6 +18,8 @@ public class FilterProcess extends AbstractProcess {
 		_tab = tab;
 		super.setCommand(makeCommand(_tab.getSaveloc()));
 	}
+	
+	//returns appropriate error/success for the completion of the process
 	protected void doDone() {
 		if (get() == 0) {
 			_tab.progressDone();
@@ -46,7 +47,7 @@ public class FilterProcess extends AbstractProcess {
 		System.out.println(line);
 
 	}
-
+//calls specific effect on the mediafile
 	private String makeCommand(String saveLoc){
 			String source = _tab.getFilterSelection();
 			if ( source == "blur") {

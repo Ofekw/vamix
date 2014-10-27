@@ -1,4 +1,4 @@
-package controller;
+package controller.processes;
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -59,6 +59,7 @@ public class SaveLoadState {
 
 	private String saveFormat;
 	private String _filter;
+	private JTextPane _srt;
 
 	/**
 	 * Constructor for creating object for saving/loading audio settings and video crop settings
@@ -153,6 +154,14 @@ public class SaveLoadState {
 		SaveFile = new File(SAVE+saveFileName);
 	}
 	
+	public SaveLoadState(JTextPane subtitleOutputFormat, String saveFileName) {
+		_srt = subtitleOutputFormat;
+		saveFormat = format(_srt.getText());
+		SaveFile = new File(SAVE+saveFileName);
+		
+	}
+
+
 	/**
 	 * Constructor for saving/loading filters settings
 	 * @param filter
@@ -188,6 +197,8 @@ public class SaveLoadState {
 		String [] audioSettings = null;
 		String [] filterSettings = null;
 		String [] videoCrop = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("");
 		try {
 			List<String> lines = Files.readAllLines(SaveFile.toPath(), Charset.defaultCharset());
 			if (!lines.get(0).equals(SAVEMESSAGE)){
@@ -197,6 +208,19 @@ public class SaveLoadState {
 			textSettings = lines.get(2).split(":");
 			filterSettings = lines.get(3).split(":");
 			videoCrop = lines.get(4).split(":");
+			int i = 5;
+			
+			while (true){
+				
+				if (i == lines.size()){
+					break;
+				}
+			String	string = lines.get(i);
+				i++;
+				stringBuilder.append(string);
+				stringBuilder.append("\n");
+				
+			}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -257,7 +281,11 @@ public class SaveLoadState {
 			return 0;
 		}else if(option == "filter"){
 			_filter = filterSettings[0];
+		}else if(option == "srt"){
+			_srt.setText(stringBuilder.toString());
+			System.out.println(stringBuilder.toString());
 		}
+		
 		return 0;
 	}
 
@@ -299,6 +327,10 @@ public class SaveLoadState {
 	private String format(String intro, String end, String preview, 
 			String fontSize, String fontColour, String fontType, String backgournd){
 		return intro+":"+end+":"+preview+":"+fontSize+":"+fontColour+":"+fontType+":"+backgournd;		
+	}
+	
+	private String format(String text) {
+		return text;
 	}
 
 	/**

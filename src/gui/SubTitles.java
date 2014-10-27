@@ -21,17 +21,15 @@ import model.FileChooserModel;
 import model.FileSRTChooserModel;
 import model.IntegerField;
 import net.miginfocom.swing.MigLayout;
-import controller.AddSubtitleProcess;
-import controller.RemoveSubtitleProcess;
-import controller.SaveLoadState;
-import controller.ShellProcess;
-import controller.Subtitleworker;
+import controller.processes.SaveLoadState;
+import controller.processes.ShellProcess;
+import controller.processes.SubtitleWorker;
 
 import javax.swing.JProgressBar;
 
 import sun.awt.image.OffScreenImage;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unused" })
 /**
  * Tab for adding and removing subtitles
  * @author Ofek Wittenberg
@@ -53,11 +51,20 @@ public class SubTitles extends Tab {
 	private JTextField _endTime;
 	private JTextPane _subtitleOutputFormat;
 	private JButton _undo;
-	private int alterations =0;
+	private int alterations =1;
 	private String[] alt = {"",""};
+	//private LinkedList<String> starTimes = new LinkedList<String>();
+	//private LinkedList<String> endTimes = new LinkedList<String>();
 
-
+	/**
+	 * The tab for adding and removing subtitles
+	 * @param panel
+	 * @param main
+	 */
 	public SubTitles(VideoPanel panel, MainGui main){
+		/**
+		 * sets out the main layout for the tab
+		 */
 		super(panel);
 		this.setPreferredSize(new Dimension(1046, 172));
 		setLayout(new MigLayout("", "[][][82.00][][grow][][grow][][][][grow][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]", "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][grow][][][][][][][][][][][][][][][][][][][][][][]"));
@@ -66,7 +73,7 @@ public class SubTitles extends Tab {
 		_main = main;
 		_subtitleOutputFormat = new JTextPane();
 		_doc = _subtitleOutputFormat.getStyledDocument();
-		_subtitleOutputFormat.setEditable(true);
+		_subtitleOutputFormat.setEditable(false);
 
 		JScrollPane scrollBar = new JScrollPane(_subtitleOutputFormat);
 		scrollBar.setViewportView(_subtitleOutputFormat);
@@ -80,6 +87,10 @@ public class SubTitles extends Tab {
 		_subtitleInput = new JTextField();
 		add(_subtitleInput, "cell 2 2 23 1,growx");
 		_subtitleInput.setColumns(10);
+		
+		/**
+		 * obtain start time from running media file
+		 */
 
 		_setStartTime = new JButton("Get Start Time");
 		_setStartTime.setToolTipText("Set the start time of the subtitle from currently playing video");
@@ -99,9 +110,14 @@ public class SubTitles extends Tab {
 		_setEndTime.setToolTipText("Set the end time of the subtitle from currently playing video");
 		_setEndTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//listener to get the end time from the playing video
 				_endTime.setText(_videoPanel.getCurrentTime());
 			}
 		});
+		
+		/**
+		 * commits the user input and sets the preview pane before creating the srt file
+		 */
 
 		_set = new JButton("Commit");
 		_set.setEnabled(false);
@@ -110,19 +126,21 @@ public class SubTitles extends Tab {
 			public void actionPerformed(ActionEvent e) {
 				if (!getText().isEmpty()){
 					try{
-						_doc.insertString(_doc.getLength(), Integer.toString(_subTitleNo)+"\n", null);
-						_doc.insertString(_doc.getLength(), _starTime.getText()+",600 -->"+_endTime.getText() +",600 X1:0 !!!\n", null);
-						_doc.insertString(_doc.getLength(), "<font color="+ "\"" + "#ffff00"+ "\"" + ">"+getText()+"</font>\n", null);
-						//_doc.insertString(_doc.getLength(), "\n", null);
-						_subTitleNo++; //add to subtitle count
+						_doc.insertString(_doc.getLength(), _starTime.getText()+",000 -->"+_endTime.getText() +",000 X1:0\n", null);
+						_doc.insertString(_doc.getLength(), getText(), null);
+						_doc.insertString(_doc.getLength(), "\n", null);
+						_doc.insertString(_doc.getLength(), "\n", null);
 						_subtitleInput.setText("");
 						//saves previous input for the undo file
-						alterations++;
 						alt[alterations%2] = _subtitleOutputFormat.getText();
+						alterations++;
 					}
 					catch (Exception err){
 						System.out.println(err);
 					}
+				}else{
+					JOptionPane.showMessageDialog(SubTitles.this, "Subtitles field empty",
+							"Empty Field", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -145,18 +163,20 @@ public class SubTitles extends Tab {
 			}
 			}
 		});
-		add(_undo, "cell 18 7,growx");
+	//	add(_undo, "cell 18 7,growx");
 		
 				JButton _importSrt = new JButton("Import Subtitle File");
 				_importSrt.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						Subtitleworker writer = new Subtitleworker(SubTitles.this, 0);
+						SubtitleWorker writer = new SubtitleWorker(SubTitles.this, 0);
 						writer.execute();
 					}
 				});
 				_importSrt.setToolTipText("Import .srt file");
 				add(_importSrt, "cell 27 7");
-		
+				/**
+				 * remove subtitles and deletes the srt file
+				 */
 				_remove = new JButton("Remove Subtitles");
 				_remove.setEnabled(false);
 				_remove.addActionListener(new ActionListener() {
@@ -179,7 +199,7 @@ public class SubTitles extends Tab {
 
 		_embed.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SaveLocAndTextProcess();
+				saveLocAndSrtProcess();
 			}
 		});
 	}
@@ -188,10 +208,6 @@ public class SubTitles extends Tab {
 		return _subtitleInput.getText();
 	}
 
-	private void disableButtons() {
-		// TODO Auto-generated method stub
-
-	}
 	
 	private int subtitleCount(){
 		//copied and modified from http://stackoverflow.com/questions/13807575/how-to-get-the-number-of-lines-from-a-jtextpane
@@ -207,17 +223,25 @@ public class SubTitles extends Tab {
 		} catch (BadLocationException e) {
 		    e.printStackTrace();
 		}
-		return lineCount/3;
+		return lineCount/4;
 	}
-	//sets the subtitle number when importing srt
+	/**
+	 * sets the subtitle number when importing srt
+	 * @param i : sub number file
+	 */
 	public void setSubNum(int i){
 		_subTitleNo = i;
 	}
-
+	/**
+	 * returns the srtformat data
+	 * @return
+	 */
 	public String getSRT(){
 		return _subtitleOutputFormat.getText();
 	}
-
+	/**
+	 * enables the main creation button
+	 */
 	public void enableButtons() {
 		_embed.setEnabled(true);
 		_remove.setEnabled(true);
@@ -225,43 +249,64 @@ public class SubTitles extends Tab {
 
 	}
 
-
+	/**
+	 * creates the subtitle worker process
+	 */
 	private void createProcess() {
-		Subtitleworker writer = new Subtitleworker(this, 1);
+		SubtitleWorker writer = new SubtitleWorker(this, 1);
 		writer.execute();
 	}
-
+	/**
+	 * retruns the save location for the imported srt file
+	 * @return
+	 */
 	public String getSaveloc(){
 		return _saveLoc;
 	}
-
+	/**
+	 * returns the parent frame
+	 * @return
+	 */
 	public MainGui getMain(){
 		return _main;
 	}
-
-	private void SaveLocAndTextProcess(){
+	/**
+	 * creates the wrtier/reader worker
+	 */
+	private void saveLocAndSrtProcess(){
 		createProcess();
 	}
 
 
-	public void save(String saveFile){
+	/**
+	 * Saves the current text settings to a vamix save file
+	 * @param saveFileName: Path to save file
+	 */
+	public void save(String saveFileName){
+		saveLoad = new SaveLoadState(_subtitleOutputFormat, saveFileName);
+		saveLoad.save();
+	}
+
+	/**
+	 * Loads the settings from the file specified
+	 * @param loadFileName: Path to Vamix save file to be loaded
+	 */
+	public void load(String loadFileName){
+		saveLoad = new SaveLoadState(_subtitleOutputFormat, loadFileName);
+		saveLoad.load("srt");
+		_subTitleNo = subtitleCount()+2;
+		_set.setEnabled(true);
+		}
+
+	@Override
+	protected void initialise() {
 
 	}
 
 	/**
-	 * Load video settings
-	 * @param saveFile: Path to file to load
+	 * file chooser with specific model for srt files only
+	 * @return
 	 */
-	public void load(String saveFile){
-
-	}
-
-	@Override
-	protected void initialise() {
-		// TODO Auto-generated method stub
-
-	}
-
 	public String getImportLoc() {
 		JFileChooser chooser = new JFileChooser(new File(SaveLoadState.HOME.toString()));
 		chooser.setFileFilter(new FileSRTChooserModel());
@@ -281,8 +326,8 @@ public class SubTitles extends Tab {
 				return file.getAbsolutePath();
 			}
 		}else{
-			JOptionPane.showMessageDialog(this, "File is not a valid save file!");
-			return null;
+//			JOptionPane.showMessageDialog(this, "File is not a valid save file!");
+//			return null;
 		}
 		return null;
 	}
@@ -290,7 +335,6 @@ public class SubTitles extends Tab {
 
 	public void setImport(String string) {
 		_subtitleOutputFormat.setText(string);
-
 	}
 
 }
