@@ -25,7 +25,6 @@ public class FileMover extends AbstractProcess{
 		}
 		String command = "";
 		location = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());;;
-		System.out.println(location.getAbsolutePath().toString());
 		String fileDirectory = location.getAbsolutePath().toString();
 		String baseDirectory = fileDirectory.substring(0,fileDirectory.lastIndexOf("/")+1);
 		if (!location.getAbsoluteFile().toString().contains("bin")){

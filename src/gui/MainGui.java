@@ -139,7 +139,6 @@ public class MainGui {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		EditPanel.setOpaque(false);
 		EditPanel.add(tabbedPane);
-
 		//creating all the tabs
 		_text = new TextTab(_videoPanel, this);
 		_text.setToolTipText("Tab for adding an Intro/Credits screen to your video");
@@ -181,6 +180,8 @@ public class MainGui {
 				}
 			}
 		});
+		
+		
 		menuBar.add(mainMenu);
 		menuBar.add(help);
 
@@ -323,5 +324,4 @@ public class MainGui {
 	public SubTitles getSubtitles(){
 		return _subtitle;
 	}
-
 }
