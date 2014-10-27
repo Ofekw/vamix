@@ -2,6 +2,12 @@ package model;
 
 import java.io.File;
 
+/**
+ * File chooser model, to limit file selection to .srt files only
+ * @author ofek
+ *
+ */
+
 public class FileSRTChooserModel extends javax.swing.filechooser.FileFilter  
 {  
 	public boolean accept(File file)  

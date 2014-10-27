@@ -591,9 +591,34 @@ public class AudioTab extends Tab {
 			_durationHours.setValue((new Integer(mediaLength[0])));
 			_durationMinutes.setValue((new Integer(mediaLength[1])));
 			_durationSeconds.setValue((new Integer(mediaLength[2])));
+			resetLimits();
 	}
 
 	
+	/**
+	 * resets the limits if there are several min/ hours to allow seconds
+	 */
+		private void resetLimits() {
+			if (mediaLength[1]>0){
+				mediaLength[2] = 59;
+				mediaLength[1] = (mediaLength[1]-1 == 0) ? 0 : mediaLength[1]-1;
+				_startSeconds.setModel(new SpinnerNumberModel(0, 0, 59, 1));
+				_durationSeconds.setValue(new Integer(59));
+				_startMinutes.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+				_durationMinutes.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+				_durationMinutes.setValue((new Integer(mediaLength[1])));
+			}
+			//if there is more than one hour then min spinner can get to 59 and lower the hour limit
+			if (mediaLength[0]>0){
+				mediaLength[1] = 59;
+				mediaLength[0] = (mediaLength[0]-1 == 0) ? 0 : mediaLength[0]-1;
+				_startMinutes.setModel(new SpinnerNumberModel(0, 0, 59, 1));
+				_durationMinutes.setValue(new Integer(59));
+				_startHours.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+				_durationHours.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+				_durationHours.setValue((new Integer(mediaLength[0])));
+			}
+		}
 	public void setVideoTab(MediaTab video) {
 		_tab = video;
 	}

@@ -7,7 +7,7 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
 /**
- * A JTextField that accepts only integers. To be used in the Extract Pane.
+ * A JTextField model that accepts only integers. To be used in the Extract Pane.
  * 
  */
 public class IntegerField extends JTextField {
@@ -38,7 +38,7 @@ public class IntegerField extends JTextField {
 
 	static class NumbersDocument extends PlainDocument {
 		/**
-		 * 
+		 * limits character limit to 8
 		 */
 		private static final long serialVersionUID = 1L;
 		public static boolean _inputRestriction = false;

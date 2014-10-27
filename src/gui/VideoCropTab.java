@@ -84,7 +84,7 @@ public class VideoCropTab extends Tab {
 		_startMin = new JSpinner();
 		_startMin.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				int value = (int)_endSec.getValue();
+				int value = (int)_endMin.getValue();
 				int range = mediaLength[1]-(int)_startMin.getValue();
 				if(value>range){
 					_endMin.setModel(new SpinnerNumberModel(value-1, 0, (range), 1));
@@ -107,6 +107,8 @@ public class VideoCropTab extends Tab {
 				}else{
 					_endSec.setModel(new SpinnerNumberModel(value, 0, (range), 1));
 				}
+				
+				
 			}
 		});
 		_startSec.setModel(new SpinnerNumberModel(0, 0, 59, 1));
@@ -245,6 +247,8 @@ public class VideoCropTab extends Tab {
 		setLimits();
 		//method must be called twice to get proper end time
 		setLimits();
+		//if there is more than one min then sec spinner can get to 59 and lower the min limit
+		resetLimits();
 
 	}
 	/**
@@ -252,7 +256,6 @@ public class VideoCropTab extends Tab {
 	 */
 	private void setLimits() {
 		String length = _videoPanel.getLength();
-		System.out.println(length);
 		String[] format = length.split(":");
 		for (int i = 0; i<3;i++){
 			mediaLength[i] = Integer.parseInt(format[i]);
@@ -267,6 +270,30 @@ public class VideoCropTab extends Tab {
 			_endSec.setValue((new Integer(mediaLength[2])));
 		}
 
+	}
+/**
+ * resets the limits if there are several min/ hours to allow seconds
+ */
+	private void resetLimits() {
+		if (mediaLength[1]>0){
+			mediaLength[2] = 59;
+			mediaLength[1] = (mediaLength[1]-1 == 0) ? 0 : mediaLength[1]-1;
+			_startSec.setModel(new SpinnerNumberModel(0, 0, 59, 1));
+			_endSec.setValue(new Integer(59));
+			_startMin.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+			_endMin.setModel(new SpinnerNumberModel(0, 0, mediaLength[1], 1));
+			_endMin.setValue((new Integer(mediaLength[1])));
+		}
+		//if there is more than one hour then min spinner can get to 59 and lower the hour limit
+		if (mediaLength[0]>0){
+			mediaLength[1] = 59;
+			mediaLength[0] = (mediaLength[0]-1 == 0) ? 0 : mediaLength[0]-1;
+			_startMin.setModel(new SpinnerNumberModel(0, 0, 59, 1));
+			_endMin.setValue(new Integer(59));
+			_startHour.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+			_endHr.setModel(new SpinnerNumberModel(0, 0, mediaLength[0], 1));
+			_endHr.setValue((new Integer(mediaLength[0])));
+		}
 	}
 	/**
 	 * Resets the progress bar

@@ -44,9 +44,10 @@ public class PreviewPane extends JTextPane   {
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
 		document.setParagraphAttributes(0, document.getLength(), center, false);
 		initImageMap();
-		//repaintBackground(DIRECTORY);
 	}
-
+	/**
+	 * gets the resource files and adds them to a map
+	 */
 	private void initImageMap() {
 		ImageIcon bg0 = new ImageIcon(getClass().getResource("/icons/"+"bg0"+".png"));
 		ImageIcon bg1 = new ImageIcon(getClass().getResource("/icons/"+"bg1"+".png"));
@@ -67,7 +68,7 @@ public class PreviewPane extends JTextPane   {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		
+
 		g.drawImage(currentImage, 0, 0, getWidth(), getHeight(), this);
 		super.paintComponent(g);
 	}

@@ -579,7 +579,6 @@ public class VideoPanel extends JPanel {
 		play();
 		String s = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(length), TimeUnit.MILLISECONDS.toMinutes(length) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(length)), TimeUnit.MILLISECONDS.toSeconds(length) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(length)));
 		pause();
-		System.out.println(s);
 		return s;
 		
 		
